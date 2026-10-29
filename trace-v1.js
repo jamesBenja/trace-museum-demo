@@ -36,7 +36,7 @@ function intro(){
  const world=L[state.venue];
  return '<div class="t1-screen"><div class="t1-head"><div class="t1-overline">TRACE 1.0 · ART BECOMES AN ADVENTURE</div><h2>'+esc(world.name)+'</h2><p>'+esc(world.description)+'</p><div class="venueSelect"><button data-venue="mmfa" class="'+(state.venue==='mmfa'?'chosen':'')+'">MONTRÉAL · MMFA</button><button data-venue="pamm" class="'+(state.venue==='pamm'?'chosen':'')+'">MIAMI · PAMM</button></div></div>'+
  mascot('Hello! I’m Mica. I’m a little spark of paint, and the museum has misplaced three artistic powers. Will you help me find them?')+
- '<div class="t1-overline">CHOOSE YOUR ADVENTURE STYLE</div>'+picks()+
+ '<div class="t1-overline">CHOOSE YOUR ADVENTURE STYLE</div>'+picks()+'<div class="v7-language"><button data-lang="en">EN</button><button data-lang="fr">FR</button><button data-lang="es">ES</button></div><p class="tiny">The new game interface is currently in English; artist stories and original quiz translations remain available in the earlier discovery views. Full localization is pending review.</p>'+
  '<div class="t1-task">Explore the real art, spot a clue and scan it. Every discovery unlocks something you can make or try. Choose your own route through three mysteries.</div>'+
  btn('✧ Enter the adventure map','t1-start')+
  '<p class="tiny">The quest map is a fantasy game illustration, not a museum floor plan. Artworks may not be displayed; the separate MAP tab links to museum maps. No museum endorsement or commercial image permissions are implied.</p></div>';
@@ -210,6 +210,14 @@ function event(e){
   if(d.t1Assist!==undefined){if(confirm('Use the guided alternative to complete this creative activity? The story and discovery will still be available.'))finishPuzzle(true);return}
  }
 }
+document.addEventListener('input',e=>{
+ if(e.target?.id!=='t1-light'||A[state.current]?.id!=='mmfa-fortin')return;
+ C.progress=Number(e.target.value);
+ const sky=document.getElementById('t1-storm'),reading=document.getElementById('t1-reading');
+ if(sky)sky.style.setProperty('--sky',String(C.progress/100));
+ if(reading)reading.textContent=C.progress+'%';
+ if(C.progress>=75)setDone('The bright sky now contrasts with the dark land, creating a dramatic storm!');
+});
 document.addEventListener('click',event,true);
 window.TRACE_V1={render,finishPuzzle,openWork,prefs,hub,moveXY,get puzzle(){return C},get allDone(){return allDone()}};
 render();
