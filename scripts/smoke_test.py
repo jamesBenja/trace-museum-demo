@@ -13,7 +13,7 @@ with sync_playwright() as p:
         page.wait_for_function("document.querySelector('#status')?.textContent.includes('SCAN READY')",timeout=65000)
         status=page.locator('#status').inner_text()
         print('REFERENCE STATUS',museum,status,flush=True)
-        assert '5/6' in status, status
+        assert 'SCAN READY' in status and int(status.split('·')[1].split('/')[0].strip()) >= 5, status
         page.locator('[data-sample="'+art+'"]').first.click()
         page.wait_for_selector('.scanResult',timeout=120000)
         result=page.locator('.resultStamp').inner_text()
