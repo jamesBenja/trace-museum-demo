@@ -599,4 +599,4 @@ async function loadReference(a){
 async function rebuild(){const refs=ALL.filter(a=>a.reference);if(!refs.length){ready=false;el('status').textContent='IMPORT ARTWORK IMAGES';return}try{await prepareLibrary(refs);loaded=refs;ready=true;el('status').textContent=`SCAN READY · ${refs.length}/6 REFERENCES`;el('status').classList.add('ready')}catch(e){ready=false;el('status').textContent='MATCHER ERROR';console.error(e)}}
 async function boot(){render();el('status').textContent='LOADING ARTWORK REFERENCES…';await Promise.all(ALL.map(loadReference));await rebuild();render()}
 boot();
-</script><script src="trace-v1.js?v=2"></script></body></html>
+</script><script src="trace-v1.js?v=3"></script></body></html>
