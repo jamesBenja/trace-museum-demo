@@ -1,6 +1,6 @@
 """End-to-end smoke and game-loop checks against published TRACE GitHub Pages."""
 from playwright.sync_api import sync_playwright
-URL='https://jamesbenja.github.io/trace-museum-demo/?v=8'
+URL='https://jamesbenja.github.io/trace-museum-demo/?v=9'
 WORKS={'mmfa':['mmfa-marrel','mmfa-witte','mmfa-fortin'],
        'pamm':['pamm-masks','pamm-delano','pamm-grid']}
 with sync_playwright() as p:
@@ -11,7 +11,7 @@ with sync_playwright() as p:
         page.on('pageerror',lambda err: errors.append(str(err)))
         response=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
         assert response and response.status==200, 'GitHub Pages HTTP error'
-        assert 'v0.8' in page.title(), 'Wrong live version: '+page.title()
+        assert 'v0.9' in page.title(), 'Wrong live version: '+page.title()
         if museum=='pamm':page.locator('[data-venue="pamm"]').first.click()
         page.wait_for_function("document.querySelector('#status')?.textContent.includes('SCAN READY')",timeout=65000)
         print('REFERENCES',museum,page.locator('#status').inner_text(),flush=True)
@@ -45,6 +45,31 @@ with sync_playwright() as p:
         page.locator('[data-action="start"]').first.click()
         for i,art in enumerate(ids):
             assert 'THE HIDDEN CLUE' in page.locator('#view').inner_text()
+            if i>0:
+                # A solved painting can be re-opened from a subsequent clue.
+                previous=ids[i-1]
+                current_before=page.evaluate("state.current")
+                found_before=page.evaluate("state.found.slice()")
+                page.locator('[data-review-work="'+previous+'"]').first.click()
+                assert 'A discovery worth revisiting' in page.locator('#view').inner_text()
+                assert page.evaluate("state.reviewId")==previous
+                assert page.evaluate("state.current")==current_before
+                assert page.evaluate("state.found.slice()")==found_before
+                assert 'The story you uncovered' in page.locator('#view').inner_text()
+                correct_prev=page.evaluate("(id)=>V7_ART[id].right",previous)
+                page.locator('[data-review-answer="'+str(correct_prev)+'"]').click()
+                assert 'Correct! You remembered the detail.' in page.locator('#view').inner_text()
+                assert page.evaluate("state.found.slice()")==found_before
+                # Wayfinding from a saved discovery must show that saved painting.
+                page.locator('[data-action="review-map"]').click()
+                assert page.evaluate("state.mapFocusId")==previous
+                page.locator('[data-action="review-return-map"]').click()
+                assert page.evaluate("state.reviewId")==previous
+                page.locator('[data-action="review-resume"]').click()
+                assert page.evaluate("state.current")==current_before
+                assert page.evaluate("state.found.slice()")==found_before
+                assert 'THE HIDDEN CLUE' in page.locator('#view').inner_text()
+
             page.locator('[data-action="map"]').first.click()
             assert 'Gallery / room' in page.locator('#view').inner_text()
             assert 'Room not confirmed' in page.locator('#view').inner_text()
@@ -112,6 +137,18 @@ with sync_playwright() as p:
         assert 'The mystery is solved!' in page.locator('#view').inner_text()
         page.locator('[data-action="album"]').first.click()
         assert '3 / 3 discoveries' in page.locator('#view').inner_text()
+        # Passport entries open a saved painting in a read-only review view.
+        page.locator('[data-review-work="'+ids[0]+'"]').first.click()
+        assert 'A discovery worth revisiting' in page.locator('#view').inner_text()
+        assert page.evaluate("state.current")==3
+        assert page.evaluate("state.found.length")==3
+        page.locator('[data-action="review-next"]').click()
+        assert page.evaluate("state.reviewId")==ids[1]
+        page.locator('[data-action="review-prev"]').click()
+        assert page.evaluate("state.reviewId")==ids[0]
+        page.locator('[data-action="review-back"]').click()
+        assert 'Your TRACE passport' in page.locator('#view').inner_text()
+
         with page.expect_download() as download:
             page.locator('[data-action="v7-save"]').click()
         assert download.value.suggested_filename.endswith('.png')
