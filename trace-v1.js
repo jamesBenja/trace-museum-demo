@@ -140,7 +140,7 @@ function renderGame(v){
  if(state.stage==='intro'){v.innerHTML=intro();return true}
  if(state.stage==='hub'){v.innerHTML=hub();return true}
  if(state.stage==='clue'){v.innerHTML=clue();return true}
- if(state.stage==='puzzle'){v.innerHTML=puzzle();setTimeout(installPuzzle,0);return true}
+ if(state.stage==='puzzle'){v.innerHTML=puzzle();installPuzzle();return true}
  if(state.stage==='success'){v.innerHTML=success();return true}
  if(state.stage==='complete'||state.current>=A.length){v.innerHTML=hub();return true}
  return false;
