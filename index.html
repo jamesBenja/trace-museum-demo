@@ -88,7 +88,7 @@
 .v9-feedback{font-size:12px;color:#985037;background:#f9e6d9;border-radius:9px;padding:11px;line-height:1.5}.v9-feedback.correct{color:#245d49;background:#deefdb}
 .v9-review-nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:17px 0}.v9-review-nav .button{margin:0;font-size:11px}
 @media(max-width:380px){.tabs button{font-size:8px}.v9-review-nav{gap:5px}}
-</style><link rel="stylesheet" href="trace-v1.css?v=1"></head>
+</style><link rel="stylesheet" href="trace-v1.css?v=2"></head>
 <body>
 <div class="website">
   <aside class="marketing"><div class="eyebrow">ART BECOMES AN ADVENTURE / V1.0</div><h1>There’s more<br>to <em>see.</em></h1><p>Two institution-specific adventures using real collection artworks. Find a clue, scan the work, and unlock its story.</p><div class="how"><div><span>01</span> Spot a detail in an artwork</div><div><span>02</span> Scan with a camera or upload a photo</div><div><span>03</span> Discover, learn, and collect</div></div><div class="market-foot">Independent public proof of concept. Not affiliated with, commissioned by, or endorsed by MMFA or PAMM. Rights holders retain rights to their artworks and images. Images remain credited to their sources.</div></aside>
@@ -599,4 +599,4 @@ async function loadReference(a){
 async function rebuild(){const refs=ALL.filter(a=>a.reference);if(!refs.length){ready=false;el('status').textContent='IMPORT ARTWORK IMAGES';return}try{await prepareLibrary(refs);loaded=refs;ready=true;el('status').textContent=`SCAN READY · ${refs.length}/6 REFERENCES`;el('status').classList.add('ready')}catch(e){ready=false;el('status').textContent='MATCHER ERROR';console.error(e)}}
 async function boot(){render();el('status').textContent='LOADING ARTWORK REFERENCES…';await Promise.all(ALL.map(loadReference));await rebuild();render()}
 boot();
-</script><script src="trace-v1.js?v=1"></script></body></html>
+</script><script src="trace-v1.js?v=2"></script></body></html>
