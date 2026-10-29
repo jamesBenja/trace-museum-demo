@@ -18,8 +18,10 @@ with sync_playwright() as p:
         # Language-selection preview before starting.
         page.locator('[data-lang="fr"]').click()
         assert 'Commencer' in page.locator('[data-action="start"]').inner_text()
+        assert ('Les couleurs perdues' if museum=='mmfa' else 'Les signes cachés') in page.locator('#view').inner_text()
         page.locator('[data-lang="es"]').click()
         assert 'Comenzar' in page.locator('[data-action="start"]').inner_text()
+        assert ('Los colores perdidos' if museum=='mmfa' else 'Las señales ocultas') in page.locator('#view').inner_text()
         page.locator('[data-lang="en"]').click()
         page.locator('[data-action="museum"]').first.click()
         assert 'CURATOR WORKSPACE' in page.locator('#view').inner_text()
@@ -61,6 +63,7 @@ with sync_playwright() as p:
             assert 'AUTOMATIC IMAGE MATCH' in page.locator('#view').inner_text()
             page.locator('[data-action="v7-story"]').click()
             assert 'THE STORY YOU UNLOCKED' in page.locator('#view').inner_text()
+            assert page.locator('[data-action="v7-narrate"]').count()==1
             page.locator('[data-action="v7-puzzle"]').click()
             assert page.locator('[data-v7puzzle]').count()==3
             correct=page.evaluate("(id)=>V7_ART[id].right",art)
