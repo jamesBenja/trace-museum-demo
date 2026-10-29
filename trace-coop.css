@@ -34,3 +34,34 @@
 @keyframes tf-reveal{from{opacity:.2;transform:scale(.95)}to{opacity:1;transform:scale(1)}}@keyframes tf-pop{0%{transform:scale(.45) rotate(-18deg)}70%{transform:scale(1.13) rotate(5deg)}100%{transform:scale(1)}}
 @keyframes tf-float{50%{transform:translateY(-4px) rotate(4deg)}}
 @media(prefers-reduced-motion:reduce){.tf-rub-inner span,.tf-rub.tf-revealed,.tf-big-symbol,.tf-result,.tf-seal{animation:none}}
+
+/* v1.2: six distinct cooperative mini-game surfaces */
+.c2-perspective{height:205px;position:relative;margin:13px 0;border:6px solid #bca88a;border-radius:15px;overflow:hidden;background:#dce7d7;touch-action:none}
+.c2-perspective svg{display:block;width:100%;height:100%}
+.c2-perspective-target{width:42px;height:42px;border:4px dashed #347865;border-radius:50%;position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);background:#e4f9d655;pointer-events:none}
+.c2-point{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;width:43px;height:43px;border-radius:50%;background:#f3c56c;color:#8b4e22;font-size:24px;border:3px solid white;box-shadow:0 3px 12px #2e2f3250;touch-action:none;cursor:grab}
+.c2-point:focus-visible{outline:4px solid #245d4e}
+.c2-storm{position:relative;height:190px;overflow:hidden;border:6px solid #9d876c;border-radius:14px;margin:13px 0;background:linear-gradient(to bottom,#4a6279 0%,#768da0 45%,#25392f 46%,#183128 100%)}
+.c2-storm:before{content:'';position:absolute;inset:0 0 54%;background:linear-gradient(to bottom,#fff1c8,#f3c78f);opacity:var(--light,0);transition:opacity .13s}
+.c2-sky{position:absolute;top:17px;left:0;right:0;text-align:center;color:#f0ede2;font-size:38px;letter-spacing:24px}
+.c2-town{position:absolute;bottom:8px;left:0;right:0;text-align:center;color:#102b25;font-size:61px;letter-spacing:-5px;line-height:1.3}
+.c2-slider{width:100%;margin:15px 0 8px;accent-color:#2b745e}
+.c2-code-slots{display:flex;justify-content:center;gap:10px;margin:17px 0}
+.c2-code-slots span{border:2px dashed #b8bfae;display:grid;place-items:center;border-radius:11px;background:#fff;width:54px;height:54px;font-size:29px}
+.c2-code{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}
+.c2-code button{font-size:32px;height:70px;border-radius:13px;background:#f2e9d2;border:2px solid #d6bb89}
+.c2-code button:active,.c2-glyph-options button:active{transform:scale(.93)}
+.c2-photo{position:relative;overflow:hidden;border-radius:15px;height:215px;margin:13px 0;border:5px solid #b9b6a1;background:#e5e1d5}
+.c2-photo>img{width:100%;height:100%;object-fit:cover;display:block}
+.c2-spot{position:absolute;left:var(--x,18%);top:var(--y,75%);transform:translate(-50%,-50%);height:105px;width:105px;border:3px solid #ffedaa;border-radius:50%;box-shadow:0 0 0 400px #182d2d88,0 0 21px 6px #feeebc88;transition:left .5s,top .5s;pointer-events:none}
+.c2-step-label{position:absolute;bottom:6px;right:9px;background:#fff8de;color:#325647;padding:7px 12px;font-size:10px;font-weight:800;border-radius:9px}
+.c2-path-steps{display:grid;gap:7px;margin:12px 0}
+.c2-path-steps button{border-radius:12px;background:#dfede2;border:1px solid #b0d1bc;padding:12px;font-size:12px;font-weight:800;color:#2a6654;text-align:left}
+.c2-path-steps button:disabled{opacity:.45}
+.c2-glyph-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0}
+.c2-glyph-grid span{font-size:44px;height:95px;display:grid;place-items:center;border:3px dashed #b4b99e;background:#f8f3e7;border-radius:11px;color:#275d51}
+.c2-glyph-options{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:12px 0}
+.c2-glyph-options button{font-size:28px;min-width:44px;min-height:50px;border:2px solid #d6c9a7;background:#eee8d4;border-radius:10px;color:#285547}
+.tf-mission.c2-won .tf-status{background:#dbefd2;color:#245c44!important;animation:tf-reveal .35s ease-out}
+.tf-mission.c2-won .tf-brow:after{content:'✦';color:#d2a350}
+@media(prefers-reduced-motion:reduce){.c2-spot,.c2-storm:before{transition:none}}
