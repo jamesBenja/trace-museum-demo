@@ -18,7 +18,7 @@ def solve_puzzle(page,art):
         page.mouse.up()
     elif art=='mmfa-witte':
         page.locator('.t1-marker').focus()
-        for key in ['ArrowLeft']*6+['ArrowUp']*6:
+        for key in ['ArrowLeft']*5+['ArrowUp']*7:
             page.keyboard.press(key)
     elif art=='mmfa-fortin':
         page.locator('#t1-light').evaluate("(el)=>{el.value='85';el.dispatchEvent(new Event('input',{bubbles:true}))}")
@@ -41,6 +41,7 @@ with sync_playwright() as p:
         page=browser.new_page(viewport={'width':390,'height':844},accept_downloads=True)
         errs=[]
         page.on('pageerror',lambda e: errs.append(str(e)))
+        page.set_default_timeout(12000)
         r=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
         assert r.status==200 and 'v1.0' in page.title(),page.title()
         page.wait_for_timeout(1800)
