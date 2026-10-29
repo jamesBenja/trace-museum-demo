@@ -1,6 +1,6 @@
 """End-to-end smoke and game-loop checks against published TRACE GitHub Pages."""
 from playwright.sync_api import sync_playwright
-URL='https://jamesbenja.github.io/trace-museum-demo/?v=7'
+URL='https://jamesbenja.github.io/trace-museum-demo/?v=8'
 WORKS={'mmfa':['mmfa-marrel','mmfa-witte','mmfa-fortin'],
        'pamm':['pamm-masks','pamm-delano','pamm-grid']}
 with sync_playwright() as p:
@@ -11,7 +11,7 @@ with sync_playwright() as p:
         page.on('pageerror',lambda err: errors.append(str(err)))
         response=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
         assert response and response.status==200, 'GitHub Pages HTTP error'
-        assert 'v0.7' in page.title(), 'Wrong live version: '+page.title()
+        assert 'v0.8' in page.title(), 'Wrong live version: '+page.title()
         if museum=='pamm':page.locator('[data-venue="pamm"]').first.click()
         page.wait_for_function("document.querySelector('#status')?.textContent.includes('SCAN READY')",timeout=65000)
         print('REFERENCES',museum,page.locator('#status').inner_text(),flush=True)
@@ -25,6 +25,18 @@ with sync_playwright() as p:
         page.locator('[data-lang="en"]').click()
         page.locator('[data-action="museum"]').first.click()
         assert 'CURATOR WORKSPACE' in page.locator('#view').inner_text()
+        room=page.locator('[data-map-room="'+ids[1]+'"]')
+        room.fill('DEMO GALLERY 12')
+        room.dispatch_event('change')
+        page.locator('[data-tab="map"]').click()
+        page.locator('[data-map-choice="'+ids[1]+'"]').click()
+        assert 'DEMO GALLERY 12' in page.locator('#view').inner_text()
+        assert 'not a verified museum location' in page.locator('#view').inner_text()
+        assert page.locator('a[href^="https://www."]').count()>0
+        page.locator('[data-tab="museum"]').click()
+        page.locator('[data-map-room="'+ids[1]+'"]').fill('')
+        page.locator('[data-map-room="'+ids[1]+'"]').dispatch_event('change')
+
         first=ids[0]
         page.locator('[data-museum-toggle="'+first+'"]').click()
         assert page.locator('[data-museum-toggle="'+first+'"]').inner_text()=='Excluded'
@@ -33,6 +45,13 @@ with sync_playwright() as p:
         page.locator('[data-action="start"]').first.click()
         for i,art in enumerate(ids):
             assert 'THE HIDDEN CLUE' in page.locator('#view').inner_text()
+            page.locator('[data-action="map"]').first.click()
+            assert 'Gallery / room' in page.locator('#view').inner_text()
+            assert 'Room not confirmed' in page.locator('#view').inner_text()
+            if museum=='mmfa':
+                assert 'Hornstein Pavilion for Peace' in page.locator('#view').inner_text() if i<2 else 'Claire and Marc Bourgie' in page.locator('#view').inner_text()
+            page.locator('[data-action="quest"]').first.click()
+
             # Real-photo reference in studio mode is visibly marked as testing.
             page.locator('details summary').first.click()
             page.locator('[data-action="sample:'+art+'"]').first.click()
@@ -40,8 +59,8 @@ with sync_playwright() as p:
             stamp=page.locator('.resultStamp').inner_text()
             print('SCAN',museum,art,stamp,flush=True)
             assert 'ARTWORK VERIFIED' in stamp,stamp
-            # First target: test picture-of-a-picture with margin, blur and JPEG.
-            if i==0:
+            # Check every chapter against a phone-like photo with margins, blur and JPEG.
+            if True:
                 sim=page.evaluate("""async (art) => {
                   const ref=ALL.find(x=>x.id===art).reference;
                   const c=document.createElement('canvas'),w=960,h=720;
@@ -59,6 +78,23 @@ with sync_playwright() as p:
                 }""",art)
                 print('CAMERA-LIKE',museum,sim,flush=True)
                 assert sim['recognized'] and sim['id']==art,sim
+            if museum=='mmfa' and i==1:
+                # Regression from iPhone bug: scanning de Witte during the Fortin
+                # chapter must NEVER identify Fortin or give a wrong-artwork banner.
+                off=page.evaluate("""async () => {
+                  const ref=ALL.find(x=>x.id==='mmfa-witte').reference;
+                  const cv=document.createElement('canvas');cv.width=960;cv.height=720;
+                  const g=cv.getContext('2d');g.fillStyle='#dfdfd9';g.fillRect(0,0,960,720);
+                  g.fillStyle='#28292a';g.fillRect(80,20,800,690);
+                  const rw=675,rh=rw*ref.naturalHeight/ref.naturalWidth;
+                  g.drawImage(ref,142,Math.round((720-rh)/2),rw,rh);
+                  state.current=2;
+                  const r=await recognize(cv);
+                  state.current=1;
+                  return {recognized:r.recognized,id:r.id,method:r.method,top: r.color.slice(0,3).map(x=>({id:x.id,score:x.colorScore}))};
+                }""")
+                print('DE WITTE NEGATIVE FOR FORTIN',off,flush=True)
+                assert not off['recognized'] and off['id'] is None,off
             page.locator('[data-action="accept"]').click()
             assert 'AUTOMATIC IMAGE MATCH' in page.locator('#view').inner_text()
             page.locator('[data-action="v7-story"]').click()
