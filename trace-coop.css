@@ -1,0 +1,36 @@
+/* TRACE v1.1: family missions are tiny playable moments, not checkboxes. */
+.tf-mission{background:#fffcf3;border:2px solid #e8d4a7;border-radius:18px;padding:15px;margin:17px 0;box-shadow:0 8px 22px #77592212;color:#254e43}
+.tf-brow{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:9px;letter-spacing:1px;font-weight:850;color:#997049;margin-bottom:12px}
+.tf-brow span:last-child{color:#738d73;font-size:9px;text-align:right}
+.tf-mission h3{font:650 22px/1.2 'Fraunces',Georgia,serif;margin:7px 0 9px}
+.tf-mission p{font-size:12px;line-height:1.65;color:#536c61;margin:8px 0}
+.tf-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:13px 0}
+.tf-steps span{padding:9px 4px;text-align:center;border-radius:10px;background:#f0e9d5;font-weight:800;font-size:10px;color:#876c45}
+.tf-steps b{display:inline-grid;place-items:center;background:#cdad71;border-radius:50%;width:20px;height:20px;color:#fff;margin-right:3px}
+.tf-prompt{display:flex;gap:10px;align-items:center;background:#e6f0e3;border-radius:12px;padding:13px;margin:12px 0}
+.tf-prompt-symbol{font-size:27px}.tf-prompt strong{font-size:13px}.tf-prompt p{margin:4px 0 0}
+.tf-main-btn{background:#266a56;color:#fff;font-weight:850;padding:14px;border:0;border-radius:12px;width:100%;font-size:12px;min-height:45px;text-align:center;box-shadow:0 5px 14px #246c4a23}
+.tf-small-btn{font-size:11px;color:#235e50;background:#eef4ed;border:1px solid #c9dacd;border-radius:10px;padding:10px 13px;min-height:39px;font-weight:750}
+.tf-foot{font-size:10px!important;color:#728278!important;line-height:1.5!important;margin-top:12px!important}
+.tf-step-name{font-size:10px;font-weight:800;letter-spacing:1px;color:#267665}
+.tf-rub{width:100%;height:215px;background:radial-gradient(circle at 65% 35%,var(--tf1,#ecd4aa),var(--tf2,#927655));border:6px solid #bb9a70;position:relative;margin:14px 0;border-radius:15px;overflow:hidden;touch-action:none}
+.tf-rub-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:20px}
+.tf-rub-inner span{font-size:61px;line-height:1.15;filter:drop-shadow(0 4px 3px #27352e35);animation:tf-float 2.3s ease-in-out infinite}
+.tf-rub-inner strong{font:650 19px/1.25 'Fraunces',Georgia,serif;color:#173a32;text-shadow:0 1px #fff8}
+.tf-rub canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none;cursor:crosshair}
+.tf-rub canvas.tf-cleared{opacity:0;pointer-events:none}
+.tf-rub.tf-revealed{box-shadow:0 0 0 4px #f4d895,0 0 26px #e6bc6b60;animation:tf-reveal .48s ease-out}
+.tf-status{background:#eff4e6;padding:11px;border-radius:10px;font-weight:750;color:#38634e!important}
+.tf-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.tf-actions .tf-main-btn{flex:1 1 100%}
+.tf-big-symbol{height:96px;background:radial-gradient(circle,#f9e9ad,#e6efdd);display:grid;place-items:center;font-size:59px;border-radius:14px;animation:tf-reveal .5s ease-out;margin:10px 0 17px}
+.tf-story-choices{display:grid;gap:10px;margin:17px 0}
+.tf-story-choices button{display:flex;gap:15px;align-items:center;text-align:left;border:2px solid #c6d9c4;border-radius:14px;background:#f0f7ed;min-height:75px;padding:15px;color:#1e584b;font-weight:750;font-size:13px}
+.tf-story-choices button span{font-size:28px}
+.tf-story-choices button:focus-visible,.tf-small-btn:focus-visible,.tf-main-btn:focus-visible{outline:3px solid #eab65d;outline-offset:3px}
+.tf-result{display:flex;gap:13px;align-items:center;background:#e7f2dd;padding:14px;border-radius:14px;animation:tf-reveal .5s ease-out}
+.tf-result strong{font:650 19px 'Fraunces',Georgia,serif;color:#235846}.tf-result p{margin-top:4px!important}
+.tf-seal{width:68px;height:68px;min-width:68px;background:#ffe2a2;display:grid;place-items:center;border-radius:50%;font-size:37px;color:#ad713b;border:3px dashed #a77d46;box-shadow:0 0 0 5px #fff7df;animation:tf-pop .5s cubic-bezier(.2,1.6,.4,1)}
+.tf-passport-badge{display:inline-flex;gap:6px;align-items:center;background:#fae9b5;border:1px solid #d5ac69;color:#805b32;border-radius:8px;padding:6px 9px;font-size:10px;font-weight:850;margin:4px 0 5px}
+@keyframes tf-reveal{from{opacity:.2;transform:scale(.95)}to{opacity:1;transform:scale(1)}}@keyframes tf-pop{0%{transform:scale(.45) rotate(-18deg)}70%{transform:scale(1.13) rotate(5deg)}100%{transform:scale(1)}}
+@keyframes tf-float{50%{transform:translateY(-4px) rotate(4deg)}}
+@media(prefers-reduced-motion:reduce){.tf-rub-inner span,.tf-rub.tf-revealed,.tf-big-symbol,.tf-result,.tf-seal{animation:none}}
