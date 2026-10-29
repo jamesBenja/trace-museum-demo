@@ -46,6 +46,19 @@ with sync_playwright() as p:
         }""",art)
         print('CAMERA-LIKE PHOTO RESULT',museum,simulated,flush=True)
         assert simulated['recognized'] and simulated['id']==art, simulated
+        # A wall with a blank rectangle must never unlock the target chapter.
+        blank = page.evaluate("""async () => {
+          const c=document.createElement('canvas');c.width=960;c.height=720;
+          const g=c.getContext('2d');g.fillStyle='#b9bcb7';g.fillRect(0,0,960,720);
+          g.fillStyle='#f2eee5';g.fillRect(170,45,620,630);
+          g.strokeStyle='#3b4040';g.lineWidth=12;g.strokeRect(200,48,560,625);
+          const r=await recognize(c);
+          return {recognized:r.recognized,id:r.id,topColor:r.color.slice(0,2).map(z=>({id:z.id,score:Number(z.colorScore.toFixed(3))}))};
+        }""")
+        print('NEGATIVE CONTROL',museum,blank,flush=True)
+        assert not (blank['recognized'] and blank['id']==art), blank
+        page.evaluate("state.stage='manualreview';render()")
+        assert 'NOT AUTOMATICALLY VERIFIED' in page.locator('.resultStamp').inner_text()
         assert not errors, errors
         page.close()
     browser.close()
