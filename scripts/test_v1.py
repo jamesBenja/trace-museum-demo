@@ -1,6 +1,7 @@
 """TRACE v1.0 live end-to-end tests, real artwork matching plus six tactile activities."""
 from playwright.sync_api import sync_playwright
-URL='https://jamesbenja.github.io/trace-museum-demo/?v=10'
+import os
+URL=os.getenv('TRACE_TEST_URL','https://jamesbenja.github.io/trace-museum-demo/?v=10')
 SETS={
  'mmfa':['mmfa-marrel','mmfa-witte','mmfa-fortin'],
  'pamm':['pamm-masks','pamm-delano','pamm-grid']
