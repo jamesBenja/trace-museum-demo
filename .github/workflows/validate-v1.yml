@@ -25,4 +25,6 @@ jobs:
           python -m pip install --disable-pip-version-check playwright
           python -m playwright install chromium
       - name: Play through both museum adventures and six art games
-        run: python scripts/test_v1.py
+        run: |
+          node --check trace-v1.js
+          python scripts/test_v1.py
