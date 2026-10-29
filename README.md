@@ -1,29 +1,42 @@
-# TRACE Museum Discovery Demo
+# TRACE v0.7 | Museum discovery adventures
 
-Playable experimental museum discovery scanner for the **Montréal Museum of Fine Arts (MMFA)** and **Pérez Art Museum Miami (PAMM)**.
+**Live demo:** https://jamesbenja.github.io/trace-museum-demo/?v=7
 
-**Launch the demo:** https://jamesBenja.github.io/trace-museum-demo/
+**Artwork test sheet:** https://jamesbenja.github.io/trace-museum-demo/artwork-test-sheet.html?v=7
 
-**Open the artwork test sheet:** https://jamesBenja.github.io/trace-museum-demo/artwork-test-sheet.html
+**90-second pitch walkthrough:** [PITCH_WALKTHROUGH.md](PITCH_WALKTHROUGH.md)
 
-## How to play
-1. Open the demo and select **Montréal · MMFA** or **Miami · PAMM**.
-2. Start a quest. Examine the visual clue and read the story prompt.
-3. Choose **Scan artwork**. Give the browser camera permission or use **Take / Upload Photo**.
-4. Show the test sheet on a second screen and photograph the corresponding work. A built-in **Test photo match** option also exercises the recognition algorithm without two devices.
-5. Unlock the educational story and quiz; your progress and optional photos are stored locally in the browser.
+TRACE is an independent proof of concept for family-friendly art discovery, with sample adventures for the Montréal Museum of Fine Arts (MMFA) and Pérez Art Museum Miami (PAMM). This work has **not** been commissioned, approved or endorsed by either museum.
 
-**Camera permission:** Requires a secure site (HTTPS, provided by GitHub Pages). Webcam access and image recognition depend on the visitor's browser and image loading.
+## Playable features
 
-## Prototype limitations
-- This is a small artwork-matching proof of concept, not a general-purpose artwork recognition system.
-- Six real collection artworks are referenced, three per museum. They have **not** been confirmed to be physically on display.
-- The app loads external artwork images; those resources can be unavailable or blocked by cross-origin restrictions. The Guide tab supports manually importing reference images.
-- No user photos are uploaded to a TRACE server. Discoveries and optional photos are saved in this browser. Remote sources may receive normal image requests.
-- The demo has not been endorsed or approved by either museum. Art reproductions may require permission for further use, especially wider public or commercial release. The test is intended for internal evaluation and institutional pitch review.
+- Distinct three-chapter museum adventures, visual detail clues and an overarching mystery.
+- Camera/photo-upload matching against six collection reference images (five are locally hosted). The experimental matcher performs on-device processing.
+- Animated artwork reveals, illustrated learning puzzles and progress unlocking.
+- Collectible stamps, a private passport and a downloadable keepsake certificate. The certificate does **not** export copyrighted artwork or visitor photos.
+- English, French and Spanish story previews and an opt-in browser speech narration control. Full localization and accessibility validation remain future work.
+- A clearly labeled institutional **Museum** panel showing **illustrative** artwork selection and prospective pilot evaluation questions. It is a mockup, not an operational CMS or live analytics.
 
-## Hosting
-The site is an ordinary static `index.html` at the repository root. Enable GitHub Pages using **Settings → Pages → Build and deployment → Deploy from a branch → main / (root) → Save**. GitHub will provide HTTPS automatically.
+## How to present
 
-## IP
-Copyright © 2026 TRACE prototype contributors. All rights reserved. No open-source license is granted for this repository. External artwork rights remain with the respective rights holders.
+1. Choose MMFA or PAMM on the opening screen and begin the adventure.
+2. Find a clue, scan its artwork using your device camera or upload a photograph.
+3. In an office, expand **Demo testing tools** to match the reference image, or display the [artwork test sheet](artwork-test-sheet.html) on a second screen.
+4. Continue from recognition to animated reveal, story, puzzle, collectible reward and the next chapter.
+5. Open **My Finds** for the passport, then **Museum** to discuss institutional value.
+
+## Validation
+
+The GitHub Actions workflow [Validate live TRACE recognition](.github/workflows/validate-scanner.yml) executes a real Chromium browser test against the public HTTPS website. Tests cover both museum quests through all three artworks, visual puzzles, simulated phone-like image matching, downloadable passports, localized opening screens and sample institutional dashboard interactions.
+
+These automated tests do **not** establish reliable onsite recognition under museum lighting or on all iOS devices. Those need field testing.
+
+## Rights, privacy and status
+
+- Collection works have **not** been confirmed to be physically on view.
+- Artwork/image rights differ by work; rights-holder clearance and museum agreements remain necessary before commercial operation.
+- The public prototype stores progress and optional photos in the visitor's own browser. It has no account system or cloud photo storage.
+- Institutional analytics, consent workflows for minors, curatorial publishing tools, route availability and full localization are not implemented.
+- The source code is visible because this demo is hosted from a public GitHub repository. The product's production code should move into a private repository.
+
+© 2026 TRACE prototype contributors. All rights reserved. No open-source license is granted for this repository. Underlying artwork rights remain with their respective rights holders.
