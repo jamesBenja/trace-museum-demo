@@ -44,12 +44,25 @@ with sync_playwright() as p:
         page.on('pageerror',lambda e: errs.append(str(e)))
         page.set_default_timeout(12000)
         r=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
-        assert r.status==200 and 'v1.2' in page.title(),page.title()
+        assert r.status==200 and 'v1.3' in page.title(),page.title()
         page.wait_for_timeout(1800)
         print('BROWSER DIAG',page.evaluate("({title:document.title,status:document.querySelector('#status')?.textContent,script:typeof window.TRACE_V1,scripts:Array.from(document.scripts).map(x=>x.src)})"),'JS ERRORS',errs,flush=True)
         page.wait_for_function("window.TRACE_V1 && document.querySelector('#status')?.textContent.includes('SCAN READY')",timeout=12000)
         if museum=='pamm':
             page.locator('[data-venue="pamm"]').first.click()
+        # Top museum switcher is always accessible and allows round-trip changes.
+        assert page.locator('#venueSwitcher').is_visible()
+        page.locator('#venueSwitcher').click()
+        assert page.locator('#venuePicker').is_visible()
+        assert page.locator('#mmfaSavedCount').is_visible()
+        assert page.locator('#pammSavedCount').is_visible()
+        alternate='pamm' if museum=='mmfa' else 'mmfa'
+        page.locator('#venuePicker [data-venue="'+alternate+'"]').click()
+        assert page.evaluate("state.venue")==alternate
+        assert page.locator('#venuePicker').is_hidden()
+        page.locator('#venueSwitcher').click()
+        page.locator('#venuePicker [data-venue="'+museum+'"]').click()
+        assert page.evaluate("state.venue")==museum
         assert 'Mica' in page.locator('#view').inner_text()
         page.locator('[data-t1-mode="family"]').first.click()
         page.locator('[data-t1-start]').click()
@@ -116,6 +129,22 @@ with sync_playwright() as p:
             assert 'A MAGICAL QUEST MAP' in page.locator('#view').inner_text()
             assert page.evaluate('state.found.length')==n+1
             if n==0: assert page.locator('[data-t1-open="2"]').is_enabled()
+            if n==0:
+                # Leaving the museum and returning preserves previous discoveries,
+                # current adventure stage and map progress.
+                current_stage=page.evaluate("state.stage")
+                previous_ids=page.evaluate("state.found.slice()")
+                page.locator('#venueSwitcher').click()
+                page.locator('#venuePicker [data-venue="'+alternate+'"]').click()
+                assert page.evaluate("state.venue")==alternate
+                assert page.evaluate("state.found.length")==0
+                page.locator('#venueSwitcher').click()
+                assert ('1 of 3 discoveries' in page.locator('#'+museum+'SavedCount').inner_text())
+                page.locator('#venuePicker [data-venue="'+museum+'"]').click()
+                assert page.evaluate("state.found.slice()")==previous_ids
+                assert page.evaluate("state.stage")==current_stage
+                assert page.locator('[data-t1-open="2"]').is_enabled()
+
         assert 'Your creative lens is restored' in page.locator('#view').inner_text()
         page.locator('[data-action="album"]').first.click()
         assert page.evaluate('state.found.length')==3
