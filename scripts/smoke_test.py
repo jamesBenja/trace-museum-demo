@@ -9,6 +9,7 @@ with sync_playwright() as p:
         page.on('pageerror',lambda err: errors.append(str(err)))
         resp=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
         assert resp and resp.status==200, 'Site did not return HTTP 200'
+        assert 'v0.6' in page.title(), 'Waiting for v0.6 site publish: '+page.title()
         if museum=='pamm':page.locator('[data-venue="pamm"]').first.click()
         page.wait_for_function("document.querySelector('#status')?.textContent.includes('SCAN READY')",timeout=65000)
         status=page.locator('#status').inner_text()
