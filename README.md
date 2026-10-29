@@ -1,45 +1,48 @@
-# TRACE v0.8 | Museum discovery adventures
+# TRACE v1.0 | A museum you can play
 
-**Live demo:** https://jamesbenja.github.io/trace-museum-demo/?v=8
+**Live mobile demo:** https://jamesbenja.github.io/trace-museum-demo/?v=10
 
-**Artwork test sheet:** https://jamesbenja.github.io/trace-museum-demo/artwork-test-sheet.html?v=8
+**Artwork test sheet:** https://jamesbenja.github.io/trace-museum-demo/artwork-test-sheet.html
 
-**90-second pitch walkthrough:** [PITCH_WALKTHROUGH.md](PITCH_WALKTHROUGH.md)
+**Institutional pitch notes:** [PITCH_WALKTHROUGH.md](PITCH_WALKTHROUGH.md)
 
-TRACE is an independent proof of concept for family-friendly art discovery, with sample adventures for the Montréal Museum of Fine Arts (MMFA) and Pérez Art Museum Miami (PAMM). This work has **not** been commissioned, approved or endorsed by either museum.
+TRACE is an independent, experimental visitor discovery experience with three sample collection artworks from the Montréal Museum of Fine Arts and three from the Pérez Art Museum Miami. Neither museum has endorsed, commissioned or approved the prototype.
 
-## Playable features
+## Visitor experience
 
-- Distinct three-chapter museum adventures, visual detail clues and an overarching mystery.
-- Camera/photo-upload matching against six collection reference images (five are locally hosted). The experimental matcher performs on-device processing.
-- Chapter-specific matching designed to avoid falsely labelling a photograph of one artwork as a different artwork. Uncertain photos stay **unverified**, with an explicit visitor-confirmation option.
-- Museum **MAP** tab with the institutions' official floor-map links, collection-section guidance where available, and an unverified-room notice. The **Museum** preview can assign illustrative room labels locally; it does not publish verified floor locations.
-- Animated artwork reveals, illustrated learning puzzles and progress unlocking.
-- Collectible stamps, a private passport and a downloadable keepsake certificate. The certificate does **not** export copyrighted artwork or visitor photos.
-- English, French and Spanish story previews and an opt-in browser speech narration control. Full localization and accessibility validation remain future work.
-- A clearly labeled institutional **Museum** panel showing **illustrative** artwork selection and prospective pilot evaluation questions. It is a mockup, not an operational CMS or live analytics.
+1. Select Montréal (The Lost Colours) or Miami (The Hidden Signals).
+2. Choose Family Team or Solo Explorer. There are optional 5–7, 8–12 and teen guidance settings. *Only the introductory guidance changes by age today; separate age-calibrated gameplay remains to be developed.*
+3. Meet **Mica**, an original animated paint-spark companion. Choose between the first two open mysteries on the **fantasy adventure map**. Completing either unlocks the third.
+4. Search for the matching artwork; scan it via camera or upload, or use the clearly labelled Demo testing tools for a reference-image test.
+5. After recognition or visibly labelled visitor confirmation, enjoy the animated reveal and artist story, then complete a hands-on game:
 
-## How to present
+   - **MMFA, Jacob Marrel:** Rub a simulated painting surface to reveal a copper-toned ground.
+   - **MMFA, Emanuel de Witte:** Move a vanishing-point marker to create the illusion of perspective.
+   - **MMFA, Marc-Aurèle Fortin:** Adjust light contrast between a dark landscape and bright sky.
+   - **PAMM, Joaquín Torres-García, Two Masks:** Build a simple symbol code in sequence.
+   - **PAMM, Jack Delano:** Move a viewfinder and identify what connects the buildings.
+   - **PAMM, Joaquín Torres-García, Construction (graphite):** Compose an original three-symbol alphabet.
 
-1. Choose MMFA or PAMM on the opening screen and begin the adventure.
-2. Find a clue, scan its artwork using your device camera or upload a photograph.
-3. In an office, expand **Demo testing tools** to match the reference image, or display the [artwork test sheet](artwork-test-sheet.html) on a second screen.
-4. Continue from recognition to animated reveal, story, puzzle, collectible reward and the next chapter.
-5. Open **My Finds** for the passport, then **Museum** to discuss institutional value.
+6. Collect the artistic power and choose a new mystery. A bonus observation prompt unlocks after two finds. Progress, optional photos and the art-passport certificate remain local to the browser.
 
-## Validation
+The fantasy adventure map is **not** a factual museum floor plan. The separate **MAP** navigation tab links to official museum wayfinding, with exact artwork rooms explicitly marked unverified. Works in these collections may not currently be exhibited.
 
-The GitHub Actions workflow [Validate live TRACE recognition](.github/workflows/validate-scanner.yml) executes a real Chromium browser test against the public HTTPS website. Tests cover both museum quests through all three artworks, visual puzzles, simulated phone-like image matching, downloadable passports, localized opening screens and sample institutional dashboard interactions.
+## Family and accessibility
 
-These automated tests do **not** establish reliable onsite recognition under museum lighting or on all iOS devices. Those need field testing.
+Family Team gives optional Spotter and Storyteller prompts so visitors share observations instead of all looking at one phone. The guided puzzle alternative prevents a difficult drag or gesture from blocking progress. No player names, accounts, location tracking or photo uploads to TRACE servers are used in this prototype. The experience is designed to be usable without audio. Full accessibility and multilingual reviews are still needed; newer game controls are English-only for now.
 
-## Rights, privacy and status
+## Museum-facing demonstration
 
-- Collection works have **not** been confirmed to be physically on view.
-- Artwork/image rights differ by work; rights-holder clearance and museum agreements remain necessary before commercial operation.
-- Actual artwork-to-room locations and display status are not known; room labels shown in the museum mockup are only illustrative. The official MMFA and PAMM floor maps do not establish that any featured artwork is currently displayed.
-- The public prototype stores progress and optional photos in the visitor's own browser. It has no account system or cloud photo storage.
-- Institutional analytics, consent workflows for minors, curatorial publishing tools, route availability and full localization are not implemented.
-- The source code is visible because this demo is hosted from a public GitHub repository. The product's production code should move into a private repository.
+The **MUSEUM** tab shows illustrative artwork inclusion toggles, sample room assignments and pilot-evaluation topics. It is **not** an operational curator CMS, room database or analytics system.
 
-© 2026 TRACE prototype contributors. All rights reserved. No open-source license is granted for this repository. Underlying artwork rights remain with their respective rights holders.
+## Testing
+
+- `.github/workflows/validate-v1.yml` launches the exact committed static website locally and uses Chromium to test both branching three-artwork adventures, six different puzzles, family roles, camera-reference matching, replay and the downloadable passport.
+- `.github/workflows/validate-scanner.yml` is the original scanner check and is retained as a legacy test. It may not reflect v1's branching visitor UI.
+- Automated phone-like image simulations are not substitutes for camera testing on actual phones inside galleries.
+
+## Rights and business precautions
+
+Artwork imagery is credited in the experience, but institutional commercial-image and gallery access permissions remain pending. The MMFA and PAMM artworks are used only for an independent pitch demonstration. The current repository is **public**; proprietary production development should migrate to a private repository and be deployed separately. No open-source licence is granted for this demo's code.
+
+© 2026 TRACE prototype contributors. All rights reserved. External artwork copyrights remain with their respective owners.
