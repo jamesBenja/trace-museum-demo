@@ -21,7 +21,7 @@ const L={
  {symbol:'✧',name:'The Hidden Alphabet',subtitle:'The power of making',hint:'A world of small drawn signs',friend:'A pencil made this whole world. What message can you make?'}]}
 };
 const esc=s=>escapeHTML(String(s??''));
-const C={id:null,progress:0,points:[],done:false,chosen:null,xy:{x:78,y:77},teamCount:0,assisted:false};
+const C={id:null,progress:0,points:[],done:false,chosen:null,xy:{x:78,y:77},teamCount:0,assisted:false,lastPuzzleId:null};
 function persist(){try{localStorage.setItem(K,JSON.stringify(prefs))}catch(e){}}
 function t1Found(){return A.filter(a=>state.found.includes(a.id))}
 function allDone(){return A.every(a=>state.found.includes(a.id))}
@@ -86,10 +86,10 @@ function clue(){
 }
 function puzzleIntro(a){return '<div class="t1-overline">CREATE, EXPERIMENT, DISCOVER · '+esc(a.artist)+'</div><h2 class="t1-h1">'+esc(a.chapter)+'</h2>'+
  mascot('Great detective work! Now try something the artist might have tried. This is a hands-on challenge, not a memory quiz.')+
- '<div class="t1-roles"><button class="selected" type="button" data-t1-mode="family">👀 Look closely</button><button type="button" data-action="v7-story">📖 Read story</button></div>'}
+ '<div class="t1-task">👀 Look at the physical artwork first. Discuss one artistic choice with someone nearby, or think about it quietly.</div>'}
 function puzzle(){
  const a=A[state.current];if(!a)return hub();
- if(C.id!==a.id)C.id=a.id,C.progress=0,C.points=[],C.done=false,C.xy={x:78,y:77};
+ if(C.id!==a.id||C.lastPuzzleId!==a.id){C.id=a.id;C.lastPuzzleId=a.id;C.progress=0;C.points=[];C.done=false;C.chosen=null;C.xy={x:78,y:77};}
  let content='';
  if(a.id==='mmfa-marrel')content='<div class="t1-puzzle"><h3>Reveal the copper beneath</h3><p class="t1-small">Marrel painted on a smooth copper surface. Rub the mist away with your finger to reveal its warm shimmer.</p>'+
  '<div class="t1-surface t1-scratch" id="t1-scratch"><canvas id="t1-copper" width="640" height="410" aria-label="Rub to reveal the copper surface"></canvas></div>'+
@@ -143,7 +143,7 @@ function render(v){
 }
 function openWork(i){
  if(!(i>=0&&i<A.length)||!(i<2||state.found.length>0))return;
- stopCamera();state.current=i;state.quizError=false;state.reviewId=null;C.id=null;C.done=false;C.progress=0;C.points=[];C.xy={x:78,y:77};stage(state.found.includes(A[i].id)?'clue':'clue');
+ stopCamera();state.current=i;state.quizError=false;state.reviewId=null;C.id=null;C.lastPuzzleId=null;C.done=false;C.progress=0;C.points=[];C.xy={x:78,y:77};stage(state.found.includes(A[i].id)?'clue':'clue');
 }
 function finishPuzzle(assisted){
  if(state.stage!=='puzzle'||!A[state.current])return;
