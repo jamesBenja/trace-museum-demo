@@ -4,7 +4,74 @@
 
 .sourceLink{display:block;text-align:center;font-size:10px;padding:8px;color:#3d7065;background:#fff;text-decoration:underline}.sourceCard{background:#fff;border:1px solid #deded8;border-radius:15px;margin:16px 0;overflow:hidden}.sourceCard>img{display:block;width:100%;max-height:320px;object-fit:contain;background:#f2efe7}.sourceCard>div{padding:15px}.sourceCard p{font-size:12px;color:#6b7d74}.sourceCard a{font-size:12px}.sourceCard .button{margin-top:12px}.refRow{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e3e3df;padding:13px 0;gap:8px}.refRow span{font-size:11px;line-height:1.6}.refRow small{display:block;color:#778e85;font-size:9px}.refUpload{position:relative;display:block;background:#e0ede4;border-radius:7px;padding:8px;color:#315f51;font-size:9px;white-space:nowrap;cursor:pointer}.sample button:disabled{opacity:.45;cursor:not-allowed}
 .sideLink{border:0;padding:0;background:none;font-size:inherit;color:#236658;text-decoration:underline;display:inline} .sourceCard strong{font-size:14px}
-.missing-image{min-height:100px;padding:18px;background:#e7e9e1;color:#3a625c;font:600 12px/1.5 Arial,sans-serif;text-align:center;display:grid;place-items:center}.missing-image::before{content:'◌';font-size:28px;display:block}</style></head>
+.missing-image{min-height:100px;padding:18px;background:#e7e9e1;color:#3a625c;font:600 12px/1.5 Arial,sans-serif;text-align:center;display:grid;place-items:center}.missing-image::before{content:'◌';font-size:28px;display:block}
+/* TRACE v0.7 playable adventure and institutional demo */
+.tabs button{font-size:9px}.tabs button span{font-size:20px}
+.v7-intro{background:radial-gradient(circle at 90% 20%,#fce1a8 0,transparent 37%),linear-gradient(145deg,#dfeddf,#fbf4df);padding:27px 23px 24px;overflow:hidden}
+.v7-tag{font-size:10px;letter-spacing:1.7px;font-weight:800;color:#34776d}
+.v7-intro h2{font:650 43px/1.04 'Fraunces',Georgia,serif;letter-spacing:-1.5px;margin:15px 0;color:#12372f}
+.v7-intro p{font-size:13px;line-height:1.65;color:#496a5e}
+.v7-orbit{display:flex;align-items:center;gap:8px;margin:20px 0 12px}
+.v7-orbit span{width:46px;height:46px;background:#f9f7eb;border:2px solid #d1a667;display:grid;place-items:center;border-radius:50%;font-size:21px;box-shadow:0 6px 17px #ac89402a}
+.v7-language{display:flex;gap:5px;margin:13px 0 0}
+.v7-language button{border:1px solid #bad1c6;border-radius:8px;background:#f6faf6;padding:7px 11px;font-size:11px;color:#255b50;font-weight:800}
+.v7-language button.active{background:#1b574d;color:white}
+.v7-panel{padding:20px 22px 28px}
+.v7-quest{background:white;border:1px solid #e3dfd0;border-radius:17px;padding:16px;margin:17px 0;box-shadow:0 7px 25px #27432b0b}
+.v7-quest p{font-size:13px;line-height:1.65;color:#506b5e}
+.v7-fragment{height:236px;position:relative;background:#e0dacb;border-radius:18px;overflow:hidden;margin:16px 0}
+.v7-fragment img{width:100%;height:100%;object-fit:cover;transform:scale(2.7)}
+.v7-fragment .v7-cover{position:absolute;bottom:0;left:0;right:0;padding:23px 12px 12px;background:linear-gradient(transparent,#152c28db);font-size:10px;letter-spacing:1px;color:#fff}
+.v7-power{display:flex;gap:7px;margin:15px 0;flex-wrap:wrap}
+.v7-power span{padding:8px 11px;border:1px solid #d9d7c7;background:#f7f6ea;color:#668176;border-radius:99px;font-size:10px;font-weight:800}
+.v7-power span.earned{background:#205c50;color:white;border-color:#205c50}
+.v7-reveal{background:#102d29;color:white;min-height:510px;padding:24px 23px 29px;position:relative;overflow:hidden;text-align:center}
+.v7-reveal .v7-burst{position:absolute;inset:-80px;background:repeating-conic-gradient(from 5deg,#f4d59718 0deg 13deg,transparent 13deg 29deg);animation:traceSpin 18s linear infinite}
+.v7-reveal>div{position:relative;z-index:1}
+.v7-reveal h2{font:650 37px/1.06 'Fraunces',Georgia,serif;margin:12px 0}
+.v7-reveal p{font-size:12px;color:#d1e8dc;line-height:1.55}
+.v7-reveal-art{height:250px;margin:18px 0;border:5px solid #f2d9a0;border-radius:11px;overflow:hidden;box-shadow:0 10px 32px #0008;position:relative}
+.v7-reveal-art img{width:100%;height:100%;object-fit:cover;animation:traceReveal 2s cubic-bezier(.15,.9,.14,1) both;object-position:center}
+.v7-reveal-art:after{content:'✧';color:#fce6a3;font-size:42px;text-shadow:0 0 28px #ffeaa1;position:absolute;right:14px;top:12px;animation:traceGlow 1.8s ease-in-out infinite alternate}
+.v7-reveal .button{background:#f2dfb3;color:#173d33}
+@keyframes traceSpin{to{transform:rotate(360deg)}}@keyframes traceGlow{from{opacity:.35;transform:scale(.85)}to{opacity:1;transform:scale(1.1)}}@keyframes traceReveal{from{opacity:.1;transform:scale(2.1);filter:blur(7px)}to{opacity:1;transform:scale(1);filter:blur(0)}}
+.v7-story{background:#f2ecdf;border-radius:17px;padding:18px;margin:16px 0;border-left:5px solid #bb704f}
+.v7-story h3{font:650 24px/1.15 'Fraunces',Georgia,serif;margin:0 0 12px}
+.v7-story p{font-size:13px;line-height:1.7;margin:0;color:#425f55}
+.v7-puzzle{background:#f6f2e7;border-radius:17px;padding:18px;margin:16px 0}
+.v7-puzzle h3{font:650 23px/1.2 'Fraunces',serif;margin:7px 0 11px}
+.v7-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.v7-options button{min-height:125px;border:2px solid #d6ddd2;border-radius:13px;background:white;padding:12px 5px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#174f43}
+.v7-options button:focus-visible{border-color:#126e62}
+.v7-options button b{font-size:30px;line-height:1.1}
+.v7-options button span{font-size:11px;line-height:1.3;font-weight:800}
+.v7-error{background:#fce4de;color:#8a4335;padding:11px;border-radius:10px;font-size:12px;margin:12px 0}
+.v7-lesson{background:#e2eddc;border-radius:12px;padding:15px;margin:16px 0;color:#315d50;font-size:12px;line-height:1.6}
+.v7-stamps{display:flex;gap:10px;justify-content:center;margin:20px auto}
+.v7-stamp{height:72px;width:72px;border:2px dashed #be9e64;border-radius:50%;background:#fff8dc;display:flex;align-items:center;justify-content:center;flex-direction:column;box-shadow:0 5px 13px #8d784426}
+.v7-stamp b{font-size:28px}.v7-stamp small{font-size:9px;font-weight:800}
+.v7-stamp.ghost{opacity:.35;filter:grayscale(1)}
+.v7-complete{background:radial-gradient(circle at top,#f4da9e 0,#f8f2df 45%,#e4eee4 100%);padding:29px 22px;border-radius:18px;text-align:center}
+.v7-complete h2{font:650 39px/1.06 'Fraunces',serif}
+.v7-complete p{font-size:13px;line-height:1.65;color:#466457}
+.v7-passport{background:#f7f0dc;border:2px solid #bba57d;border-radius:17px;padding:19px;box-shadow:0 10px 24px #49412a16}
+.v7-passport h2{font:650 29px 'Fraunces',serif;margin:9px 0}
+.v7-passport-item{display:flex;gap:13px;border-top:1px solid #dacba9;padding:14px 0;align-items:center}
+.v7-passport-item img{width:67px;height:79px;object-fit:cover;border-radius:7px}
+.v7-passport-item strong{font-size:12px}.v7-passport-item p{font-size:10px;line-height:1.45;color:#63736a;margin:4px 0}
+.v7-cms{border:1px solid #d9e4dc;background:white;border-radius:16px;padding:17px;margin:15px 0}
+.v7-cms h3{font:650 20px 'Fraunces',serif;margin:3px 0 8px}
+.v7-cms p,.v7-cms li{font-size:12px;line-height:1.6;color:#536961}
+.v7-kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.v7-kpis div{border-radius:12px;background:#e9f0e5;padding:13px}
+.v7-kpis b{font:650 23px 'Fraunces',serif;display:block}.v7-kpis small{font-size:10px;color:#537668}
+.v7-cms-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-top:1px solid #e7ebe3}
+.v7-cms-row span{font-size:12px}.v7-cms-row small{display:block;color:#82958b;font-size:10px}
+.v7-cms-row button{padding:8px 11px;border-radius:9px;background:#ddede2;color:#245a4e;font-size:11px;font-weight:800;white-space:nowrap}
+.v7-cms-row button.off{background:#f2e3d4;color:#815a48}
+.v7-notice{font-size:11px;background:#ffefd3;color:#725835;border-radius:11px;padding:13px;line-height:1.6}
+@media(prefers-reduced-motion:reduce){.v7-reveal-art img,.v7-reveal .v7-burst,.v7-reveal-art:after{animation:none}}
+</style></head>
 <body>
 <div class="website">
   <aside class="marketing"><div class="eyebrow">ART BECOMES AN ADVENTURE / V0.7</div><h1>There’s more<br>to <em>see.</em></h1><p>Two institution-specific adventures using real collection artworks. Find a clue, scan the work, and unlock its story.</p><div class="how"><div><span>01</span> Spot a detail in an artwork</div><div><span>02</span> Scan with a camera or upload a photo</div><div><span>03</span> Discover, learn, and collect</div></div><div class="market-foot">Independent public proof of concept. Not affiliated with, commissioned by, or endorsed by MMFA or PAMM. Rights holders retain rights to their artworks and images. Images remain credited to their sources.</div></aside>
