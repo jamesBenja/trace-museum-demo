@@ -29,7 +29,11 @@ function settingMode(mode){if(['solo','family'].includes(mode)){prefs.mode=mode;
 function settingAge(age){if(['5-7','8-12','teen'].includes(age)){prefs.age=age;persist();render()}}
 function paintProgress(){return '<div class="t1-progress"><span style="width:'+(state.found.length/A.length*100)+'%"></span></div>'}
 function mascot(message){return '<div class="t1-companion"><div class="t1-mica" aria-hidden="true"><div class="t1-mica-body"><div class="t1-mica-mouth"></div></div><span class="t1-mica-sparkle">✦</span></div><div><div class="t1-mica-label">MICA · YOUR ART GUIDE</div><p class="t1-mica-line">'+esc(message)+'</p></div></div>'}
-function btn(label,act,variant){return button(label,act,variant||'')}
+function btn(label,act,variant){
+ if(act==='t1-start'||act==='t1-hub')
+  return '<button class="button '+(variant||'')+'" data-'+act+'>'+esc(label)+'</button>';
+ return button(label,act,variant||'');
+}
 function picks(){return '<div class="t1-choices"><button class="t1-choice '+(prefs.mode==='family'?'selected':'')+'" data-t1-mode="family"><span>👨‍👩‍👧</span>Family team<small style="display:block;font-weight:500;margin-top:4px">Share discoveries together</small></button><button class="t1-choice '+(prefs.mode==='solo'?'selected':'')+'" data-t1-mode="solo"><span>🔎</span>Solo explorer<small style="display:block;font-weight:500;margin-top:4px">Play at your own pace</small></button></div>'+
  '<div class="t1-choose" role="group" aria-label="Age or challenge level">'+[['5-7','Little eyes'],['8-12','Detective'],['teen','Explorer+']].map(([id,label])=>'<button class="'+(prefs.age===id?'active':'')+'" data-t1-age="'+id+'">'+label+'</button>').join('')+'</div>'}
 function intro(){
