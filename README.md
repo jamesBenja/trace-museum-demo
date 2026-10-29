@@ -1,4 +1,4 @@
-# TRACE v1.0 | A museum you can play
+# TRACE v1.2 | A museum you can play
 
 **Live mobile demo:** https://jamesbenja.github.io/trace-museum-demo/?v=10
 
@@ -29,7 +29,7 @@ The fantasy adventure map is **not** a factual museum floor plan. The separate *
 
 ## Family and accessibility
 
-Family Team gives optional Spotter and Storyteller prompts so visitors share observations instead of all looking at one phone. The guided puzzle alternative prevents a difficult drag or gesture from blocking progress. No player names, accounts, location tracking or photo uploads to TRACE servers are used in this prototype. The experience is designed to be usable without audio. Full accessibility and multilingual reviews are still needed; newer game controls are English-only for now.
+Family Team offers six optional cooperative mini-games, each with a clear shared observation and a different on-screen interaction. Families polish copper, align perspective, adjust storm light, decode symbols, explore a photograph and stamp a visual alphabet. After playing, they choose an interpretation together and earn a locally saved Team Discovery seal in **My Finds**. No assigned roles, checkboxes or required participation; scanning remains available at any time. The guided puzzle alternative prevents a difficult drag or gesture from blocking progress. No player names, accounts, location tracking or photo uploads to TRACE servers are used in this prototype. The experience is designed to be usable without audio. Full accessibility and multilingual reviews are still needed; newer game controls are English-only for now.
 
 ## Museum-facing demonstration
 
@@ -37,7 +37,7 @@ The **MUSEUM** tab shows illustrative artwork inclusion toggles, sample room ass
 
 ## Testing
 
-- `.github/workflows/validate-v1.yml` launches the exact committed static website locally and uses Chromium to test both branching three-artwork adventures, six different puzzles, family roles, camera-reference matching, replay and the downloadable passport.
+- `.github/workflows/validate-v1.yml` launches the exact committed static website locally and uses Chromium to test both branching three-artwork adventures, six different puzzles, six optional co-op mini-games, locally saved team seals, camera-reference matching, replay and the downloadable passport.
 - `.github/workflows/validate-scanner.yml` is the original scanner check and is retained as a legacy test. It may not reflect v1's branching visitor UI.
 - Automated phone-like image simulations are not substitutes for camera testing on actual phones inside galleries.
 
