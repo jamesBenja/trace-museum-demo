@@ -27,4 +27,5 @@ jobs:
       - name: Play through both museum adventures and six art games
         run: |
           node --check trace-v1.js
-          python scripts/test_v1.py
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/trace-local-http.log 2>&1 &
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=10 python scripts/test_v1.py
