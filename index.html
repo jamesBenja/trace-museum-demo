@@ -295,7 +295,7 @@ const referenceStatus=a=>a.reference?'SCANNABLE':'REFERENCE NOT READY';
 function sampleWall(){return `<div class="sampleWall">${A.map((a,i)=>`<div class="sample"><img src="${escapeHTML(img(a))}" alt="${escapeHTML(a.name)}" onerror="this.style.display='none'"><div>0${i+1} · ${escapeHTML(a.artist)}</div><button data-sample="${a.id}" ${a.reference?'':'disabled'}>Test photo match →</button><a target="_blank" rel="noopener" href="${a.url}" class="sourceLink">Museum record ↗</a></div>`).join('')}</div>`}
 function setVenue(v){if(!['mmfa','pamm'].includes(v)||v===state.venue)return;stopCamera();save();state.venue=v;A=v==='pamm'?pamm:mmfa;restore();state.tab='quest';save();render()}
 function stage(s){state.stage=s;state.tab='quest';save();render()}
-function tab(t){stopCamera();if(['scan','scanresult','processing'].includes(state.stage))state.stage='clue';state.tab=t;document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('selected',b.dataset.tab===t));render()}
+function tab(t){stopCamera();if(['scan','scanresult','processing'].includes(state.stage))state.stage='clue';if(t==='map')state.mapFocusId=A[Math.min(state.current,A.length-1)]?.id||null;state.tab=t;document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('selected',b.dataset.tab===t));render()}
 
 /* TRACE v0.7 visitor story layer and institutional preview. No simulated scanner verification. */
 const V7_TX={
