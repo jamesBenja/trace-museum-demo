@@ -131,7 +131,7 @@ function success(){
  btn('See my discoveries','album','outline')+
  '<p class="tiny">Your creativity and discoveries stay on this device.</p></div>';
 }
-function render(v){
+function renderGame(v){
  if(state.tab!=='quest')return false;
  if(state.stage==='intro'){v.innerHTML=intro();return true}
  if(state.stage==='hub'){v.innerHTML=hub();return true}
@@ -219,6 +219,6 @@ document.addEventListener('input',e=>{
  if(C.progress>=75)setDone('The bright sky now contrasts with the dark land, creating a dramatic storm!');
 });
 document.addEventListener('click',event,true);
-window.TRACE_V1={render,finishPuzzle,openWork,prefs,hub,moveXY,get puzzle(){return C},get allDone(){return allDone()}};
+window.TRACE_V1={render:renderGame,finishPuzzle,openWork,prefs,hub,moveXY,get puzzle(){return C},get allDone(){return allDone()}};
 render();
 })();
