@@ -48,14 +48,14 @@ const MISSIONS={
 };
 let completed={};
 try{const obj=JSON.parse(localStorage.getItem(KEY)||'{}');if(obj&&typeof obj==='object')completed=obj}catch(e){}
-const scene={id:null,phase:'invite',rubbed:false,travel:0};
+const scene={id:null,phase:'invite',rubbed:false,travel:0,replay:false};
 const escapeText=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 function current(){
  if(typeof state==='undefined'||state.stage!=='clue'||state.tab!=='quest')return null;
  const a=A[state.current];return a&&MISSIONS[a.id]?a:null;
 }
 function resetFor(a){
- if(scene.id!==a.id){scene.id=a.id;scene.phase='invite';scene.rubbed=false;scene.travel=0;}
+ if(scene.id!==a.id){scene.id=a.id;scene.phase='invite';scene.rubbed=false;scene.travel=0;scene.replay=false;}
 }
 function savedChoice(id){return Number.isInteger(completed[id]?.choice)?completed[id].choice:null;}
 function safeSave(){
@@ -64,7 +64,7 @@ function safeSave(){
 function missionMarkup(a){
  const m=MISSIONS[a.id];resetFor(a);const choice=savedChoice(a.id);
  const top='<section class="tf-mission" aria-label="Optional family team challenge"><div class="tf-brow"><span>✦ MICA’S FAMILY CHALLENGE</span><span>OPTIONAL · ABOUT 1 MIN</span></div>';
- if(choice!==null&&scene.phase!=='rub'&&scene.phase!=='story')
+ if(choice!==null&&!scene.replay&&scene.phase!=='rub'&&scene.phase!=='story')
   return top+'<div class="tf-result"><div class="tf-seal" aria-hidden="true">✦</div><div><strong>Team Discovery saved!</strong><p>You made a story together: “'+escapeText(m.choices[choice])+'”</p></div></div><div class="tf-actions"><button type="button" class="tf-small-btn" data-coop-again>Play together again</button></div><p class="tf-foot">Your Team Discovery is saved in My Finds. You can scan the artwork whenever you’re ready.</p></section>';
  if(scene.phase==='invite')
   return top+'<h3>Two people. One little mystery.</h3><p>Invite someone with you to look at the artwork together. Then pass the phone back and forth to reveal a secret and invent a story.</p>'+
@@ -166,12 +166,12 @@ function handle(ev){
   scene.phase=scene.phase==='story'?'rub':'invite';
   if(scene.phase==='rub'){scene.rubbed=false;scene.travel=0;}
  }
- else if(el.hasAttribute('data-coop-again')){scene.phase='invite';scene.rubbed=false;scene.travel=0;}
+ else if(el.hasAttribute('data-coop-again')){scene.phase='invite';scene.rubbed=false;scene.travel=0;scene.replay=true;}
  else if(el.hasAttribute('data-coop-story')){
   const choice=Number(el.dataset.coopStory);
   if(!(choice===0||choice===1)||scene.phase!=='story')return;
   if(savedChoice(a.id)===null){completed[a.id]={choice};safeSave();}
-  scene.phase='done';
+  scene.phase='done';scene.replay=false;
  }
  triggerRender();
 }
