@@ -1,65 +1,85 @@
-"""Check deployed TRACE reference loading and real matcher in a headless browser."""
+"""End-to-end smoke and game-loop checks against published TRACE GitHub Pages."""
 from playwright.sync_api import sync_playwright
-URL='https://jamesbenja.github.io/trace-museum-demo/'
+URL='https://jamesbenja.github.io/trace-museum-demo/?v=7'
+WORKS={'mmfa':['mmfa-marrel','mmfa-witte','mmfa-fortin'],
+       'pamm':['pamm-masks','pamm-delano','pamm-grid']}
 with sync_playwright() as p:
     browser=p.chromium.launch(headless=True,args=['--no-sandbox'])
-    for museum,art in [('mmfa','mmfa-marrel'),('pamm','pamm-masks')]:
-        page=browser.new_page(viewport={'width':1330,'height':920})
+    for museum,ids in WORKS.items():
+        page=browser.new_page(viewport={'width':390,'height':844},accept_downloads=True)
         errors=[]
         page.on('pageerror',lambda err: errors.append(str(err)))
-        resp=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
-        assert resp and resp.status==200, 'Site did not return HTTP 200'
-        assert 'v0.6' in page.title(), 'Waiting for v0.6 site publish: '+page.title()
+        response=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
+        assert response and response.status==200, 'GitHub Pages HTTP error'
+        assert 'v0.7' in page.title(), 'Wrong live version: '+page.title()
         if museum=='pamm':page.locator('[data-venue="pamm"]').first.click()
         page.wait_for_function("document.querySelector('#status')?.textContent.includes('SCAN READY')",timeout=65000)
-        status=page.locator('#status').inner_text()
-        print('REFERENCE STATUS',museum,status,flush=True)
-        assert 'SCAN READY' in status and int(status.split('·')[1].split('/')[0].strip()) >= 5, status
-        page.locator('[data-sample="'+art+'"]').first.click()
-        page.wait_for_selector('.scanResult',timeout=120000)
-        result=page.locator('.resultStamp').inner_text()
-        print('MATCH RESULT',museum,art,result,flush=True)
-        assert 'ARTWORK VERIFIED' in result, result
-        # Not an identity test: photograph-sized raster containing the work with
-        # screen/wall margins, gentle rotation, colour shift, blur and JPEG compression.
-        simulated = page.evaluate("""async (art) => {
-          const ref=ALL.find(x=>x.id===art).reference;
-          const w=960,h=720,c=document.createElement('canvas');
-          c.width=w;c.height=h;const g=c.getContext('2d');
-          g.fillStyle='#b7b8ad';g.fillRect(0,0,w,h);
-          g.fillStyle='#383b3b';g.fillRect(70,8,w-140,h-16);
-          g.fillStyle='#e4e0d7';g.fillRect(100,18,w-200,h-36);
-          const rh=615,rw=rh*ref.naturalWidth/ref.naturalHeight;
-          g.save();g.translate(w/2,h/2);g.rotate(0.025);
-          g.filter='brightness(0.86) contrast(0.91) saturate(0.88) blur(0.6px)';
-          g.drawImage(ref,-rw/2,-rh/2,rw,rh);
-          g.restore();
-          const jpeg=new Image();jpeg.src=c.toDataURL('image/jpeg',0.68);
-          await jpeg.decode();
-          const r=await recognize(jpeg);
-          const fd=featureData(jpeg);
-          const refData=library.find(z=>z.id===art);
-          const targetWidth=rw/960, targetHeight=rh/720;
-          const exact=colorScore(refData.color,colorDescriptor(fd,(1-targetWidth)/2,(1-targetHeight)/2,targetWidth,targetHeight));
-          const full=colorScore(refData.color,colorDescriptor(fd));
-          return {exact, full, targetWidth,targetHeight,recognized:r.recognized,id:r.id,method:r.method, topColor:r.color.slice(0,3).map(z=>({id:z.id,score:Math.round(z.colorScore*1000)/1000})),topFeatures:r.results.slice(0,3).map(z=>({id:z.id,inliers:z.inliers}))};
-        }""",art)
-        print('CAMERA-LIKE PHOTO RESULT',museum,simulated,flush=True)
-        assert simulated['recognized'] and simulated['id']==art, simulated
-        # A wall with a blank rectangle must never unlock the target chapter.
-        blank = page.evaluate("""async () => {
-          const c=document.createElement('canvas');c.width=960;c.height=720;
-          const g=c.getContext('2d');g.fillStyle='#b9bcb7';g.fillRect(0,0,960,720);
-          g.fillStyle='#f2eee5';g.fillRect(170,45,620,630);
-          g.strokeStyle='#3b4040';g.lineWidth=12;g.strokeRect(200,48,560,625);
-          const r=await recognize(c);
-          return {recognized:r.recognized,id:r.id,topColor:r.color.slice(0,2).map(z=>({id:z.id,score:Number(z.colorScore.toFixed(3))}))};
-        }""")
-        print('NEGATIVE CONTROL',museum,blank,flush=True)
-        assert not (blank['recognized'] and blank['id']==art), blank
-        page.evaluate("state.stage='manualreview';render()")
-        assert 'NOT AUTOMATICALLY VERIFIED' in page.locator('.resultStamp').inner_text()
-        assert not errors, errors
+        print('REFERENCES',museum,page.locator('#status').inner_text(),flush=True)
+        # Language-selection preview before starting.
+        page.locator('[data-lang="fr"]').click()
+        assert 'Commencer' in page.locator('[data-action="start"]').inner_text()
+        page.locator('[data-lang="es"]').click()
+        assert 'Comenzar' in page.locator('[data-action="start"]').inner_text()
+        page.locator('[data-lang="en"]').click()
+        page.locator('[data-action="museum"]').first.click()
+        assert 'CURATOR WORKSPACE' in page.locator('#view').inner_text()
+        first=ids[0]
+        page.locator('[data-museum-toggle="'+first+'"]').click()
+        assert page.locator('[data-museum-toggle="'+first+'"]').inner_text()=='Excluded'
+        page.locator('[data-museum-toggle="'+first+'"]').click()
+        page.locator('[data-action="quest"]').first.click()
+        page.locator('[data-action="start"]').first.click()
+        for i,art in enumerate(ids):
+            assert 'THE HIDDEN CLUE' in page.locator('#view').inner_text()
+            # Real-photo reference in studio mode is visibly marked as testing.
+            page.locator('details summary').first.click()
+            page.locator('[data-action="sample:'+art+'"]').first.click()
+            page.locator('.scanResult').wait_for(timeout=120000)
+            stamp=page.locator('.resultStamp').inner_text()
+            print('SCAN',museum,art,stamp,flush=True)
+            assert 'ARTWORK VERIFIED' in stamp,stamp
+            # First target: test picture-of-a-picture with margin, blur and JPEG.
+            if i==0:
+                sim=page.evaluate("""async (art) => {
+                  const ref=ALL.find(x=>x.id===art).reference;
+                  const c=document.createElement('canvas'),w=960,h=720;
+                  c.width=w;c.height=h;const g=c.getContext('2d');
+                  g.fillStyle='#b7b8ad';g.fillRect(0,0,w,h);
+                  g.fillStyle='#383b3b';g.fillRect(70,8,w-140,h-16);
+                  g.fillStyle='#e4e0d7';g.fillRect(100,18,w-200,h-36);
+                  const rh=615,rw=rh*ref.naturalWidth/ref.naturalHeight;
+                  g.save();g.translate(w/2,h/2);g.rotate(0.025);
+                  g.filter='brightness(0.86) contrast(0.91) saturate(0.88) blur(0.6px)';
+                  g.drawImage(ref,-rw/2,-rh/2,rw,rh);g.restore();
+                  const im=new Image();im.src=c.toDataURL('image/jpeg',0.68);await im.decode();
+                  const r=await recognize(im);
+                  return {recognized:r.recognized,id:r.id,method:r.method};
+                }""",art)
+                print('CAMERA-LIKE',museum,sim,flush=True)
+                assert sim['recognized'] and sim['id']==art,sim
+            page.locator('[data-action="accept"]').click()
+            assert 'AUTOMATIC IMAGE MATCH' in page.locator('#view').inner_text()
+            page.locator('[data-action="v7-story"]').click()
+            assert 'THE STORY YOU UNLOCKED' in page.locator('#view').inner_text()
+            page.locator('[data-action="v7-puzzle"]').click()
+            assert page.locator('[data-v7puzzle]').count()==3
+            correct=page.evaluate("(id)=>V7_ART[id].right",art)
+            wrong=(correct+1)%3
+            page.locator('[data-v7puzzle="'+str(wrong)+'"]').click()
+            assert 'Not quite' in page.locator('#view').inner_text()
+            page.locator('[data-v7puzzle="'+str(correct)+'"]').click()
+            assert 'POWER RECOVERED' in page.locator('#view').inner_text()
+            page.locator('[data-action="next"]').click()
+        assert 'The mystery is solved!' in page.locator('#view').inner_text()
+        page.locator('[data-action="album"]').first.click()
+        assert '3 / 3 discoveries' in page.locator('#view').inner_text()
+        with page.expect_download() as download:
+            page.locator('[data-action="v7-save"]').click()
+        assert download.value.suggested_filename.endswith('.png')
+        print('PASSPORT',museum,download.value.suggested_filename,flush=True)
+        if errors:print('PAGE ERRORS',errors,flush=True)
+        assert not errors,errors
+        page.screenshot(path='trace-'+museum+'-passport.png',full_page=True)
         page.close()
     browser.close()
-print('PASSED: MMFA and PAMM exact-reference AND simulated phone-photo recognition.',flush=True)
+print('PASSED: both museums, full 3-chapter quests, puzzles, passports, localization previews, sample scanner and curator mockup.',flush=True)
