@@ -36,7 +36,12 @@ with sync_playwright() as p:
           const jpeg=new Image();jpeg.src=c.toDataURL('image/jpeg',0.68);
           await jpeg.decode();
           const r=await recognize(jpeg);
-          return {recognized:r.recognized,id:r.id,method:r.method, topColor:r.color.slice(0,3).map(z=>({id:z.id,score:Math.round(z.colorScore*1000)/1000})),topFeatures:r.results.slice(0,3).map(z=>({id:z.id,inliers:z.inliers}))};
+          const fd=featureData(jpeg);
+          const refData=library.find(z=>z.id===art);
+          const targetWidth=rw/960, targetHeight=rh/720;
+          const exact=colorScore(refData.color,colorDescriptor(fd,(1-targetWidth)/2,(1-targetHeight)/2,targetWidth,targetHeight));
+          const full=colorScore(refData.color,colorDescriptor(fd));
+          return {exact, full, targetWidth,targetHeight,recognized:r.recognized,id:r.id,method:r.method, topColor:r.color.slice(0,3).map(z=>({id:z.id,score:Math.round(z.colorScore*1000)/1000})),topFeatures:r.results.slice(0,3).map(z=>({id:z.id,inliers:z.inliers}))};
         }""",art)
         print('CAMERA-LIKE PHOTO RESULT',museum,simulated,flush=True)
         assert simulated['recognized'] and simulated['id']==art, simulated
