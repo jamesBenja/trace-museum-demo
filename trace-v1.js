@@ -52,7 +52,7 @@ function hub(){
  mascot(companion)+
  '<div class="t1-map"><div class="t1-map-head"><div class="t1-overline">A MAGICAL QUEST MAP</div><h3>Three secrets to find</h3></div><div class="t1-islands">'+nodes+'</div><p class="t1-legend">✦ Choose unlocked mysteries in any order. The map shows story chapters, not actual room positions.</p></div>'+
  (n>=2?'<div class="t1-secret"><div class="t1-overline">BONUS DISCOVERY UNLOCKED</div><p>Family secret: compare two completed works. How does one artist lead your eye differently from the other? Share your answer together.</p><button class="button outline" data-action="album">See my earlier discoveries</button></div>':'')+
- (done?'<div class="t1-complete"><h2 class="t1-h2">Your creative lens is restored! ✦</h2><p class="t1-small">Mica's missing powers are safe in your passport. Every work of art can become a new adventure.</p>'+btn('Open my discovery passport','album')+'</div>':'')+
+ (done?'<div class="t1-complete"><h2 class="t1-h2">Your creative lens is restored! ✦</h2><p class="t1-small">Mica’s missing powers are safe in your passport. Every work of art can become a new adventure.</p>'+btn('Open my discovery passport','album')+'</div>':'')+
  '<div class="t1-team"><h3>How will you play?</h3>'+picks()+'<p class="t1-small">You can switch modes without losing your discoveries.</p></div>'+
  '<div class="t1-task">⌖ Want the real museum floor plan? Open the <strong>MAP</strong> tab. We only show verified room assignments when a museum supplies them.</div>'+
  btn('View my passport','album','outline')+'</div>';
