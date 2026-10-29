@@ -49,7 +49,7 @@ with sync_playwright() as p:
         print('BROWSER DIAG',page.evaluate("({title:document.title,status:document.querySelector('#status')?.textContent,script:typeof window.TRACE_V1,scripts:Array.from(document.scripts).map(x=>x.src)})"),'JS ERRORS',errs,flush=True)
         page.wait_for_function("window.TRACE_V1 && document.querySelector('#status')?.textContent.includes('SCAN READY')",timeout=12000)
         if museum=='pamm':
-            page.locator('[data-venue="pamm"]').first.click()
+            page.locator('#view [data-venue="pamm"]').first.click()
         # Top museum switcher is always accessible and allows round-trip changes.
         assert page.locator('#venueSwitcher').is_visible()
         page.locator('#venueSwitcher').click()
