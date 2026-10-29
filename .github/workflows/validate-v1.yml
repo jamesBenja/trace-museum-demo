@@ -1,0 +1,28 @@
+name: Validate TRACE v1.0 playable adventure
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "trace-v1.js"
+      - "trace-v1.css"
+      - "index.html"
+      - "scripts/test_v1.py"
+      - ".github/workflows/validate-v1.yml"
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Playwright browser
+        run: |
+          python -m pip install --disable-pip-version-check playwright
+          python -m playwright install chromium
+      - name: Play through both museum adventures and six art games
+        run: python scripts/test_v1.py
