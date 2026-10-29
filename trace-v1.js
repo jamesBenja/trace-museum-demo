@@ -62,15 +62,10 @@ function hub(){
  btn('View my passport','album','outline')+'</div>';
 }
 function roleMessage(){
- if(prefs.mode!=='family')return '<div class="t1-role">🔎 Solo detective: look away from your phone for a moment and find one tiny detail in the actual work before scanning.</div>';
- const teams=[
- ['SPOTTER','Point out two details in the artwork that others might miss.'],
- ['STORYTELLER','Tell the group what you think the artwork is trying to say.']
- ];
- return '<div class="t1-team"><div class="t1-overline">FAMILY CO-OP MISSION</div><h3>One phone, two pairs of eyes</h3><p class="t1-small">Everyone has a role. Work together, then swap roles on the next painting.</p><div class="t1-roles">'+teams.map((r,i)=>
- '<button type="button" class="'+(C.points.includes(i)?'selected':'')+'" data-t1-team="'+i+'">'+(C.points.includes(i)?'✓ ':'')+r[0]+'</button>'
- ).join('')+'</div><p class="t1-small">'+teams[C.points.includes(0)?1:0][1]+'</p><small style="color:#658679;font-size:10px">'+C.points.filter(x=>typeof x==='number').length+' / 2 team contributions · optional, never required to scan</small></div>';
+ if(prefs.mode!=='family')return '<div class="t1-role">🔎 Solo explorer: notice one tiny detail in the artwork before scanning. You can play at your own pace.</div>';
+ return window.TRACE_COOP?.render(A[state.current]) || '<div class="t1-role">Look together, then scan the artwork.</div>';
 }
+
 function clue(){
  const a=A[state.current],node=L[state.venue].nodes[state.current],focus=a.id==='mmfa-marrel'?'18% 14%':a.focus;
  if(!a)return hub();
@@ -139,7 +134,7 @@ function renderGame(v){
  if(state.tab!=='quest')return false;
  if(state.stage==='intro'){v.innerHTML=intro();return true}
  if(state.stage==='hub'){v.innerHTML=hub();return true}
- if(state.stage==='clue'){v.innerHTML=clue();return true}
+ if(state.stage==='clue'){v.innerHTML=clue();window.TRACE_COOP?.install();return true}
  if(state.stage==='puzzle'){v.innerHTML=puzzle();installPuzzle();return true}
  if(state.stage==='success'){v.innerHTML=success();return true}
  if(state.stage==='complete'||state.current>=A.length){v.innerHTML=hub();return true}
@@ -155,7 +150,6 @@ function finishPuzzle(assisted){
  const a=A[state.current];
  if(!state.found.includes(a.id))state.found.push(a.id);
  if(a.id==='pamm-grid')prefs.symbols[a.id]=C.points.slice();
- if(prefs.mode==='family'&&C.teamCount>=2)prefs.familyPoints[state.venue]=(prefs.familyPoints[state.venue]||0)+1;
  persist();stage('success');
 }
 function setDone(message){C.done=true;const el=document.getElementById('t1-finish');if(el)el.disabled=false;const label=document.getElementById('t1-status');if(label)label.textContent=message||'Discovery unlocked. Finish the creative challenge!'}
@@ -193,13 +187,12 @@ function moveXY(x,y){
  }
 }
 function event(e){
- const click=e.target.closest('[data-t1-mode],[data-t1-age],[data-t1-open],[data-t1-start],[data-t1-hub],[data-t1-team],[data-t1-move],[data-t1-symbol],[data-t1-photo-choice],[data-t1-place],[data-t1-cell],[data-t1-finish],[data-t1-assist]');
+ const click=e.target.closest('[data-t1-mode],[data-t1-age],[data-t1-open],[data-t1-start],[data-t1-hub],[data-t1-move],[data-t1-symbol],[data-t1-photo-choice],[data-t1-place],[data-t1-cell],[data-t1-finish],[data-t1-assist]');
  if(click){e.stopImmediatePropagation();e.preventDefault();const d=click.dataset;
   if(d.t1Mode){settingMode(d.t1Mode);return}
   if(d.t1Age){settingAge(d.t1Age);return}
   if(d.t1Start!==undefined||d.t1Hub!==undefined){stage('hub');return}
   if(d.t1Open!==undefined){openWork(Number(d.t1Open));return}
-  if(d.t1Team!==undefined){const n=Number(d.t1Team);if(!C.points.includes(n)){C.points.push(n);C.teamCount=C.points.length}render();return}
   if(d.t1Move){const q={left:[-8,0],up:[0,-8],down:[0,8],right:[8,0]}[d.t1Move];if(q)moveXY(C.xy.x+q[0],C.xy.y+q[1]);return}
   if(d.t1Symbol){
     const wanted=['🎭','🐟','▦'];
