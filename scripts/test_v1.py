@@ -44,7 +44,7 @@ with sync_playwright() as p:
         page.on('pageerror',lambda e: errs.append(str(e)))
         page.set_default_timeout(12000)
         r=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
-        assert r.status==200 and 'v1.0' in page.title(),page.title()
+        assert r.status==200 and 'v1.2' in page.title(),page.title()
         page.wait_for_timeout(1800)
         print('BROWSER DIAG',page.evaluate("({title:document.title,status:document.querySelector('#status')?.textContent,script:typeof window.TRACE_V1,scripts:Array.from(document.scripts).map(x=>x.src)})"),'JS ERRORS',errs,flush=True)
         page.wait_for_function("window.TRACE_V1 && document.querySelector('#status')?.textContent.includes('SCAN READY')",timeout=12000)
@@ -60,9 +60,47 @@ with sync_playwright() as p:
             art=arts[index]
             page.locator('[data-t1-open="'+str(index)+'"]').click()
             assert 'FIND THIS DETAIL' in page.locator('#view').inner_text()
-            page.locator('[data-t1-team="0"]').click()
-            page.locator('[data-t1-team="1"]').click()
-            assert '2 / 2 team contributions' in page.locator('#view').inner_text()
+            assert 'MICA’S FAMILY DISCOVERY' in page.locator('#view').inner_text()
+            page.locator('[data-c2-start]').click()
+            assert 'STEP 1' in page.locator('#view').inner_text()
+            if art=='mmfa-marrel':
+                b=page.locator('#c2-polish').bounding_box()
+                assert b
+                page.mouse.move(b['x']+18,b['y']+25)
+                page.mouse.down()
+                for k in range(16):
+                    page.mouse.move(b['x']+18+(k%7)*(b['width']-36)/7,
+                                    b['y']+25+(k%2)*(b['height']-50),steps=3)
+                page.mouse.up()
+            elif art=='mmfa-witte':
+                for k in ['left']*4+['up']*3:
+                    page.locator('[data-c2-arrow="'+k+'"]').click()
+            elif art=='mmfa-fortin':
+                page.locator('#c2-light').evaluate("(el)=>{el.value='80';el.dispatchEvent(new Event('input',{bubbles:true}))}")
+            elif art=='pamm-masks':
+                for symbol in ['🎭','🐟','▦']:
+                    page.locator('[data-c2-code="'+symbol+'"]').click()
+            elif art=='pamm-delano':
+                for k in range(3):
+                    page.locator('[data-c2-stop="'+str(k)+'"]').click()
+            elif art=='pamm-grid':
+                for symbol in ['⌂','☼','◎']:
+                    page.locator('[data-c2-glyph="'+symbol+'"]').click()
+            assert page.locator('[data-c2-next]').count()==1, 'Family game did not finish '+art
+            page.locator('[data-c2-next]').click()
+            assert 'STEP 2' in page.locator('#view').inner_text()
+            page.locator('[data-c2-choice="0"]').click()
+            assert 'Team Discovery earned!' in page.locator('#view').inner_text()
+            assert page.evaluate("(id)=>window.TRACE_COOP.savedChoice(id)",art)==0
+            # Replay remains optional and must not remove the already earned seal.
+            page.locator('[data-c2-again]').click()
+            assert page.locator('[data-c2-start]').count()==1
+            page.locator('[data-c2-start]').click()
+            page.locator('[data-c2-help]').click()
+            assert page.locator('[data-c2-next]').count()==1
+            page.locator('[data-c2-next]').click()
+            page.locator('[data-c2-choice="1"]').click()
+            assert page.evaluate("(id)=>window.TRACE_COOP.savedChoice(id)",art)==0
             page.locator('details summary').click()
             page.locator('[data-action="sample:'+art+'"]').click()
             page.locator('.scanResult').wait_for(timeout=120000)
@@ -91,7 +129,7 @@ with sync_playwright() as p:
             page.locator('[data-action="v7-save"]').click()
         assert dl.value.suggested_filename.endswith('.png')
         assert not errs, errs
-        print('PASSED',museum,'all three works, six puzzle activities collectively, map branching, family roles, saved progress and passport',flush=True)
+        print('PASSED',museum,'all artworks, six different family mini-games, replay/seals, and original art activities',flush=True)
         page.close()
     browser.close()
 print('ALL V1.0 TESTS PASSED',flush=True)
