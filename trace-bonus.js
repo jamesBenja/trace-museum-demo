@@ -41,11 +41,11 @@ const STORIES={
 };
 const S={museum:null,selected:[],stage:'choose',lens:'shapes',position:50,hasCompared:false,seen:{left:null,right:null},celebrate:false};
 const esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
-const solved=()=>A.filter(a=>state.found.includes(a.id));
+const solved=()=>A.filter(a=>state.found.includes(a.id)&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(a.id)));
 function pairKey(a,b){const x=A.findIndex(w=>w.id===a),y=A.findIndex(w=>w.id===b);return [x,y].sort((m,n)=>m-n).join('-')}
 function keyNow(){return S.selected.length===2?pairKey(...S.selected):null}
 function bonusData(){return saved[state.venue]||{}}
-function links(){return Object.keys(bonusData()).filter(k=>{const ids=k.split('-').map(Number);return ids.length===2&&ids.every(i=>A[i]&&state.found.includes(A[i].id))})}
+function links(){return Object.keys(bonusData()).filter(k=>{const ids=k.split('-').map(Number);return ids.length===2&&ids.every(i=>A[i]&&state.found.includes(A[i].id)&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(A[i].id)))})}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){console.warn('Cannot save art connections',e)}}
 function clearVenue(id){saved[id]={};persist();if(S.museum===id)S.stage='choose'}
 function prepare(){
