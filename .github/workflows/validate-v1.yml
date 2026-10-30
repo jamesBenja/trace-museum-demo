@@ -49,14 +49,13 @@ jobs:
           node --check trace-extra.js
           node --check trace-display.js
           node --check trace-routing.js
-          node --check trace-display.js
-          node --check trace-routing.js
           python -m json.tool display-status.json >/dev/null
           python -m http.server 8765 --bind 127.0.0.1 >/tmp/trace-local-http.log 2>&1 &
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=16 python scripts/test_v1.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=16 python scripts/test_bonus.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=16 python scripts/test_expansion.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=16 python scripts/test_navigation.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=16 python scripts/test_admin_maps.py
       - name: Recheck full experience at public HTTPS address after publication
         if: github.run_attempt > 1
         run: |
@@ -64,3 +63,4 @@ jobs:
           TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=16 python scripts/test_bonus.py
           TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=16 python scripts/test_expansion.py
           TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=16 python scripts/test_navigation.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=16 python scripts/test_admin_maps.py
