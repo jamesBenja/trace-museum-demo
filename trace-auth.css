@@ -1,0 +1,32 @@
+/* TRACE administrator authentication and visitor-only portal */
+.tabs button[data-tab="museum"]{display:none!important}
+body.admin-mode .tabs button[data-tab="museum"]{display:flex!important}
+body.admin-locked .website{filter:blur(3px);pointer-events:none;user-select:none}
+.ta-mask{position:fixed;inset:0;z-index:11000;overflow:auto;background:#173d36dd;backdrop-filter:blur(6px);padding:20px 14px;display:flex;align-items:flex-start;justify-content:center;box-sizing:border-box}
+.ta-gate{background:#faf8f0;border-radius:20px;max-width:480px;width:100%;margin:auto 0;padding:25px 22px;box-shadow:0 22px 70px #09221c66;color:#193f35}
+.ta-brand{font-size:12px;letter-spacing:1.4px;font-weight:850;color:#44745f}
+.ta-brand span{color:#c07d4f}
+.ta-gate h1{font:650 34px/1.12 'Fraunces',Georgia,serif;margin:13px 0}
+.ta-gate p{font-size:12px;color:#61796c;line-height:1.65}
+.ta-gate form{display:grid;gap:9px;margin:19px 0 10px}
+.ta-gate form label{font-size:12px;font-weight:850;color:#285b48}
+.ta-gate form input{width:100%;background:#fff;border:2px solid #cadace;border-radius:12px;padding:14px;font-size:15px;letter-spacing:.6px;color:#153f34}
+.ta-gate form button{background:#25654e;border-radius:12px;color:#fff;min-height:48px;font-size:13px;font-weight:850;padding:12px}
+.ta-gate form button:disabled{opacity:.5}
+#traceAdminFeedback{color:#a0583d;font-size:12px;font-weight:850;min-height:1em}
+.ta-guide{padding:15px;background:#eaf0e3;border:1px solid #c9dccb;border-radius:12px;margin-top:16px}
+.ta-guide strong{font-size:13px}
+.ta-guide p{margin:8px 0}
+.ta-guide a{font-weight:850;font-size:12px;color:#246c55}
+.ta-guide code{font-size:11px;overflow-wrap:anywhere}
+.ta-gate .ta-note{font-size:10px;color:#7b897f}
+.ta-visitor-link{display:block;text-align:center;padding:10px;font-size:12px;font-weight:800;color:#316c56}
+.ta-signed{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#dfeee0;border:1px solid #b9d8bc;border-radius:12px;margin:11px 0;padding:12px}
+.ta-signed>div{flex:1;min-width:170px}
+.ta-signed b{display:block;font-size:11px;color:#2e7156}
+.ta-signed small{display:block;font-size:10px;color:#627e69;margin-top:4px}
+.ta-signed button{background:#eef3e9;border:1px solid #acc9b4;color:#4d755b;border-radius:9px;padding:9px;font-size:11px}
+.ta-signed a{color:#2b6e56;font-size:11px;font-weight:800}
+.td-publish-actions button:disabled{opacity:.55;cursor:not-allowed}
+.td-publish .td-small{background:#f1f4e9;border-radius:9px;padding:10px;white-space:normal;overflow-wrap:break-word}
+.ta-portal-note{margin:10px 0;background:#e8f3e7;border-radius:9px;padding:11px;font-size:11px;color:#426b56}
