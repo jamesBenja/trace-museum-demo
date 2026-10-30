@@ -18,7 +18,7 @@ def slide(page,ident,value):
 def play(page,ident):
  finish=page.locator('[data-t1-finish]')
  assert finish.is_disabled(),ident+' unlocked before visitor interaction'
- before=page.locator('.te-workspace').inner_html()
+ before=page.locator('.te-workspace').evaluate('(el)=>el.outerHTML')
  if ident=='mmfa-eye':
   slide(page,'eye',95)
   assert page.locator('.te-city').get_attribute('style').find('2.44')>=0, 'Eye did not grow'
@@ -80,7 +80,7 @@ def play(page,ident):
   page.locator('[data-te-tool="glitter"]').click()
   page.locator('[data-te-paint="2"]').click()
   assert page.locator('.te-paint-cell.has-glitter').count()==1
- assert page.locator('.te-workspace').inner_html()!=before,ident+' display never changed'
+ assert page.locator('.te-workspace').evaluate('(el)=>el.outerHTML')!=before,ident+' display never changed'
  assert finish.is_enabled(),ident+' did not unlock after performing the interaction'
  assert page.evaluate('window.TRACE_V1.puzzle.done') is True
  print('REAL LAB PASSED',ident,flush=True)
