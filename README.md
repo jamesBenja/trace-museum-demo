@@ -8,13 +8,28 @@
 
 **Institutional pitch walkthrough:** [PITCH_WALKTHROUGH.md](PITCH_WALKTHROUGH.md)
 
-TRACE is an independent pilot concept with **eight real collection artworks from MMFA** and **eight from PAMM**, including paintings, photography, sculpture and mixed media. Neither museum has commissioned, endorsed or approved this app. A work belonging to a museum **does not imply that it is physically on view**.
+TRACE is an independent pilot concept with **eight real collection artworks each from MMFA, PAMM and MoMA**, including paintings, photography, sculpture and mixed media. Neither museum has commissioned, endorsed or approved this app. A work belonging to a museum **does not imply that it is physically on view**.
 
 ## Recognition and accessible visual confirmation
 
 For paintings and photographs with calibrated image references, the camera scan remains the primary matching method. After requesting a hint, **Compare visually with museum reference** becomes available for every artwork. The same option appears if an automatic scan fails or the camera is unavailable. Sculptures and newer works without validated reference images use **visitor self-confirmation** from the beginning. This is always labelled clearly and never presented as automatic verification.
 
 On the visual comparison screen, visitors can **take or select one photo (optional)** and compare it alongside the museum's collection image. They may also visually confirm without taking a photo, including when museum photography is not permitted. Only explicit visitor confirmation advances the story. This is a visitor-assisted comparison, **not automatic recognition or a 3D scan**. Uploaded photos stay on the device and may be saved in the visitor's local discovery album once confirmed. A future multi-angle recognition feature would require curated reference photography and validation, not extra photo steps for visitors.
+
+## v2.5: Eight redesigned MoMA art games
+
+The initial eight MoMA placeholder games have been rebuilt with direct touch interactions and specific art-learning outcomes. The complete [production design brief](docs/moma-game-redesign-v25.md) documents individual interactions, visual treatments, win conditions, curriculum connections and accessibility acceptance tests.
+
+- **Van Gogh:** drag to paint large luminous sky currents.
+- **Matisse:** drag five pairs of hand points to connect a dancing circle.
+- **Monet:** place lilies and directly drag the sun to change a reflective animated pond.
+- **Warhol:** play an illustrated soup-can slot machine with five different varieties, holdable and nudgable reels and a repeated pop-art jackpot grid.
+- **Oppenheim:** apply eight procedurally illustrated textures to cup, saucer and spoon, then identify an emotional reaction.
+- **Tinguely:** connect five machine components and physically turn a wheel to trigger a fishing-rod / paint-can chain reaction.
+- **Brancusi:** stretch and reshape a cherry-wood sculptural form using four SVG handles and hear an optional original synthesized response. Headphones are encouraged.
+- **Lamelas:** compare three animated communication channels (newspaper, radio, television) carrying the same fictional museum message and reflect on how each medium changes its reach.
+
+Each activity has localized English, French and Spanish text, Mica educational feedback, reduced-motion safeguards and non-drag interaction alternatives. These are original artistic interpretations, not faithful physical simulations or licensed museum reproductions.
 
 ## v2.5 Mica's progressive visual clue reveal
 
