@@ -1,9 +1,14 @@
-name: Validate TRACE v2.0 trilingual museum experience
+name: Validate TRACE v2.1 complete app localization
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
+      - "trace-i18n.js"
+      - "trace-i18n-art.js"
+      - "trace-i18n-content.js"
+      - "trace-i18n-map.js"
+      - "scripts/test_locale.py"
       - "trace-welcome.js"
       - "trace-welcome.css"
       - "scripts/test_welcome.py"
@@ -51,6 +56,10 @@ jobs:
           python -m playwright install chromium
       - name: Test guest experiences, admin sign-in and shared publication
         run: |
+          node --check trace-i18n.js
+          node --check trace-i18n-art.js
+          node --check trace-i18n-content.js
+          node --check trace-i18n-map.js
           node --check trace-welcome.js
           node --check trace-v1.js
           node --check trace-coop-v2.js
@@ -62,16 +71,18 @@ jobs:
           python scripts/check_syntax.py
           python -m json.tool display-status.json >/dev/null
           python -m http.server 8765 --bind 127.0.0.1 >/tmp/trace-local-http.log 2>&1 &
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=20 python scripts/test_welcome.py
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=20 python scripts/test_v1.py
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=20 python scripts/test_bonus.py
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=20 python scripts/test_expansion.py
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=20 python scripts/test_portals.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=21 python scripts/test_locale.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=21 python scripts/test_welcome.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=21 python scripts/test_v1.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=21 python scripts/test_bonus.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=21 python scripts/test_expansion.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=21 python scripts/test_portals.py
       - name: Recheck full experience at public HTTPS address after publication
         if: github.run_attempt > 1
         run: |
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=20 python scripts/test_welcome.py
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=20 python scripts/test_v1.py
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=20 python scripts/test_bonus.py
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=20 python scripts/test_expansion.py
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=20 python scripts/test_portals.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=21 python scripts/test_locale.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=21 python scripts/test_welcome.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=21 python scripts/test_v1.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=21 python scripts/test_bonus.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=21 python scripts/test_expansion.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=21 python scripts/test_portals.py
