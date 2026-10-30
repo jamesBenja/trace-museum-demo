@@ -37,6 +37,8 @@ lamelas:['Clasifica la información','Elige una fuente para cada canal: sonido, 
 common:['Guardar descubrimiento ✦','Completa primero el experimento','No necesitas tocar ninguna obra real.']
 }};
 const tr=k=>(G[state.lang]||G.en)[k];
+const SOUPS={en:['Tomato','Mushroom','Pea','Chicken'],fr:['Tomate','Champignons','Pois','Poulet'],es:['Tomate','Champiñones','Guisantes','Pollo']};
+const FEELINGS={en:['Surprising','Uncomfortable'],fr:['Surprenant','Étrange'],es:['Sorprendente','Extraño']};
 const e=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 function model(C,id){
  if(!C.extra||C.extra.id!==id)C.extra={id,steps:[],reflection:0,crest:25,turn:0,surface:'',source:[],flavours:[],chosen:[]};
@@ -64,9 +66,9 @@ function play(a,C){
  case'lilies':
  stage='<div class="tm-pond" style="--reflection:'+s.reflection+'%">'+Array.from({length:8},(_,i)=>'<button type="button" data-tm="lily" data-val="'+i+'" class="tm-lily '+(s.steps.includes(i)?'placed':'')+'" aria-label="'+e(t[2])+' '+(i+1)+'" style="--x:'+([15,38,70,83,24,51,66,13][i])+'%;--y:'+([24,37,22,60,72,60,79,49][i])+'%">'+(s.steps.includes(i)?'✿':'＋')+'</button>').join('')+'</div><label class="tm-label">'+e(t[3])+': '+s.reflection+'%<input type="range" min="0" max="100" step="5" data-tm-range="reflection" value="'+s.reflection+'"></label>';break;
  case'warhol':
- stage='<div class="tm-soups">'+Array.from({length:3},(_,i)=>'<div class="tm-can">'+(s.flavours[i]?'<span>🥫</span><small>'+e(s.flavours[i])+'</small>':'<span class="tm-empty">＋</span>')+'</div>').join('')+'</div><div class="tm-controls">'+['Tomato','Mushroom','Pea','Chicken'].map((v,i)=>btn((['🍅','🍄','🫛','🍗'][i])+' '+v,'soup',v)).join('')+'</div>';break;
+ stage='<div class="tm-soups">'+Array.from({length:3},(_,i)=>'<div class="tm-can">'+(s.flavours[i]?'<span>🥫</span><small>'+e(s.flavours[i])+'</small>':'<span class="tm-empty">＋</span>')+'</div>').join('')+'</div><div class="tm-controls">'+['Tomato','Mushroom','Pea','Chicken'].map((v,i)=>btn((['🍅','🍄','🫛','🍗'][i])+' '+(SOUPS[state.lang]||SOUPS.en)[i],'soup',v)).join('')+'</div>';break;
  case'oppenheim':
- stage='<div class="tm-cup '+(s.surface==='fur'?'furry':s.surface==='paper'?'paper':'smooth')+'"><span>☕</span></div><div class="tm-controls">'+['fur','smooth','paper'].map((v,i)=>btn(t[i+3],'texture',v)).join('')+'</div><p class="tm-progress">'+(s.surface==='fur'?e(t[6]):'')+'</p><div class="tm-controls">'+btn('Surprising / Surprenant / Sorprendente','feeling','surprise')+btn('Uncomfortable / Étrange / Extraño','feeling','strange')+'</div>';break;
+ stage='<div class="tm-cup '+(s.surface==='fur'?'furry':s.surface==='paper'?'paper':'smooth')+'"><span>☕</span></div><div class="tm-controls">'+['fur','smooth','paper'].map((v,i)=>btn(t[i+3],'texture',v)).join('')+'</div><p class="tm-progress">'+(s.surface==='fur'?e(t[6]):'')+'</p><div class="tm-controls">'+btn((FEELINGS[state.lang]||FEELINGS.en)[0],'feeling','surprise')+btn((FEELINGS[state.lang]||FEELINGS.en)[1],'feeling','strange')+'</div>';break;
  case'tinguely':
  stage='<div class="tm-machine">'+['⚙','〰','🔔'].map((v,i)=>'<button class="tm-part '+(s.steps.includes(i)?'added':'')+'" data-tm="part" data-val="'+i+'">'+(s.steps.includes(i)?v:'＋')+'</button>').join('')+'</div><div class="tm-controls">'+[t[2],t[3],t[4]].map((v,i)=>btn(v,'part',i)).join('')+'</div><label class="tm-label">'+e(t[5])+': '+s.turn+'%<input type="range" min="0" max="100" step="10" data-tm-range="turn" value="'+s.turn+'"></label>';break;
  case'brancusi':
