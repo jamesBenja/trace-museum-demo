@@ -73,6 +73,7 @@ def play(p,name):
    piece=p.locator('[data-mg="part"][data-value="'+k+'"]')
    destination=p.locator('[data-mg="socket"][data-value="'+str(i)+'"]')
    move(p,piece,destination)
+   print('MACHINE DRAG CHECK',i,p.evaluate('window.__mgPartDebug'),p.evaluate('window.TRACE_V1.puzzle.extra.installed'),flush=True)
    assert p.evaluate('window.TRACE_V1.puzzle.extra.installed.length')==i+1
   assert p.locator('.mg-wheel.can-spin').count()==1
   wheel=p.locator('.mg-wheel').bounding_box()
