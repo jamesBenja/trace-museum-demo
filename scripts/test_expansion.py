@@ -47,12 +47,20 @@ def play(page,ident):
    page.locator('[data-te-find="'+str(i)+'"]').click()
   assert page.locator('.te-face-spot.found').count()==3
  elif ident=='pamm-chaos':
-  for i in range(3):
-   page.locator('[data-te-cube="add"]').click()
-  assert page.locator('.te-cube').count()==3
-  assert finish.is_disabled(), 'Cube tower unlocked before tilting'
-  page.locator('[data-te-tilt="0"]').click()
-  page.locator('[data-te-tilt="1"]').click()
+  assert page.locator('.te-cube').count()==3, 'Three steel frames visible without extra taps'
+  assert finish.is_disabled(), 'Cube tower should require real manipulation'
+  page.locator('[data-te-cube-select="1"]').first.click()
+  page.locator('[data-te-nudge="12"]').click()
+  assert finish.is_disabled(), 'Changing only one cube must not finish the game'
+  page.locator('[data-te-cube-select="2"]').first.click()
+  page.locator('[data-te-nudge="12"]').click()
+  assert finish.is_disabled(), 'Shifting two cubes without rotation is insufficient'
+  slide(page,'cubeAngle',20)
+  assert '20°' in page.locator('#te-readout').inner_text()
+  assert page.evaluate('window.TRACE_V1.puzzle.extra.changed.filter(Boolean).length')==2
+  assert page.locator('.te-balance-label b').inner_text()!='0 / 100'
+  assert page.locator('.te-tower-warning').inner_text()==''
+  assert page.locator('[data-te-tilt]').count()==0, 'Old tilt buttons removed'
  elif ident=='pamm-fonseca':
   page.locator('[data-te-niche="0"]').click()
   page.locator('[data-te-shape="sphere"]').click()
