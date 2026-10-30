@@ -13,7 +13,7 @@ with sync_playwright() as p:
   errors=[]
   page.on('pageerror',lambda error:errors.append(str(error)))
   r=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
-  assert r.status==200 and 'v2.3' in page.title()
+  assert r.status==200 and 'v2.4' in page.title()
   page.wait_for_function("window.TRACE_ROUTING && window.TRACE_DISPLAY && !window.TRACE_DISPLAY.loading",timeout=60000)
   if museum=='pamm':
    page.locator('#venueSwitcher').click()
