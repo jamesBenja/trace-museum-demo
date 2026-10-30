@@ -93,6 +93,8 @@ with sync_playwright() as p:
  assert v1.evaluate("window.TRACE_DISPLAY.draft===null")
  v1.locator("[data-tab='quest']").click()
  v1.locator("[data-t1-start]").click()
+ assert v1.locator('.tw-screen').is_visible()
+ v1.locator('[data-tw-skip]').click()
  assert v1.locator("[data-t1-open]").count()==3
  print("VISITOR ROLE PASS: no museum controls, no edits, only published artworks",flush=True)
  ca,admin=new_page("admin.html")
