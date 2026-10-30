@@ -259,6 +259,6 @@ document.addEventListener('click',ev=>{
 },true);
 window.TRACE_DISPLAY={isActive,activeWorks,count,isVerified,room,rooms,connections,alterRooms,rec,adminUI,visitorNotice,setField,statusLabel,load,publish,exportJSON,get draft(){return draft},get published(){return published},get loading(){return loading},get error(){return error},get syncError(){return syncError},get publishing(){return publishing}};
 load();
-setInterval(()=>{if(!draft&&!document.hidden&&Date.now()-lastSync>45000)load()},60000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!draft&&Date.now()-lastSync>30000)load()});
+setInterval(()=>{if((!draft||!admin())&&!document.hidden&&Date.now()-lastSync>45000)load()},60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&(!draft||!admin())&&Date.now()-lastSync>30000)load()});
 })();
