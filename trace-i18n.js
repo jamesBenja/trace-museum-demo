@@ -174,7 +174,7 @@ function apply(root=document){
  const lang=current();currentLang=lang;
  document.documentElement.lang=lang;
  const title={en:'TRACE • Art Adventures',fr:'TRACE • Aventures artistiques',es:'TRACE • Aventuras de arte'}[lang];
- document.title=title+' (v2.3)';
+ document.title=title+' (v2.4)';
  if(updating)return;
  updating=true;
  try{
