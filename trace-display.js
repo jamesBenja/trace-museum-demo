@@ -183,7 +183,7 @@ function download(){
  const blob=new Blob([exportJSON()],{type:'application/json;charset=utf-8'});
  const url=URL.createObjectURL(blob);
  const a=document.createElement('a');a.download='display-status.json';a.href=url;
- document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500);
+ document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);
 }
 document.addEventListener('change',ev=>{
  const el=ev.target,ids=['td-active','td-verified','td-room','td-start','td-end'];
