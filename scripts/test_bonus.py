@@ -11,7 +11,7 @@ with sync_playwright() as p:
     errors=[]
     page.on("pageerror",lambda exc:errors.append(str(exc)))
     resp=page.goto(URL,wait_until="domcontentloaded",timeout=45000)
-    assert resp and resp.status==200 and "v1.4" in page.title(),page.title()
+    assert resp and resp.status==200 and "v1.5" in page.title(),page.title()
     page.wait_for_function("window.TRACE_BONUS && window.TRACE_V1 && document.querySelector('#status')?.textContent.includes('SCAN READY')",timeout=65000)
     if museum=="pamm":
       page.locator("#venueSwitcher").click()
