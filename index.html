@@ -116,7 +116,7 @@
 .venueCardArrow{font-size:29px;color:#53806d}
 .venueNote{background:#f5e9d1;border-radius:11px;padding:10px}
 @media(max-width:375px){.top{padding-left:10px;padding-right:8px;gap:4px}.top .logo{font-size:21px}.top .status{max-width:100px;font-size:7px}.venueSwitcher{padding:6px 8px;font-size:11px}}
-</style><link rel="stylesheet" href="trace-v1.css?v=4"><link rel="stylesheet" href="trace-coop.css?v=2"><link rel="stylesheet" href="trace-bonus.css?v=1"></head>
+</style><link rel="stylesheet" href="trace-v1.css?v=4"><link rel="stylesheet" href="trace-coop.css?v=2"><link rel="stylesheet" href="trace-bonus.css?v=1"><link rel="stylesheet" href="trace-extra.css?v=1"></head>
 <body>
 <div class="website">
   <aside class="marketing"><div class="eyebrow">ART BECOMES AN ADVENTURE / V1.5</div><h1>There’s more<br>to <em>see.</em></h1><p>Two institution-specific adventures using real collection artworks. Find a clue, scan the work, and unlock its story.</p><div class="how"><div><span>01</span> Spot a detail in an artwork</div><div><span>02</span> Scan with a camera or upload a photo</div><div><span>03</span> Discover, learn, and collect</div></div><div class="market-foot">Independent public proof of concept. Not affiliated with, commissioned by, or endorsed by MMFA or PAMM. Rights holders retain rights to their artworks and images. Images remain credited to their sources.</div></aside>
@@ -127,8 +127,8 @@
    <div class="venuePickerHeading"><div><div class="v7-tag">TRACE · EXPLORE THE COLLECTIONS</div><h2 id="venuePickerTitle">Choose a museum</h2></div><button type="button" class="venueX" data-action="venue-close" aria-label="Close museum selector">✕</button></div>
    <p>Switch adventures at any time. Your completed artworks and saved discoveries stay with each museum.</p>
    <div class="venueCards">
-    <button type="button" data-venue="mmfa"><span class="venueCardIcon">✺</span><span class="venueCardCopy"><strong>Montréal · MMFA</strong><small>The Lost Colours</small><small id="mmfaSavedCount">0 of 3 discoveries</small></span><span class="venueCardArrow">›</span></button>
-    <button type="button" data-venue="pamm"><span class="venueCardIcon">◉</span><span class="venueCardCopy"><strong>Miami · PAMM</strong><small>The Hidden Signals</small><small id="pammSavedCount">0 of 3 discoveries</small></span><span class="venueCardArrow">›</span></button>
+    <button type="button" data-venue="mmfa"><span class="venueCardIcon">✺</span><span class="venueCardCopy"><strong>Montréal · MMFA</strong><small>The Lost Colours</small><small id="mmfaSavedCount">0 of 8 discoveries</small></span><span class="venueCardArrow">›</span></button>
+    <button type="button" data-venue="pamm"><span class="venueCardIcon">◉</span><span class="venueCardCopy"><strong>Miami · PAMM</strong><small>The Hidden Signals</small><small id="pammSavedCount">0 of 8 discoveries</small></span><span class="venueCardArrow">›</span></button>
    </div><p class="venueNote">Artwork locations and display status are not yet confirmed with either museum.</p>
   </section>
 </div><div class="panel" id="view"><div class="loading"><div class="spinner"></div><h2>Preparing the collection...</h2><p>All artwork matching happens privately on your device.</p></div></div><nav class="tabs"><button data-tab="quest" class="selected"><span>✧</span>QUEST</button><button data-tab="map"><span>⌖</span>MAP</button><button data-tab="album"><span>▦</span>MY FINDS</button><button data-tab="guide"><span>ⓘ</span>GUIDE</button><button data-tab="museum"><span>▤</span>MUSEUM</button></nav></main>
@@ -372,7 +372,7 @@ function showMuseumPicker(show){
   save();
   ['mmfa','pamm'].forEach(id=>{
    const count=(saved[id]?.found||[]).length;
-   const label=el(id+'SavedCount');if(label)label.textContent=count+' of 3 discoveries'+(id===state.venue?' · CURRENT':'');
+   const label=el(id+'SavedCount');if(label)label.textContent=count+' of '+(id==='pamm'?pamm.length:mmfa.length)+' discoveries'+(id===state.venue?' · CURRENT':'');
    const card=picker.querySelector('[data-venue="'+id+'"]');if(card)card.classList.toggle('isCurrent',id===state.venue);
   });
  }
@@ -684,4 +684,4 @@ async function rebuild(){const refs=ALL.filter(a=>a.reference);if(!refs.length){
 async function boot(){render();el('status').textContent='LOADING ARTWORK REFERENCES…';await Promise.all(ALL.map(loadReference));await rebuild();render()}
 window.__traceAppRender=render;
 boot();
-</script><script src="trace-coop-v2.js?v=1"></script><script src="trace-v1.js?v=7"></script><script src="trace-bonus.js?v=2"></script></body></html>
+</script><script src="trace-coop-v2.js?v=1"></script><script src="trace-v1.js?v=8"></script><script src="trace-bonus.js?v=2"></script><script src="trace-extra.js?v=1"></script></body></html>
