@@ -1,6 +1,6 @@
-# TRACE v1.9.1: Playable museum adventures with institutional routing
+# TRACE v2.0: Mica museum welcomes, sculpture-making labs and institutional routing
 
-**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=191
+**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=20
 
 **Official MMFA map:** https://www.mbam.qc.ca/en/mmfa-museum-map/
 
@@ -15,6 +15,20 @@ TRACE is an independent pilot concept with **eight real collection artworks from
 For paintings and photographs with calibrated image references, the camera scan remains the primary matching method. After requesting a hint, **Compare visually with museum reference** becomes available for every artwork. The same option appears if an automatic scan fails or the camera is unavailable. Sculptures and newer works without validated reference images use **visitor self-confirmation** from the beginning. This is always labelled clearly and never presented as automatic verification.
 
 On the visual comparison screen, visitors can **take or select one photo (optional)** and compare it alongside the museum's collection image. They may also visually confirm without taking a photo, including when museum photography is not permitted. Only explicit visitor confirmation advances the story. This is a visitor-assisted comparison, **not automatic recognition or a 3D scan**. Uploaded photos stay on the device and may be saved in the visitor's local discovery album once confirmed. A future multi-angle recognition feature would require curated reference photography and validation, not extra photo steps for visitors.
+
+## Animated Mica museum welcomes (English, French, Spanish)
+
+Visitors select **EN / FR / ES** when entering either museum, then meet an animated Mica. Five short, skippable captioned scenes introduce the institution's real history, the building, what to look for, how to use the quest and the museum MAP, and respectful visitor behavior (do not touch artworks, keep voices low, respect photo rules and other visitors). The experience has **Next / Back / Skip**, optional autoplay, optional device text-to-speech on explicit request, reduced-motion support, and **Replay Mica's welcome** from the adventure map. Switching museums opens a museum-specific introduction; returning visitors retain their own progress. Language choices persist, and the welcome/cube activity are provided in all three languages. Other legacy adventure surfaces are not yet fully translated.
+
+Historical facts were checked against the institutions' published history and building pages:
+* MMFA: https://www.mbam.qc.ca/en/the-museum/about-the-museum/ and https://www.mbam.qc.ca/en/the-museum/museum-complex/
+* PAMM: https://www.pamm.org/en/about/ and https://www.pamm.org/en/about-the-building/
+
+The introduction uses original CSS/SVG drawings of Mica and a simplified facade, not official architectural images. It is an independent demonstration, not an authorized museum tour or official visitor instruction.
+
+## Improved Chaos SAS activity
+
+Instead of tapping repetitive tilt buttons, visitors manipulate three open-cube forms inspired by Jedd Novatt's sculpture. They can **drag the middle/top frames sideways**, use keyboard-friendly movement buttons and turn the selected frame with a slider. The live **wobble meter** reacts to changes; visitors finish by changing two cubes, turning at least one and retaining balance. The visual is a playful simplification, not a structural physics simulation or exact sculpture reproduction.
 
 ## Visitor experience
 
