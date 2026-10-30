@@ -48,6 +48,7 @@ function gate(){
  return '<div class="ta-mask" role="dialog" aria-modal="true" aria-labelledby="traceAdminTitle"><div class="ta-gate">'+
  '<div class="ta-brand">TRACE<span>.</span> / MUSEUM ADMIN</div><h1 id="traceAdminTitle">Manage what visitors see.</h1>'+
  '<p>Sign in using a <strong>GitHub fine-grained access token</strong> for the TRACE museum repository. Only collaborators with Contents: Read and write can publish changes.</p>'+
+ '<div class="ta-language-picker" role="group" aria-label="App language"><span>LANGUAGE</span><button type="button" data-trace-lang="en">EN</button><button type="button" data-trace-lang="fr">FR</button><button type="button" data-trace-lang="es">ES</button></div>'+
  '<form id="traceAdminLogin" autocomplete="off"><label for="traceAdminToken">GitHub access token</label>'+
  '<input id="traceAdminToken" type="password" autocomplete="off" spellcheck="false" required placeholder="github_pat_…" />'+
  '<button id="traceAdminSubmit" type="submit">Sign in to museum administration</button></form>'+
