@@ -17,6 +17,15 @@ with sync_playwright() as p:
  assert seed.ok, "Published source file must exist"
  baseline=seed.json()
  seed_ctx.close()
+ # This simulation must not assume or change the live curator's artwork settings.
+ original={"mmfa-marrel","mmfa-witte","mmfa-fortin","pamm-masks","pamm-delano","pamm-grid"}
+ for ident,row in baseline["works"].items():
+  row["active"]=ident in original
+  row["onViewVerified"]=False
+  row["room"]=""
+  row["startDate"]=""
+  row["endDate"]=""
+ baseline["connections"]={"mmfa":[],"pamm":[]}
  shared={"content":baseline,"sha":"mock-sha-0","version":0,"writes":0}
  failures=[]
  def network(route):
