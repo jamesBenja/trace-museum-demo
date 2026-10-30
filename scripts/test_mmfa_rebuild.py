@@ -16,11 +16,13 @@ def gesture(page,start,end,steps=14):
  page.mouse.down()
  page.mouse.move(*end,steps=steps)
  page.mouse.up()
+def rect(node):
+ return node.evaluate("""e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}""")
 def center(rect):
  return (rect["x"]+rect["width"]/2,rect["y"]+rect["height"]/2)
 def drag(page,node,end):
  node.scroll_into_view_if_needed()
- start=center(node.bounding_box())
+ start=center(node.evaluate("""e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}"""))
  gesture(page,start,end)
 with sync_playwright() as pw:
  browser=pw.chromium.launch(headless=True,args=["--no-sandbox"])
@@ -44,15 +46,12 @@ with sync_playwright() as pw:
   if name=='marrel':
    board=page.locator('.mf-garden')
    board.scroll_into_view_if_needed()
-   r=board.bounding_box()
-   if r is None:
-    print("MMFA BOARD DIAGNOSTIC",page.evaluate("""() => {
-      let e=document.querySelector('.mf-garden');
-      return {exists:!!e, outer:e?.outerHTML.slice(0,500), tree:e?[e,...[1,2,3,4,5].map(_=>e).filter(Boolean)].map(x=>({tag:x.tagName,display:getComputedStyle(x).display,visible:getComputedStyle(x).visibility,rect:x.getBoundingClientRect().toJSON()})):[], view:getComputedStyle(document.querySelector('#view')).display, main:getComputedStyle(document.querySelector('.phone')).display, body:document.body.className}
-    }"""),flush=True)
+   r=board.evaluate("""e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}""")
    for n in range(4):
     gesture(page,(r['x']+r['width']*.10,r['y']+r['height']*.91),
              (r['x']+r['width']*.63,r['y']+r['height']*.91),steps=12)
+   assert page.locator('.mf-painted-lizard').count()==2,"Lizards are not visibly painted in the garden"
+   assert page.evaluate("window.TRACE_V1.puzzle.extra.rubs.some(p=>p.length>2)"),"Copper brush did not record local polish strokes"
    for n in range(5):
     page.locator('[data-mf="find"][data-v="'+str(n)+'"]').click()
    assert page.locator('.mf-secret.found').count()==5
@@ -61,14 +60,14 @@ with sync_playwright() as pw:
    for n in range(3):page.locator('[data-mf="door"][data-v="'+str(n)+'"]').click()
    handle=page.locator('.mf-drag-point')
    handle.scroll_into_view_if_needed()
-   r=page.locator('.mf-perspective').bounding_box()
+   r=page.locator('.mf-perspective').evaluate("""e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}""")
    drag(page,handle,(r['x']+r['width']*.5,r['y']+r['height']*.45))
    assert page.evaluate('window.TRACE_V1.puzzle.extra.doors.length')==3
    assert 40<=page.evaluate('window.TRACE_V1.puzzle.extra.point.x')<=60
   elif name=='fortin':
    board=page.locator('.mf-storm')
    board.scroll_into_view_if_needed()
-   r=board.bounding_box()
+   r=board.evaluate("""e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}""")
    for n in range(3):
     x=r['x']+r['width']*.23
     y=r['y']+r['height']*(.25+n*.11)
@@ -76,16 +75,21 @@ with sync_playwright() as pw:
    assert page.locator('.mf-storm-stroke').count()==3
    sun=page.locator('.mf-sun-handle')
    sun.scroll_into_view_if_needed()
-   r=board.bounding_box()
+   r=board.evaluate("""e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}""")
    drag(page,sun,(r['x']+r['width']*.91,r['y']+25))
    assert page.evaluate('window.TRACE_V1.puzzle.extra.sun')>=.7
   elif name=='eye':
    size=page.locator('.mf-size-handle')
    size.scroll_into_view_if_needed()
-   r=page.locator('.mf-monument').bounding_box()
+   r=page.locator('.mf-monument').evaluate("""e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}""")
    drag(page,size,(r['x']+r['width']*.91,r['y']+r['height']*.86))
    assert page.evaluate('window.TRACE_V1.puzzle.extra.eye')>=.8
-   for n in range(2):page.locator('[data-mf="view"][data-v="'+str(n)+'"]').click()
+   visuals=[]
+   for n in range(2):
+    page.locator('[data-mf="view"][data-v="'+str(n)+'"]').click()
+    visuals.append(page.locator('.mf-monument .mf-svg').inner_html())
+    assert page.locator('.mf-monument').get_attribute('data-view')==str(n)
+   assert visuals[0]!=visuals[1],"Viewpoint buttons did not change illustration"
    assert page.evaluate('window.TRACE_V1.puzzle.extra.views.length')==2
   elif name=='frink':
    for spot in (0,4):page.locator('[data-mf="guardian"][data-v="'+str(spot)+'"]').click()
@@ -96,14 +100,26 @@ with sync_playwright() as pw:
    page.locator('[data-mf="base"][data-v="dark"]').click()
    for part in ('wheel','wire','fabric'):page.locator('[data-mf="piece"][data-v="'+part+'"]').click()
    assert page.locator('.mf-junk').count()==3
+   assert page.locator('.mf-assembly-joints').count()==0,"Unanchored objects were already attached"
    page.locator('[data-mf="anchor"]').click()
+   assert page.locator('.mf-assembly-sculpture.assembled').count()==1
+   assert page.locator('.mf-assembly-joints').count()==1,"Anchor did not physically connect pieces"
   elif name=='rodin':
    for n in range(1,4):page.locator('[data-mf="pose"][data-v="'+str(n)+'"]').first.click()
    assert page.locator('.mf-thought').count()==1
+   joint=page.locator('.mf-joint-hand')
+   assert page.locator('.mf-joint-handle').count()==4,"The body has no draggable joints"
+   prior=page.locator('.mf-rodin-arm').get_attribute('d')
+   r=page.locator('.mf-rodin').evaluate("""e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}""")
+   drag(page,joint,(r['x']+r['width']*.67,r['y']+r['height']*.43))
+   assert page.locator('.mf-rodin-arm').get_attribute('d')!=prior,"Pulling the hand did not bend the arm"
   elif name=='cragg':
+   rotations=[]
    for angle,face in [('-45',0),('0',1),('45',2)]:
     page.locator('[data-mf="angle"][data-v="'+angle+'"]').click()
+    rotations.append(page.locator('.mf-turntable').get_attribute('style'))
     page.locator('[data-mf="reveal"][data-v="'+str(face)+'"]').click()
+   assert len(set(rotations))==3,"View buttons do not rotate the sculpture"
    assert page.evaluate('window.TRACE_V1.puzzle.extra.faces.length')==3
   assert page.evaluate('window.TRACE_V1.puzzle.done'),name+" creative success did not unlock"
   assert finish.is_enabled(),name+" finish button never enabled"
