@@ -38,23 +38,23 @@ with sync_playwright() as p:
    assert nav in page.locator('.tabs [data-tab="quest"]').inner_text(),(museum,lang,page.locator('.tabs [data-tab="quest"]').inner_text())
    page.evaluate("state.tab='quest';state.stage='hub';render()")
    page.locator('[data-tab="map"]').click()
-   page.wait_for_function('(title)=>document.querySelector("#view")?.textContent.includes(title)',route)
+   page.wait_for_function('(title)=>document.querySelector("#view")?.textContent.includes(title)',arg=route)
    assert page.locator('.tn-page').count()==1
    page.locator('[data-tab="quest"]').click()
    assert page.evaluate("state.stage")=='hub'
    page.locator('[data-t1-open="3"]').click()
-   page.wait_for_function('(needle)=>document.querySelector("#view")?.textContent.includes(needle)',work)
+   page.wait_for_function('(needle)=>document.querySelector("#view")?.textContent.includes(needle)',arg=work)
    assert page.locator('.t1-screen').count()>0
    # This new sculpture has a visually-confirmed flow.
    page.locator('[data-action="manual-review"]').first.click()
    confirmation={'fr':'Est-ce la même œuvre ?','es':'¿Es la misma obra?','en':'Is this the same artwork?'}[lang]
-   page.wait_for_function('(needle)=>document.querySelector("#view")?.textContent.includes(needle)',confirmation)
+   page.wait_for_function('(needle)=>document.querySelector("#view")?.textContent.includes(needle)',arg=confirmation)
    page.locator('[data-action="manual-accept"]').click()
    page.locator('[data-action="v7-story"]').click()
    expected={'fr':'L’Œil' if museum=='mmfa' else 'Chaos SAS','es':'El ojo' if museum=='mmfa' else 'Chaos SAS','en':'The Eye' if museum=='mmfa' else 'Chaos SAS'}[lang]
    assert expected in page.locator('#view').inner_text()
    page.locator('[data-action="v7-puzzle"]').click()
-   page.wait_for_function('(needle)=>document.querySelector("#view")?.textContent.includes(needle)',{'fr':'ATELIER CRÉATIF TRACE','es':'TALLER CREATIVO TRACE','en':'TRACE ART-MAKING LAB'}[lang])
+   page.wait_for_function('(needle)=>document.querySelector("#view")?.textContent.includes(needle)',arg={'fr':'ATELIER CRÉATIF TRACE','es':'TALLER CREATIVO TRACE','en':'TRACE ART-MAKING LAB'}[lang])
    # Recover hub without marking discovery, leaving the test independent of puzzle changes.
    page.evaluate("state.stage='hub';render()")
    print('LOCALIZED WORKFLOW PASS',museum,lang,flush=True)
@@ -70,8 +70,8 @@ with sync_playwright() as p:
  admin.goto(URL+('&portal=admin' if '?' in URL else '?portal=admin'),wait_until='domcontentloaded')
  admin.wait_for_function('window.TRACE_I18N && document.querySelector("#traceAdminTitle")',timeout=30000)
  for lang,label in [('fr','Gérez ce que voient les visiteurs.'),('es','Administra lo que ven los visitantes.'),('en','Manage what visitors see.')]:
-  admin.locator('[data-trace-lang="'+lang+'"]').click()
-  admin.wait_for_function('(label)=>document.querySelector("#traceAdminTitle")?.textContent===label',label)
+  admin.locator('.ta-language-picker [data-trace-lang="'+lang+'"]').click()
+  admin.wait_for_function('(label)=>document.querySelector("#traceAdminTitle")?.textContent===label',arg=label)
   print('LOCALIZED ADMIN GATE PASS',lang,flush=True)
  browser.close()
 print('ALL TRACE GLOBAL LOCALE TESTS PASSED',flush=True)
