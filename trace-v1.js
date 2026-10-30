@@ -133,7 +133,8 @@ function puzzleIntro(a){return '<div class="t1-overline">CREATE, EXPERIMENT, DIS
 function puzzle(){
  const a=A[state.current];if(!a||!activeArts().some(x=>x.id===a.id))return hub();
  if(C.id!==a.id||C.lastPuzzleId!==a.id){C.id=a.id;C.lastPuzzleId=a.id;C.progress=0;C.points=[];C.done=false;C.chosen=null;C.xy={x:78,y:77};}
- if(window.TRACE_PAMM_GAME?.has(a.id))return window.TRACE_PAMM_GAME.game(a,C);
+ if(window.TRACE_MMFA_GAME?.has(a.id))return window.TRACE_MMFA_GAME.game(a,C);
+  if(window.TRACE_PAMM_GAME?.has(a.id))return window.TRACE_PAMM_GAME.game(a,C);
   if(window.TRACE_MOMA_GAME?.has(a.id))return window.TRACE_MOMA_GAME.game(a,C);
  if(window.TRACE_EXTRA?.has(a.id))return window.TRACE_EXTRA.game(a,C);
  let content='';
@@ -172,6 +173,7 @@ function success(){
  return '<div class="t1-screen"><div class="t1-complete">'+mascot(win?'We recovered every power! Now the museum is full of possibilities.':'You did it! Your eyes and imagination helped restore another piece of the lens.')+
  '<div class="t1-overline">POWER UNLOCKED ✦</div><h2 class="t1-h1">'+esc(a.power)+'</h2><p class="t1-small">'+esc(node.subtitle)+'</p>'+
  '<div class="t1-storyboard">'+t1Found().map(x=>'<span>'+v7meta(x).symbol+' '+esc(x.power)+'</span>').join('')+'</div>'+
+ (window.TRACE_MMFA_GAME?.conclusion(a.id,state.lang)?'<div class="mf-mica-conclusion"><div class="mf-mica-avatar" aria-hidden="true"><span>•ᴗ•</span></div><div><strong>MICA ✦</strong><p>'+esc(window.TRACE_MMFA_GAME.conclusion(a.id,state.lang))+'</p></div></div>':'')+
  (window.TRACE_PAMM_GAME?.conclusion(a.id,state.lang)?'<div class="pg-mica-conclusion"><div class="pg-mica-avatar" aria-hidden="true"><span>•ᴗ•</span></div><div><b>MICA ✦</b><p>'+esc(window.TRACE_PAMM_GAME.conclusion(a.id,state.lang))+'</p></div></div>':'')+
  (win?'<h3 class="t1-h2">Current adventure complete!</h3><p class="t1-small">You found all available works. New ones may appear when the museum updates the route.</p>':'<p class="t1-small">There are '+(activeArts().length-t1Found().length)+' available mysteries left. The map may have changed!</p>')+'</div>'+
  btn(win?'View the completed adventure map':'Choose my next mystery','t1-hub')+
@@ -185,7 +187,7 @@ function renderGame(v){
  if(state.stage==='welcome'){v.innerHTML=window.TRACE_WELCOME?.render()||intro();return true}
  if(state.stage==='hub'){v.innerHTML=hub();return true}
  if(state.stage==='clue'){v.innerHTML=clue();window.TRACE_COOP?.install();return true}
- if(state.stage==='puzzle'){v.innerHTML=puzzle();if(!window.TRACE_EXTRA?.has(A[state.current]?.id)&&!window.TRACE_PAMM_GAME?.has(A[state.current]?.id)&&!window.TRACE_MOMA_GAME?.has(A[state.current]?.id))installPuzzle();return true}
+ if(state.stage==='puzzle'){v.innerHTML=puzzle();if(!window.TRACE_EXTRA?.has(A[state.current]?.id)&&!window.TRACE_PAMM_GAME?.has(A[state.current]?.id)&&!window.TRACE_MOMA_GAME?.has(A[state.current]?.id)&&!window.TRACE_MMFA_GAME?.has(A[state.current]?.id))installPuzzle();return true}
  if(state.stage==='success'){v.innerHTML=success();return true}
  if(state.stage==='complete'||state.current>=A.length){v.innerHTML=hub();return true}
  return false;
