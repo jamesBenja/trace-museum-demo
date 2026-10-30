@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "mode": "independent-pitch-demo",
   "updatedAt": "2026-10-29",
-  "description": "Published defaults. Active indicates inclusion in the TRACE demo route, NOT verified on-wall exhibition status. Museums must confirm onViewVerified and rooms before launch.",
+  "description": "Official pavilion/floor or gallery number labels were transcribed from museum-issued 2026 MMFA and 2025 PAMM maps. These do not verify artwork installations or inter-room walking links. Edges must be approved by an administrator. Active means demo route membership, not confirmed on view.",
   "works": {
     "mmfa-marrel": {
       "active": true,
@@ -100,5 +100,277 @@
       "room": "",
       "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
     }
+  },
+  "rooms": {
+    "mmfa": [
+      {
+        "id": "mmfa-entrance",
+        "label": "Main entrance · Jean-Noël Desmarais",
+        "wing": "Jean-Noël Desmarais",
+        "floor": "1"
+      },
+      {
+        "id": "mmfa-desmarais-s2",
+        "label": "International Contemporary Art",
+        "wing": "Jean-Noël Desmarais",
+        "floor": "S2"
+      },
+      {
+        "id": "mmfa-desmarais-4",
+        "label": "Arts of One World",
+        "wing": "Jean-Noël Desmarais",
+        "floor": "4"
+      },
+      {
+        "id": "mmfa-peace-1",
+        "label": "Salons, Avant-garde & Contemporary Art",
+        "wing": "Hornstein Pavilion for Peace",
+        "floor": "1"
+      },
+      {
+        "id": "mmfa-peace-2",
+        "label": "Baroque to Rococo",
+        "wing": "Hornstein Pavilion for Peace",
+        "floor": "2"
+      },
+      {
+        "id": "mmfa-peace-3",
+        "label": "Golden Age in Holland and Flanders",
+        "wing": "Hornstein Pavilion for Peace",
+        "floor": "3"
+      },
+      {
+        "id": "mmfa-peace-4",
+        "label": "Medieval Nave and Renaissance",
+        "wing": "Hornstein Pavilion for Peace",
+        "floor": "4"
+      },
+      {
+        "id": "mmfa-bourgie-s2",
+        "label": "Expanding Fields 1960–1970",
+        "wing": "Claire and Marc Bourgie",
+        "floor": "S2"
+      },
+      {
+        "id": "mmfa-bourgie-s1",
+        "label": "Age of the Manifesto 1940–1960",
+        "wing": "Claire and Marc Bourgie",
+        "floor": "S1"
+      },
+      {
+        "id": "mmfa-bourgie-1",
+        "label": "Towards Modernism 1920–1930",
+        "wing": "Claire and Marc Bourgie",
+        "floor": "1"
+      },
+      {
+        "id": "mmfa-bourgie-2",
+        "label": "Annual Exhibitions 1880–1920",
+        "wing": "Claire and Marc Bourgie",
+        "floor": "2"
+      },
+      {
+        "id": "mmfa-bourgie-3",
+        "label": "Founding Identities 1700–1870",
+        "wing": "Claire and Marc Bourgie",
+        "floor": "3"
+      },
+      {
+        "id": "mmfa-bourgie-4",
+        "label": "Rising Suns: Great Lakes and Rivers",
+        "wing": "Claire and Marc Bourgie",
+        "floor": "4"
+      },
+      {
+        "id": "mmfa-stewart-1",
+        "label": "Decorative Arts and Design",
+        "wing": "Liliane and David M. Stewart",
+        "floor": "1"
+      },
+      {
+        "id": "mmfa-stewart-2",
+        "label": "Decorative Arts and Design",
+        "wing": "Liliane and David M. Stewart",
+        "floor": "2"
+      },
+      {
+        "id": "mmfa-garden",
+        "label": "Sculpture Garden",
+        "wing": "Museum exterior",
+        "floor": "Outdoor"
+      },
+      {
+        "id": "mmfa-passage",
+        "label": "Underground passage / connector",
+        "wing": "Museum passage",
+        "floor": "S2"
+      }
+    ],
+    "pamm": [
+      {
+        "id": "pamm-1",
+        "label": "Visitor Services Center",
+        "wing": "Public areas",
+        "floor": "1"
+      },
+      {
+        "id": "pamm-2",
+        "label": "Museum Lobby",
+        "wing": "Public areas",
+        "floor": "1"
+      },
+      {
+        "id": "pamm-7",
+        "label": "Central Staircase",
+        "wing": "Public circulation",
+        "floor": "1"
+      },
+      {
+        "id": "pamm-14",
+        "label": "Staircase",
+        "wing": "Public circulation",
+        "floor": "1"
+      },
+      {
+        "id": "pamm-18",
+        "label": "Sculpture Garden",
+        "wing": "Museum exterior",
+        "floor": "Outdoor"
+      },
+      {
+        "id": "pamm-35",
+        "label": "Staircase",
+        "wing": "Public circulation",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-37",
+        "label": "Central Staircase and Auditorium",
+        "wing": "Public circulation",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-3",
+        "label": "Gallery 3",
+        "wing": "Galleries",
+        "floor": "1"
+      },
+      {
+        "id": "pamm-4",
+        "label": "Gallery 4",
+        "wing": "Galleries",
+        "floor": "1"
+      },
+      {
+        "id": "pamm-5",
+        "label": "Gallery 5",
+        "wing": "Galleries",
+        "floor": "1"
+      },
+      {
+        "id": "pamm-8",
+        "label": "Gallery 8",
+        "wing": "Galleries",
+        "floor": "1"
+      },
+      {
+        "id": "pamm-20",
+        "label": "Gallery 20",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-21",
+        "label": "Gallery 21",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-22",
+        "label": "Gallery 22",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-23",
+        "label": "Gallery 23",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-24",
+        "label": "Gallery 24",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-25",
+        "label": "Gallery 25",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-26",
+        "label": "Gallery 26",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-27",
+        "label": "Gallery 27",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-28",
+        "label": "Gallery 28",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-29",
+        "label": "Gallery 29",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-30",
+        "label": "Gallery 30",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-31",
+        "label": "Gallery 31",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-32",
+        "label": "Gallery 32",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-33",
+        "label": "Gallery 33",
+        "wing": "Galleries",
+        "floor": "2"
+      },
+      {
+        "id": "pamm-34",
+        "label": "Gallery 34",
+        "wing": "Galleries",
+        "floor": "2"
+      }
+    ]
+  },
+  "connections": {
+    "mmfa": [],
+    "pamm": []
+  },
+  "floorPlans": {
+    "mmfa": "https://www.mbam.qc.ca/workspace/uploads/files/mmfa-museum-map-14-04-26.pdf",
+    "pamm": "https://www.pamm.org/wp-content/uploads/2025/12/web_map_2025.pdf"
   }
 }
