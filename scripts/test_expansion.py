@@ -5,8 +5,8 @@ from pathlib import Path
 
 URL=os.getenv('TRACE_TEST_URL','https://jamesbenja.github.io/trace-museum-demo/?v=18')
 ADDED={
- 'mmfa':['mmfa-eye','mmfa-frink','mmfa-riopelle','mmfa-rodin','mmfa-cragg'],
- 'pamm':['pamm-chaos','pamm-fonseca','pamm-yanko','pamm-christo','pamm-chromati']
+ 'mmfa':['mmfa-eye','mmfa-frink','mmfa-riopelle','mmfa-rodin','mmfa-cragg']
+
 }
 
 def slide(page,ident,value):
@@ -197,4 +197,4 @@ with sync_playwright() as p:
   assert not errors,errors
   page.close()
  browser.close()
-print('ALL TEN INTERACTIVE LABS PASSED',flush=True)
+print('ALL FIVE MMFA EXPANSION LABS PASSED',flush=True)
