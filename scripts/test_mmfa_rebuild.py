@@ -45,6 +45,11 @@ with sync_playwright() as pw:
    board=page.locator('.mf-garden')
    board.scroll_into_view_if_needed()
    r=board.bounding_box()
+   if r is None:
+    print("MMFA BOARD DIAGNOSTIC",page.evaluate("""() => {
+      let e=document.querySelector('.mf-garden');
+      return {exists:!!e, outer:e?.outerHTML.slice(0,500), tree:e?[e,...[1,2,3,4,5].map(_=>e).filter(Boolean)].map(x=>({tag:x.tagName,display:getComputedStyle(x).display,visible:getComputedStyle(x).visibility,rect:x.getBoundingClientRect().toJSON()})):[], view:getComputedStyle(document.querySelector('#view')).display, main:getComputedStyle(document.querySelector('.phone')).display, body:document.body.className}
+    }"""),flush=True)
    for n in range(4):
     gesture(page,(r['x']+r['width']*.10,r['y']+r['height']*.91),
              (r['x']+r['width']*.63,r['y']+r['height']*.91),steps=12)
