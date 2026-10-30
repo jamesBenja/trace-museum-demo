@@ -92,17 +92,17 @@ function clue(){
  return '<div class="t1-screen"><div class="t1-overline">MYSTERY '+(state.current+1)+' OF '+A.length+' · '+esc(node.subtitle)+'</div><h2 class="t1-h1">'+esc(node.name)+'</h2>'+paintProgress()+
  mascot(node.friend)+
  '<div class="t1-task">'+txt+'</div>'+
- '<div class="v7-fragment"><img src="'+img(a)+'" style="object-position:'+focus+'" alt="Mystery fragment from selected artwork"><div class="v7-cover">FIND THIS DETAIL</div></div>'+
+ '<div class="v7-fragment t1-hidden-reference" role="img" aria-label="Artwork still hidden. Follow Mica’s clue to find it."><div class="t1-hidden-symbol" aria-hidden="true">✦</div><p>THE ARTWORK IS STILL A SECRET</p><div class="v7-cover">FIND THE HIDDEN ARTWORK</div></div>'+
  '<div class="t1-team"><div class="t1-overline">YOUR CLUE</div><h3>'+esc(a.chapter)+'</h3><p class="t1-small">'+esc(v7field(a,'clue'))+'</p></div>'+roleMessage()+
- (a.previewOnly?'<div class="te-notice"><strong>Visual identification preview</strong><p>Automatic recognition is not yet validated for this work. Observe it in person and compare with the official collection record. The work may not be on display.</p><a href="'+a.url+'" target="_blank" rel="noopener noreferrer">Official museum artwork record ↗</a></div>': '')+
- (a.reference?btn('⌾ Scan artwork with camera','scan'):btn('⌾ Take one photo or compare visually','manual-review'))+
+ (a.previewOnly?'<div class="te-notice"><strong>Photo-first discovery</strong><p>Photograph your best guess before seeing the museum reference. Automatic recognition is not yet calibrated for this work, so the final comparison will be yours to confirm. The artwork might not be on display.</p></div>': '')+
+ (a.reference?btn('⌾ Scan artwork with camera','scan'):btn('⌾ Photograph my guess','photo-quest'))+
  btn('⌖ Help me find the gallery','map','outline')+
  (state.hints.includes(a.id)?'<div class="t1-task">✧ '+esc(a.hint)+'</div>'+
  btn('👁 Camera not working? Compare visually','manual-review','outline'):btn('✧ Ask Mica for a hint','hint','ghost'))+
  btn('← Back to adventure map','t1-hub','ghost')+
  (a.previewOnly?'':'<details class="v7-cms"><summary style="font-size:12px;cursor:pointer;font-weight:800">Demo testing tools</summary><p class="t1-small">This artwork might not be on display. Test with the published collection image on a second screen, or use the simulated image test below.</p>'+
  btn('Test matching with a reference','sample:'+a.id,'outline')+'</details>')+
- '<p class="tiny">Museum collection image rights belong to their respective holders. <a target="_blank" rel="noopener noreferrer" href="'+a.url+'">Collection record ↗</a></p></div>';
+ '<p class="tiny">Image rights remain with the museum and rights holders. The official collection image is deliberately hidden until after a photo or an explicit visual-comparison fallback.</p></div>';
 }
 function puzzleIntro(a){return '<div class="t1-overline">CREATE, EXPERIMENT, DISCOVER · '+esc(a.artist)+'</div><h2 class="t1-h1">'+esc(a.chapter)+'</h2>'+
  mascot('Great detective work! Now try something the artist might have tried. This is a hands-on challenge, not a memory quiz.')+
