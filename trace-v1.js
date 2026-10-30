@@ -34,7 +34,12 @@ function allDone(){const aa=activeArts();return aa.length>0&&aa.every(a=>state.f
 function settingMode(mode){if(['solo','family'].includes(mode)){prefs.mode=mode;persist();render()}}
 function settingAge(age){if(['5-7','8-12','teen'].includes(age)){prefs.age=age;persist();render()}}
 function paintProgress(){return '<div class="t1-progress"><span style="width:'+(t1Found().length/Math.max(1,activeArts().length)*100)+'%"></span></div>'}
-function mascot(message){return '<div class="t1-companion"><div class="t1-mica" aria-hidden="true"><div class="t1-mica-body"><div class="t1-mica-mouth"></div></div><span class="t1-mica-sparkle">✦</span></div><div><div class="t1-mica-label">MICA · YOUR ART GUIDE</div><p class="t1-mica-line">'+esc(message)+'</p></div></div>'}
+function mascot(message,artworkId){
+ const themed=artworkId&&window.TRACE_MICA?.has(artworkId);
+ const figure=themed?'<div class="t1-mica tm-mica-context" aria-hidden="true">'+window.TRACE_MICA.svg(artworkId)+'</div>':
+  '<div class="t1-mica" aria-hidden="true"><div class="t1-mica-body"><div class="t1-mica-mouth"></div></div><span class="t1-mica-sparkle">✦</span></div>';
+ return '<div class="t1-companion'+(themed?' tm-companion-active':'')+'">'+figure+'<div><div class="t1-mica-label">MICA · YOUR ART GUIDE</div><p class="t1-mica-line">'+esc(message)+'</p></div></div>';
+}
 function btn(label,act,variant){
  if(act==='t1-start'||act==='t1-hub')
   return '<button class="button '+(variant||'')+'" data-'+act+'>'+esc(label)+'</button>';
@@ -113,7 +118,7 @@ function clue(){
   '<button class="t1-detail-hide" type="button" data-t1-detail-hide aria-expanded="true" aria-controls="t1-detail-panel">'+esc(t.hide)+'</button>':
   '<button class="t1-detail-trigger" type="button" data-t1-detail-reveal aria-expanded="false" aria-controls="t1-detail-panel"><span class="t1-detail-trigger-icon" aria-hidden="true"><span class="t1-detail-preview-spark">✧</span><span class="t1-detail-mini-mica">✦</span></span><span class="t1-detail-trigger-copy"><strong>'+esc(t.reveal)+'</strong><small>'+esc(t.explain)+'</small></span><span aria-hidden="true" class="t1-detail-chevron">›</span></button>';
  return '<div class="t1-screen"><div class="t1-overline">MYSTERY '+(state.current+1)+' OF '+A.length+' · '+esc(node.subtitle)+'</div><h2 class="t1-h1">'+esc(node.name)+'</h2>'+paintProgress()+
- mascot(node.friend)+
+ mascot(node.friend,a.id)+
  '<div class="t1-team t1-word-clue"><div class="t1-overline">'+esc(t.first)+'</div><h3>'+esc(a.chapter)+'</h3><p class="t1-small">'+description+'</p></div>'+
  '<p class="t1-small">'+esc(txt)+'</p>'+
  '<section class="t1-detail-section" aria-label="'+esc(t.second)+'"><div class="t1-overline">'+esc(t.second)+'</div>'+detail+'</section>'+roleMessage()+
@@ -128,7 +133,7 @@ function clue(){
  '<p class="tiny">Only the optional close-up is shown before your photo. The full museum reference remains hidden until the scan result or your chosen comparison fallback.</p></div>';
 }
 function puzzleIntro(a){return '<div class="t1-overline">CREATE, EXPERIMENT, DISCOVER · '+esc(a.artist)+'</div><h2 class="t1-h1">'+esc(a.chapter)+'</h2>'+
- mascot('Great detective work! Now try something the artist might have tried. This is a hands-on challenge, not a memory quiz.')+
+ mascot('Great detective work! Now try something the artist might have tried. This is a hands-on challenge, not a memory quiz.',a.id)+
  '<div class="t1-task">👀 Look at the physical artwork first. Discuss one artistic choice with someone nearby, or think about it quietly.</div>'}
 function puzzle(){
  const a=A[state.current];if(!a||!activeArts().some(x=>x.id===a.id))return hub();
@@ -170,7 +175,7 @@ function puzzle(){
 }
 function success(){
  const a=A[state.current],win=allDone(),node=L[state.venue].nodes[state.current];
- return '<div class="t1-screen"><div class="t1-complete">'+mascot(win?'We recovered every power! Now the museum is full of possibilities.':'You did it! Your eyes and imagination helped restore another piece of the lens.')+
+ return '<div class="t1-screen"><div class="t1-complete">'+mascot(win?'We recovered every power! Now the museum is full of possibilities.':'You did it! Your eyes and imagination helped restore another piece of the lens.',a.id)+
  '<div class="t1-overline">POWER UNLOCKED ✦</div><h2 class="t1-h1">'+esc(a.power)+'</h2><p class="t1-small">'+esc(node.subtitle)+'</p>'+
  '<div class="t1-storyboard">'+t1Found().map(x=>'<span>'+v7meta(x).symbol+' '+esc(x.power)+'</span>').join('')+'</div>'+
  (window.TRACE_MMFA_GAME?.conclusion(a.id,state.lang)?'<div class="mf-mica-conclusion"><div class="mf-mica-avatar" aria-hidden="true"><span>•ᴗ•</span></div><div><strong>MICA ✦</strong><p>'+esc(window.TRACE_MMFA_GAME.conclusion(a.id,state.lang))+'</p></div></div>':'')+
@@ -186,9 +191,9 @@ function renderGame(v){
  if(state.stage==='intro'){v.innerHTML=intro();return true}
  if(state.stage==='welcome'){v.innerHTML=window.TRACE_WELCOME?.render()||intro();return true}
  if(state.stage==='hub'){v.innerHTML=hub();return true}
- if(state.stage==='clue'){v.innerHTML=clue();window.TRACE_COOP?.install();return true}
- if(state.stage==='puzzle'){v.innerHTML=puzzle();if(!window.TRACE_EXTRA?.has(A[state.current]?.id)&&!window.TRACE_PAMM_GAME?.has(A[state.current]?.id)&&!window.TRACE_MOMA_GAME?.has(A[state.current]?.id)&&!window.TRACE_MMFA_GAME?.has(A[state.current]?.id))installPuzzle();return true}
- if(state.stage==='success'){v.innerHTML=success();return true}
+ if(state.stage==='clue'){v.innerHTML=clue();window.TRACE_MICA?.decorate(v,A[state.current]?.id,'clue',state.lang);window.TRACE_COOP?.install();return true}
+ if(state.stage==='puzzle'){v.innerHTML=puzzle();window.TRACE_MICA?.decorate(v,A[state.current]?.id,'puzzle',state.lang);if(!window.TRACE_EXTRA?.has(A[state.current]?.id)&&!window.TRACE_PAMM_GAME?.has(A[state.current]?.id)&&!window.TRACE_MOMA_GAME?.has(A[state.current]?.id)&&!window.TRACE_MMFA_GAME?.has(A[state.current]?.id))installPuzzle();return true}
+ if(state.stage==='success'){v.innerHTML=success();window.TRACE_MICA?.decorate(v,A[state.current]?.id,'success',state.lang);return true}
  if(state.stage==='complete'||state.current>=A.length){v.innerHTML=hub();return true}
  return false;
 }

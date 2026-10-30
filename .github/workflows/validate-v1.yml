@@ -31,6 +31,10 @@ on:
       - "trace-detail-reveal.css"
       - "scripts/test_detail_reveal.py"
       - "trace-v1.js"
+      - "trace-mica-accessories.js"
+      - "trace-mica-polished.svg"
+      - "trace-mica.css"
+      - "scripts/test_mica_accessories.py"
       - "trace-auth.js"
       - "trace-auth.css"
       - "admin.html"
@@ -88,6 +92,7 @@ jobs:
           node --check trace-i18n-final.js
           node --check trace-welcome.js
           node --check trace-v1.js
+          node --check trace-mica-accessories.js
           node --check trace-coop-v2.js
           node --check trace-bonus.js
           node --check trace-extra.js
@@ -105,6 +110,7 @@ jobs:
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_oppenheim_materials.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_locale.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_welcome.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_mica_accessories.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_v1.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_bonus.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_expansion.py

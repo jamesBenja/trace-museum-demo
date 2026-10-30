@@ -33,3 +33,26 @@
 @keyframes trace-mica-celebrate{0%,100%{transform:translateY(0) scale(1.4)}50%{transform:translateY(-4px) scale(1.44)}}
 @media(max-width:365px){.tw-mica{width:120px;height:147px;top:21px}.tw-star{right:0}}
 @media(prefers-reduced-motion:reduce){.tw-mica,.t1-mica,.t1-complete .t1-mica{animation:none!important}.tw-mica{transform:translateX(-50%)}.t1-complete .t1-mica{transform:scale(1.4)}}
+
+/* TRACE Mica artwork-only accessories, aligned to 300 x 470 vector character. */
+.t1-companion.tm-companion-active{gap:13px;align-items:center;min-height:128px}
+.t1-companion.tm-companion-active>div:last-child{min-width:0}
+.t1-mica.tm-mica-context{width:80px;min-width:80px;height:119px;background-size:contain;background-position:center center;filter:drop-shadow(0 5px 7px #4e659125)}
+.tm-prop-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:2}
+.tm-prop-svg .tm-prop-piece{transform-origin:25% 68%;animation:tm-prop-bob 4.1s ease-in-out infinite}
+.tm-prop-svg.tm-prop-hat .tm-prop-piece{transform-origin:50% 16%;animation:tm-hat-tilt 5.5s ease-in-out infinite}
+.tm-prop-svg.tm-prop-umbrella .tm-prop-piece{transform-origin:30% 68%;animation:tm-umbrella-sway 4s ease-in-out infinite}
+.tm-puzzle-companion{display:inline-flex;align-items:center;gap:10px;border:1px solid #d8dfd1;background:linear-gradient(110deg,#fffdf3,#e8edf5);border-radius:13px;padding:4px 13px 4px 7px;margin:2px 0 13px;box-shadow:0 3px 12px #334f5410;max-width:100%}
+.tm-puzzle-figure{position:relative;display:block;width:54px;min-width:54px;height:85px;background-image:var(--trace-mica-art);background-size:contain;background-position:center;background-repeat:no-repeat}
+.tm-puzzle-text{display:flex;flex-direction:column;gap:3px;min-width:0;color:#446957;font-size:11px;font-weight:700;line-height:1.4}
+.tm-puzzle-text strong{color:#a66e5c;font-size:10px;letter-spacing:1.25px}
+.tm-mini-prop{position:absolute;top:-11px;right:-15px;width:45px;height:65px;pointer-events:none;overflow:visible;z-index:3}
+.tm-mini-prop .tm-prop-svg{height:100%;width:100%;filter:drop-shadow(0 1px 2px #4e65912b)}
+.tm-mini-prop .tm-prop-piece{animation:none}
+.mf-mica-avatar:has(.tm-mini-prop),.pg-mica-avatar:has(.tm-mini-prop),.mg-mica:has(.tm-mini-prop){position:relative;overflow:visible}
+.t1-detail-mica-body:has(.tm-mini-prop){overflow:visible}
+@keyframes tm-prop-bob{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes tm-hat-tilt{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+@keyframes tm-umbrella-sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(5deg)}}
+@media(max-width:365px){.t1-mica.tm-mica-context{min-width:72px;width:72px;height:107px}.t1-companion.tm-companion-active{padding:9px;gap:8px}.tm-puzzle-figure{min-width:48px;width:48px;height:77px}}
+@media(prefers-reduced-motion:reduce){.tm-prop-svg .tm-prop-piece{animation:none!important}}
