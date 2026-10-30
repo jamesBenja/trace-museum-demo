@@ -444,7 +444,7 @@ function v7Narrate(){
  if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window)){alert('Narration is not supported by this browser.');return}
  const a=A[state.current];if(!a)return;
  window.speechSynthesis.cancel();
- const phrase=new SpeechSynthesisUtterance(v7field(a,'story'));
+ const phrase=new SpeechSynthesisUtterance(window.TRACE_I18N?.translate(v7field(a,'story'),state.lang)||v7field(a,'story'));
  phrase.lang=state.lang==='fr'?'fr-CA':state.lang==='es'?'es-US':'en-CA';
  phrase.rate=.89;window.speechSynthesis.speak(phrase);
 }
@@ -731,4 +731,4 @@ async function boot(){render();el('status').textContent='LOADING ARTWORK REFEREN
 window.TRACE_LOAD_ACTIVE=ensureActiveReferences;
 window.__traceAppRender=render;
 boot();
-</script><script src="trace-coop-v2.js?v=1"></script><script src="trace-welcome.js?v=1"></script><script src="trace-v1.js?v=11"></script><script src="trace-bonus.js?v=2"></script><script src="trace-extra.js?v=3"></script><script src="trace-auth.js?v=1"></script><script src="trace-routing.js?v=3"></script><script src="trace-display.js?v=4"></script><script src="trace-i18n.js?v=1"></script><script src="trace-i18n-art.js?v=1"></script><script src="trace-i18n-content.js?v=1"></script><script src="trace-i18n-map.js?v=1"></script></body></html>
+</script><script src="trace-coop-v2.js?v=1"></script><script src="trace-welcome.js?v=2"></script><script src="trace-v1.js?v=11"></script><script src="trace-bonus.js?v=2"></script><script src="trace-extra.js?v=3"></script><script src="trace-auth.js?v=1"></script><script src="trace-routing.js?v=3"></script><script src="trace-display.js?v=4"></script><script src="trace-i18n.js?v=1"></script><script src="trace-i18n-art.js?v=1"></script><script src="trace-i18n-content.js?v=1"></script><script src="trace-i18n-map.js?v=1"></script></body></html>
