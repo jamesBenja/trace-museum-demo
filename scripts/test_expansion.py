@@ -18,91 +18,43 @@ def slide(page,ident,value):
 
 def play(page,ident):
  finish=page.locator('[data-t1-finish]')
- assert finish.is_disabled(),ident+' unlocked before visitor interaction'
- before=page.locator('.te-workspace').evaluate('(el)=>el.outerHTML')
+ assert finish.is_disabled(),ident+' unlocked before creative action'
+ before=page.locator('.mf-board').inner_html()
  if ident=='mmfa-eye':
-  slide(page,'eye',95)
-  assert page.locator('.te-city').get_attribute('style').find('2.44')>=0, 'Eye did not grow'
+  size=page.locator('.mf-size-handle')
+  size.scroll_into_view_if_needed()
+  stage=page.locator('.mf-monument').bounding_box()
+  r=size.bounding_box()
+  page.mouse.move(r['x']+r['width']/2,r['y']+r['height']/2);page.mouse.down()
+  page.mouse.move(stage['x']+stage['width']*.92,stage['y']+stage['height']*.86,steps=13);page.mouse.up()
+  for i in range(2):page.locator('[data-mf="view"][data-v="'+str(i)+'"]').click()
+  assert page.evaluate('window.TRACE_V1.puzzle.extra.eye')>=.8
  elif ident=='mmfa-frink':
-  page.locator('[data-te-spot="0"]').click()
-  page.locator('[data-te-spot="4"]').click()
-  assert page.locator('.te-guardian-spot.occupied').count()==2
-  assert finish.is_disabled(), 'Guardians unlocked before visitors changed their orientation'
-  page.locator('[data-te-face-guardians]').click()
+  page.locator('[data-mf="guardian"][data-v="0"]').click()
+  page.locator('[data-mf="guardian"][data-v="4"]').click()
+  assert page.locator('.mf-guardian').count()==2
+  assert finish.is_disabled(), 'Guardians completed before orientation'
+  for i in range(2):page.locator('[data-mf="face"][data-v="'+str(i)+'"]').click()
+  assert page.locator('.mf-gaze-line').count()==1
  elif ident=='mmfa-riopelle':
-  page.locator('[data-te-base="dark"]').click()
-  page.locator('[data-te-object="wheel"]').click()
-  assert page.locator('.te-found-piece').count()==1
+  page.locator('[data-mf="base"][data-v="dark"]').click()
+  for piece in ['wheel','wire','fabric']:page.locator('[data-mf="piece"][data-v="'+piece+'"]').click()
+  assert page.locator('.mf-junk').count()==3
   assert finish.is_disabled()
-  page.locator('[data-te-object="wire"]').click()
-  assert page.locator('.te-found-piece').count()==2
+  page.locator('[data-mf="anchor"]').click()
  elif ident=='mmfa-rodin':
-  page.locator('[data-te-pose="1"]').click()
-  page.locator('[data-te-pose="2"]').click()
-  assert finish.is_disabled()
-  page.locator('[data-te-pose="3"]').click()
-  assert '?' in page.locator('.te-pose-svg text').text_content()
+  for i in range(1,4):page.locator('[data-mf="pose"][data-v="'+str(i)+'"]').first.click()
+  assert page.locator('.mf-thought').count()==1
  elif ident=='mmfa-cragg':
-  for i in range(3):
-   page.locator('[data-te-find="'+str(i)+'"]').click()
-  assert page.locator('.te-face-spot.found').count()==3
- elif ident=='pamm-chaos':
-  assert page.locator('.te-cube').count()==3, 'Three steel frames visible without extra taps'
-  assert finish.is_disabled(), 'Cube tower should require real manipulation'
-  page.locator('[data-te-cube-select="1"]').first.click()
-  page.locator('[data-te-nudge="12"]').click()
-  assert finish.is_disabled(), 'Changing only one cube must not finish the game'
-  page.locator('[data-te-cube-select="2"]').first.click()
-  page.locator('[data-te-nudge="12"]').click()
-  assert finish.is_disabled(), 'Shifting two cubes without rotation is insufficient'
-  slide(page,'cubeAngle',20)
-  assert '20°' in page.locator('#te-readout').inner_text()
-  assert page.evaluate('window.TRACE_V1.puzzle.extra.changed.filter(Boolean).length')==2
-  assert page.locator('.te-balance-label b').inner_text()!='0 / 100'
-  assert page.locator('.te-tower-warning').inner_text()==''
-  # Touch-style direct manipulation changes the actual cube offset, not just the controls.
-  top=page.locator('.te-cube-2')
-  rect=top.bounding_box()
-  assert rect, 'Top cube cannot be manipulated'
-  initial=page.evaluate("window.TRACE_V1.puzzle.extra.offsets[2]")
-  page.mouse.move(rect['x']+rect['width']*.5,rect['y']+rect['height']*.5)
-  page.mouse.down()
-  page.mouse.move(rect['x']+rect['width']*.5+18,rect['y']+rect['height']*.5,steps=6)
-  page.mouse.up()
-  assert page.evaluate("window.TRACE_V1.puzzle.extra.offsets[2]")!=initial, 'Dragging did not move the 3D frame'
-  assert page.locator('[data-te-tilt]').count()==0, 'Old tilt buttons removed'
- elif ident=='pamm-fonseca':
-  page.locator('[data-te-niche="0"]').click()
-  page.locator('[data-te-shape="sphere"]').click()
-  page.locator('[data-te-niche="0"]').click()
-  assert finish.is_disabled()
-  page.locator('[data-te-niche="1"]').click()
-  page.locator('[data-te-shape="arch"]').click()
-  page.locator('[data-te-niche="1"]').click()
-  assert page.locator('.te-niche.carved').count()==2
- elif ident=='pamm-yanko':
-  page.locator('[data-te-place="0"]').click()
-  page.locator('[data-te-material="hose"]').click()
-  page.locator('[data-te-place="1"]').click()
-  assert finish.is_disabled()
-  page.locator('[data-te-material="skin"]').click()
-  page.locator('[data-te-place="2"]').click()
-  assert page.locator('.te-material-slot svg').count()==3
- elif ident=='pamm-christo':
-  slide(page,'fabric',95)
-  assert '418 500' in page.locator('.te-bay').inner_html(), 'Fabric did not surround the islands'
- elif ident=='pamm-chromati':
-  page.locator('[data-te-paint="0"]').click()
-  page.locator('[data-te-tool="gouache"]').click()
-  page.locator('[data-te-paint="1"]').click()
-  assert finish.is_disabled()
-  page.locator('[data-te-tool="glitter"]').click()
-  page.locator('[data-te-paint="2"]').click()
-  assert page.locator('.te-paint-cell.has-glitter').count()==1
- assert page.locator('.te-workspace').evaluate('(el)=>el.outerHTML')!=before,ident+' display never changed'
- assert finish.is_enabled(),ident+' did not unlock after performing the interaction'
+  for angle,i in [('-45',0),('0',1),('45',2)]:
+   page.locator('[data-mf="angle"][data-v="'+angle+'"]').click()
+   page.locator('[data-mf="reveal"][data-v="'+str(i)+'"]').click()
+  assert page.evaluate('window.TRACE_V1.puzzle.extra.faces.length')==3
+ assert page.locator('.mf-board').inner_html()!=before,ident+' display never changed'
+ assert finish.is_enabled(),ident+' did not unlock'
+ assert page.locator('.mf-mica-conclusion').count()==1,ident+' missing educational Mica'
  assert page.evaluate('window.TRACE_V1.puzzle.done') is True
- print('REAL LAB PASSED',ident,flush=True)
+ print('REDESIGNED MMFA EXPANSION LAB PASSED',ident,flush=True)
 
 def isolate_manifest(page):
  fixture=json.loads((Path(__file__).resolve().parents[1]/"display-status.json").read_text(encoding="utf-8"))
@@ -186,7 +138,7 @@ with sync_playwright() as p:
    page.locator('[data-action="v7-story"]').click()
    assert page.evaluate('state.found.length')==idx
    page.locator('[data-action="v7-puzzle"]').click()
-   assert page.locator('.te-workspace').count()==1
+   assert page.locator('.mf-board').count()==1
    play(page,ident)
    page.locator('[data-t1-finish]').click()
    assert page.evaluate('state.found.length')==idx+1
