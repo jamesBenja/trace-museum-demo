@@ -1,6 +1,6 @@
-# TRACE v1.6: Playable museum adventures with institutional routing
+# TRACE v1.8: Playable museum adventures with institutional routing
 
-**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=16
+**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=18
 
 **Official MMFA map:** https://www.mbam.qc.ca/en/mmfa-museum-map/
 
@@ -12,7 +12,7 @@ TRACE is an independent pilot concept with **eight real collection artworks from
 
 ## Visitor experience
 
-Choose Montréal or Miami from the always-visible museum switcher. Play the branching art adventure with Mica, including original tactile puzzles, optional family challenges, cross-artwork comparisons and a private discovery passport. Three established image-tested works per institution are enabled in the default office demo. Ten additional sculpture/mixed-media candidates can be enabled after review; these use explicitly labelled visual confirmation, **not untested automatic 3D recognition**.
+Choose Montréal or Miami from the always-visible museum switcher. Play the branching art adventure with Mica, including original tactile puzzles, optional family challenges, cross-artwork comparisons and a private discovery passport. Three established image-tested works per institution are enabled in the default office demo. The ten additional works now have individual visual, stateful experiments rather than three-button descriptions. Ten additional sculpture/mixed-media candidates can be enabled after review; these use explicitly labelled visual confirmation, **not untested automatic 3D recognition**.
 
 The fantasy quest world and the physical **MAP** screen are separate. The MAP screen now includes:
 
@@ -42,7 +42,7 @@ Tap **MUSEUM** in the bottom navigation. Use the museum switcher to choose which
 
 ## Tests
 
-The GitHub Actions workflow [Validate TRACE eight-work routes and museum administration](.github/workflows/validate-v1.yml) runs browser tests covering the six original scanner-backed chapters, new sculpture and mixed-media preview activities, comparison bonus, on/off status, room assignments, route links and accessibility filters. These are simulated/browser checks, not a substitute for iPhone and onsite visitor studies.
+The GitHub Actions workflow [Validate TRACE eight-work routes and museum administration](.github/workflows/validate-v1.yml) runs browser tests covering the six original scanner-backed chapters, ten playable sculpture and mixed-media experiments with visible state changes, comparison bonus, on/off status, room assignments, route links and accessibility filters. These are simulated/browser checks, not a substitute for iPhone and onsite visitor studies.
 
 ## Rights and privacy
 
