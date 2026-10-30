@@ -40,7 +40,7 @@ def play(page,ident):
   page.locator('[data-te-pose="2"]').click()
   assert finish.is_disabled()
   page.locator('[data-te-pose="3"]').click()
-  assert '?' in page.locator('.te-pose-svg').inner_text()
+  assert '?' in page.locator('.te-pose-svg text').text_content()
  elif ident=='mmfa-cragg':
   for i in range(3):
    page.locator('[data-te-find="'+str(i)+'"]').click()
