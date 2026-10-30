@@ -1,6 +1,6 @@
-# TRACE v2.3: Three-museum art adventures, including MoMA New York
+# TRACE v2.4: Three-museum art adventures, including MoMA New York
 
-**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=23
+**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=24
 
 **Official MMFA map:** https://www.mbam.qc.ca/en/mmfa-museum-map/
 
@@ -16,7 +16,13 @@ For paintings and photographs with calibrated image references, the camera scan 
 
 On the visual comparison screen, visitors can **take or select one photo (optional)** and compare it alongside the museum's collection image. They may also visually confirm without taking a photo, including when museum photography is not permitted. Only explicit visitor confirmation advances the story. This is a visitor-assisted comparison, **not automatic recognition or a 3D scan**. Uploaded photos stay on the device and may be saved in the visitor's local discovery album once confirmed. A future multi-angle recognition feature would require curated reference photography and validation, not extra photo steps for visitors.
 
-## v2.3 mystery-first photograph flow
+## v2.4 Mica's progressive visual clue reveal
+
+Each artwork, in **all three museum collections and languages**, now begins with an educational **word-only clue from Mica**. Visitors can look for the artwork immediately without seeing its image. An optional **“Ask Mica to reveal a zoomed-in detail”** button plays a short original CSS character-and-stardust reveal animation, then shows a **3.2× magnified, tightly clipped crop** from the real collection image. The same written clue appears beneath the close-up. The full museum photograph remains hidden until the visitor's own photo scan succeeds or they explicitly request a comparison fallback.
+
+The state of the optional image clue is remembered per artwork, regardless of language or museum switching; it can be hidden again. No camera, museum location or copyrighted artwork image is uploaded by this reveal. All reveal controls are keyboard accessible, labeled for assistive technologies and honor reduced-motion settings. Focal crop positions are editorial defaults subject to institution review; they should be fine-tuned per artwork before a museum deployment.
+
+## v2.4 mystery-first photograph flow
 
 TRACE now keeps the artwork image **hidden during the discovery clue and the photograph screen**, preserving the fun of finding the artwork from Mica's hints without seeing the solution. Optional family games also use original illustration rather than revealing a reference photograph. The discovery passport displays a concealed mystery tile until the work has been found.
 
