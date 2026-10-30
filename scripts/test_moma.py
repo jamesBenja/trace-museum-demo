@@ -163,22 +163,33 @@ with sync_playwright() as q:
   page.locator('[data-t1-open="'+str(i)+'"]').click()
   assert page.evaluate('A[state.current].id')=='moma-'+name
   assert page.locator('.v7-fragment img').count()==0, 'Art image revealed before visitor photo'
-  assert page.locator('[data-action="photo-quest"]').count()==1
-  page.locator('[data-action="photo-quest"]').click()
-  assert page.evaluate("state.stage")=='photoquest'
-  assert page.locator('.tv-compare-pair img').count()==0
-  assert page.locator('.tq-capture-zone img').count()==0
-  assert page.locator('[data-action="photo-compare"]').count()==0
-  assert page.locator('[data-guess-photo]').count()==1
-  import base64
-  png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAJ/q7UcAAAAASUVORK5CYII=')
-  page.locator('[data-guess-photo]').set_input_files({'name':'guess.png','mimeType':'image/png','buffer':png})
-  page.wait_for_function("state.scanImage?.startsWith('data:image/jpeg;')")
-  assert page.locator('.tq-capture-zone img').count()==1, 'Only visitor photo should be shown'
-  assert page.locator('.tv-compare-pair img').count()==0, 'Museum reference appeared before choice'
-  page.locator('[data-action="photo-compare"]').click()
-  assert page.evaluate("state.stage")=='manualreview'
-  assert page.locator('.tv-compare-pair img').count()==2
+  if page.evaluate("!!A[state.current].reference"):
+   assert page.locator('[data-action="scan"]').count()==1
+   assert "not yet calibrated" not in page.locator('#view').inner_text()
+   page.locator('[data-action="scan"]').click()
+   assert page.evaluate("state.stage")=="scan"
+   assert page.locator('.tv-compare-pair img').count()==0
+   # Explicit no-camera fallback still allows visual study.
+   page.locator('[data-action="manual-review"]').click()
+   assert page.evaluate("state.stage")=="manualreview"
+   assert page.locator('.tv-compare-pair img').count()==1
+  else:
+   # Unavailable image sources must never be presented as working recognition.
+   assert page.locator('[data-action="photo-quest"]').count()==1
+   page.locator('[data-action="photo-quest"]').click()
+   assert page.evaluate("state.stage")=='photoquest'
+   assert page.locator('.tv-compare-pair img').count()==0
+   assert page.locator('[data-action="photo-compare"]').count()==0
+   assert page.locator('[data-guess-photo]').count()==1
+   import base64
+   png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAJ/q7UcAAAAASUVORK5CYII=')
+   page.locator('[data-guess-photo]').set_input_files({'name':'guess.png','mimeType':'image/png','buffer':png})
+   page.wait_for_function("state.scanImage?.startsWith('data:image/jpeg;')")
+   assert page.locator('.tq-capture-zone img').count()==1
+   assert page.locator('.tv-compare-pair img').count()==0
+   page.locator('[data-action="photo-compare"]').click()
+   assert page.evaluate("state.stage")=='manualreview'
+   assert page.locator('.tv-compare-pair img').count()==2
   assert page.locator('[data-action="manual-accept"]').count()==1
   page.locator('[data-action="manual-accept"]').click()
   page.locator('[data-action="v7-story"]').click()
