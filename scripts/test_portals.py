@@ -92,7 +92,7 @@ with sync_playwright() as p:
  assert not admin.locator("[data-tab='museum']").is_visible()
  admin.locator("#traceAdminToken").fill("wrong-test-token")
  admin.locator("#traceAdminSubmit").click()
- assert "Sign-in failed" in admin.locator("#traceAdminFeedback").inner_text()
+ admin.wait_for_function("document.querySelector('#traceAdminFeedback')?.textContent.includes('Sign-in failed')",timeout=12000)
  assert admin.locator("#traceAdminLogin").is_visible()
  admin.locator("#traceAdminToken").fill("mock-write-token")
  admin.locator("#traceAdminSubmit").click()
