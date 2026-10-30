@@ -286,7 +286,6 @@ function pointerEnd(ev){
   const rect=targetEl?.getBoundingClientRect();
   const near=rect&&Math.hypot(ev.clientX-(rect.left+rect.width/2),ev.clientY-(rect.top+rect.height/2))<48;
   const distance=Math.hypot(ev.clientX-a.downX,ev.clientY-a.downY);
-  window.__mgPointerDebug={kind:type,i:a.index,changed:a.changed,distance,near:!!near,mouse:{x:ev.clientX,y:ev.clientY},rect:rect?{x:rect.x,y:rect.y,w:rect.width,h:rect.height}:null,links:s.links.length};
   if((a.changed||distance>15)&&near)pushUnique(s.links,a.index);
  }
  function dropTarget(selector){
@@ -303,7 +302,6 @@ function pointerEnd(ev){
  if(type==='texture'&&a.changed){const point=dropTarget('.mg-tea-part[data-mg-drop]');if(point){s.chosenTexture=a.material;s.textures[point.dataset.mgDrop]=a.material}}
  if(type==='part'){
   const point=dropTarget('.mg-socket[data-mg-drop]');
-  window.__mgPartDebug={changed:a.changed,mouse:[ev.clientX,ev.clientY],part:a.part,near:point?.dataset.mgDrop,installed:s.installed.slice()};
   if((a.changed||Math.hypot(ev.clientX-a.downX,ev.clientY-a.downY)>15)&&point){const i=Number(point.dataset.mgDrop);if(PART[i]===a.part){s.selectedPart=a.part;pushUnique(s.installed,a.part)}}
  }
  if(type==='wheel'&&s.installed.length===5&&Math.abs(a.total)>=220){s.fired=true;shortTone(425,.30)}
