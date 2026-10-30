@@ -54,6 +54,7 @@ function data(C,id){
  return C.extra;
 }
 function won(id,s){
+ if(id.startsWith('moma-'))id=id.slice(5);
  switch(id){
  case 'starry':return s.swirls.length>=3;
  case 'dance':return s.links.length>=5;
