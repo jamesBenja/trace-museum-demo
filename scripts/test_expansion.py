@@ -119,7 +119,7 @@ with sync_playwright() as p:
   admin_url=URL+('&portal=admin' if '?' in URL else '?portal=admin')
   res=page.goto(admin_url,wait_until='domcontentloaded',timeout=45000)
   assert res and res.status==200
-  assert 'v1.8' in page.title(),page.title()
+  assert 'v1.9' in page.title(),page.title()
   page.locator('#traceAdminToken').fill('mock-write-token')
   page.locator('#traceAdminSubmit').click()
   page.locator('#traceAdminLogin').wait_for(state='detached',timeout=18000)
@@ -139,8 +139,23 @@ with sync_playwright() as p:
   for idx,ident in enumerate(ids,start=3):
    page.locator('[data-t1-open="'+str(idx)+'"]').click()
    assert page.evaluate('A[state.current].id')==ident
-   assert '3D image recognition is not validated' in page.locator('#view').inner_text()
-   page.locator('[data-action="manual-review"]').click()
+   assert 'Automatic multi-angle recognition is not validated' in page.locator('#view').inner_text()
+   if ident in ('mmfa-eye','pamm-chaos'):
+    page.locator('[data-action="multi-view"]').click()
+    assert 'not automatic 3D scanning or recognition' in page.locator('#view').inner_text()
+    assert page.locator('[data-view-shot]').count()==3
+    assert page.locator('.tv-taken').inner_text().startswith('0 / 3')
+    # Real image upload flow: two distinct viewpoint slots must show previews.
+    import base64
+    png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAJ/q7UcAAAAASUVORK5CYII=')
+    for n in (0,1):
+     page.locator('[data-view-shot="'+str(n)+'"]').set_input_files({'name':'view-'+str(n)+'.png','mimeType':'image/png','buffer':png})
+     page.wait_for_function("(count)=>document.querySelectorAll('.tv-shot.captured').length===count",n+1)
+    assert page.locator('.tv-compare-images').count()==0
+    page.locator('[data-action="manual-review"]').first.click()
+    assert page.locator('.tv-compare-images img').count()==2
+   else:
+    page.locator('[data-action="manual-review"]').click()
    assert 'NOT AUTOMATICALLY VERIFIED' in page.locator('#view').inner_text()
    page.locator('[data-action="manual-accept"]').click()
    page.locator('[data-action="v7-story"]').click()
