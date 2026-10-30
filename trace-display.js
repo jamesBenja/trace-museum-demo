@@ -147,8 +147,14 @@ function adminUI(){
   '<p class="td-origin">Collection record: <a href="'+h(a.url)+'" target="_blank" rel="noopener noreferrer">View source ↗</a> · '+(a.previewOnly?'New candidate':'Original demo work')+'</p></article>';
  }).join('');
  return '<div class="td-screen"><div class="t1-overline">TRACE · MUSEUM ADMINISTRATOR PREVIEW</div><h2>Manage works on display</h2>'+
- '<p class="td-intro">Your live game can include up to eight collection works per museum. Turn individual works on or off, enter confirmed rooms, and schedule display windows. A work that is off the route disappears from playable quests and scan recognition, but earlier discoveries remain in the visitor passport.</p>'+
  (window.TRACE_AUTH?.adminControls()||'')+
+ '<section class="td-venue-panel" aria-label="Select museum to administer">'+
+ '<div class="td-venue-kicker">YOU ARE MANAGING</div>'+
+ '<div class="td-venue-switcher" role="group" aria-label="Choose a museum to administer">'+
+ '<button type="button" data-venue="mmfa" class="td-venue-option '+(venue==='mmfa'?'is-current':'')+'" aria-pressed="'+(venue==='mmfa')+'"><strong>MMFA</strong><span>Montréal</span><small>'+count('mmfa')+' / '+mmfa.length+' works in route</small></button>'+
+ '<button type="button" data-venue="pamm" class="td-venue-option '+(venue==='pamm'?'is-current':'')+'" aria-pressed="'+(venue==='pamm')+'"><strong>PAMM</strong><span>Miami</span><small>'+count('pamm')+' / '+pamm.length+' works in route</small></button>'+
+ '</div><p class="td-venue-help">Switch museums without leaving administration. Each museum has its own artworks, rooms and route settings. Your unpublished edits to both are retained until you publish or discard them.</p></section>'+
+ '<p class="td-intro">Your live game can include up to eight collection works per museum. Turn individual works on or off, enter confirmed rooms, and schedule display windows. A work that is off the route disappears from playable quests and scan recognition, but earlier discoveries remain in the visitor passport.</p>'+
  '<div class="td-kpis"><div><b>'+count(venue)+' / '+arts.length+'</b><span>Playable in this preview</span></div><div><b>'+arts.filter(a=>isActive(a.id)&&isVerified(a.id)).length+'</b><span>Marked display-confirmed</span></div></div>'+
  '<div class="td-mode '+(draft?'td-draft':'')+'">'+(draft?'<strong>UNPUBLISHED ADMIN DRAFT</strong><p>Your edits are visible only in this administrator preview until you select Publish changes for all visitors.</p>':
  '<strong>SHARED PUBLISHED CATALOGUE</strong><p>Visitors are reading this same public catalogue. Last publication: '+h(published.updatedAt)+'</p>')+'</div>'+
