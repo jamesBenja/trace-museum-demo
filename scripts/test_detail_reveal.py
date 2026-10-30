@@ -84,10 +84,15 @@ with sync_playwright() as p:
   page.locator('[data-trace-lang="en"]').click()
  # A photo-first screen still only displays the visitor's own photo, not the reference.
  page.evaluate("state.current=0;state.stage='clue';render()")
- page.locator('[data-action="photo-quest"]').click()
+ if page.evaluate("!!A[state.current].reference"):
+  page.locator('[data-action="scan"]').click()
+  assert page.evaluate('state.stage')=='scan'
+  assert page.locator('.tv-compare-pair img').count()==0
+ else:
+  page.locator('[data-action="photo-quest"]').click()
+  assert page.evaluate('state.stage')=='photoquest'
+  assert page.locator('.tq-capture-zone img').count()==0
  assert page.locator('.t1-detail-frame img').count()==0
- assert page.locator('.tv-compare-pair img').count()==0
- assert page.locator('.tq-capture-zone img').count()==0
  assert not errors,errors
  print('ALL OPTIONAL MICA ZOOM DETAIL TESTS PASSED',flush=True)
  browser.close()
