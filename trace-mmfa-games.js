@@ -103,7 +103,7 @@ function frink(s,t){
  for(let i=0;i<2;i++){
   if(s.guardians[i]===-1)continue;
   const x=points[s.guardians[i]],opposite=i===0?1:0,look=s.facing[i];
-  bodies+='<div class="mf-guardian '+(look?'looking':'')+'" style="left:'+x+'%;--f:'+(look?(i===0?1:-1):(i===0?-1:1))+'"><svg viewBox="0 0 90 140" aria-hidden="true"><ellipse cx="44" cy="134" rx="38" ry="5" fill="#526962" opacity=".42"/><path d="M31 51Q45 43 58 50L75 118Q45 137 13 119Z" fill="#9ba59e" stroke="#526c66" stroke-width="5"/><path d="M30 14Q48 3 60 18L64 33 53 47 29 43Q17 30 30 14Z" fill="#afaea2" stroke="#526c66" stroke-width="4"/><path d="M58 27l13 4-12 5" fill="#8d958d" stroke="#526c66" stroke-width="2"/></svg><span>'+(i+1)+'</span></div>';
+  bodies+='<div class="mf-guardian '+(look?'looking':'')+'" style="left:'+x+'%;--f:'+(look?(s.guardians[i]<s.guardians[opposite]?1:-1):(s.guardians[i]<s.guardians[opposite]?-1:1))+'"><svg viewBox="0 0 90 140" aria-hidden="true"><ellipse cx="44" cy="134" rx="38" ry="5" fill="#526962" opacity=".42"/><path d="M31 51Q45 43 58 50L75 118Q45 137 13 119Z" fill="#9ba59e" stroke="#526c66" stroke-width="5"/><path d="M30 14Q48 3 60 18L64 33 53 47 29 43Q17 30 30 14Z" fill="#afaea2" stroke="#526c66" stroke-width="4"/><path d="M58 27l13 4-12 5" fill="#8d958d" stroke="#526c66" stroke-width="2"/></svg><span>'+(i+1)+'</span></div>';
  }
  return '<div class="mf-board mf-courtyard">'+svg+bodies+(s.facing.every(Boolean)&&s.guardians.every(x=>x>=0)?'<div class="mf-gaze-line"></div>':'')+
  points.map((x,i)=>'<button class="mf-courtyard-spot '+(s.guardians.includes(i)?'occupied':'')+'" style="left:'+x+'%" data-mf="guardian" data-v="'+i+'" type="button" aria-label="'+safe(t.title)+' '+(i+1)+'">'+(s.guardians.includes(i)?'✓':'＋')+'</button>').join('')+'</div>'+
@@ -172,6 +172,8 @@ let drag=null;
 document.addEventListener('pointerdown',ev=>{
  const node=ev.target.closest('[data-mf-drag]'),c=ctx();if(!node||!c)return;
  const kind=node.dataset.mfDrag;
+ // Placing and revealing a symbol is a click, not a painting drag.
+ if(ev.target.closest('[data-mf]')&&['sweep','rotate'].includes(kind))return;
  const map={sweep:'marrel',point:'witte',sky:'fortin',sun:'fortin',eye:'eye',rotate:'cragg'};
  if(map[kind]!==c.id)return;
  const r=node.closest('.mf-board')?.getBoundingClientRect();if(!r)return;
