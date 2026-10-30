@@ -317,16 +317,315 @@
         "label": "Gallery 414 · Wipe Cycle",
         "wing": "MoMA",
         "floor": "4"
+      },
+      {
+        "id": "moma-502",
+        "label": "Gallery 502",
+        "wing": "Floor 5 galleries",
+        "floor": "5"
+      },
+      {
+        "id": "moma-503",
+        "label": "Gallery 503",
+        "wing": "Floor 5 galleries",
+        "floor": "5"
+      },
+      {
+        "id": "moma-523",
+        "label": "Gallery 523",
+        "wing": "Floor 5 galleries",
+        "floor": "5"
+      },
+      {
+        "id": "moma-522",
+        "label": "Gallery 522",
+        "wing": "Floor 5 galleries",
+        "floor": "5"
+      },
+      {
+        "id": "moma-401",
+        "label": "Gallery 401",
+        "wing": "Floor 4 galleries",
+        "floor": "4"
+      },
+      {
+        "id": "moma-402",
+        "label": "Gallery 402",
+        "wing": "Floor 4 galleries",
+        "floor": "4"
+      },
+      {
+        "id": "moma-407",
+        "label": "Gallery 407",
+        "wing": "Floor 4 galleries",
+        "floor": "4"
+      },
+      {
+        "id": "moma-408",
+        "label": "Gallery 408",
+        "wing": "Floor 4 galleries",
+        "floor": "4"
+      },
+      {
+        "id": "moma-410",
+        "label": "Gallery 410",
+        "wing": "Floor 4 galleries",
+        "floor": "4"
+      },
+      {
+        "id": "moma-413",
+        "label": "Gallery 413",
+        "wing": "Floor 4 galleries",
+        "floor": "4"
+      },
+      {
+        "id": "moma-215",
+        "label": "Gallery 215",
+        "wing": "Floor 2 galleries",
+        "floor": "2"
+      },
+      {
+        "id": "moma-216",
+        "label": "Gallery 216",
+        "wing": "Floor 2 galleries",
+        "floor": "2"
+      },
+      {
+        "id": "moma-202",
+        "label": "Gallery 202",
+        "wing": "Floor 2 galleries",
+        "floor": "2"
+      },
+      {
+        "id": "moma-203",
+        "label": "Gallery 203",
+        "wing": "Floor 2 galleries",
+        "floor": "2"
+      },
+      {
+        "id": "moma-207",
+        "label": "Gallery 207",
+        "wing": "Floor 2 galleries",
+        "floor": "2"
+      },
+      {
+        "id": "moma-208",
+        "label": "Gallery 208",
+        "wing": "Floor 2 galleries",
+        "floor": "2"
       }
     ]
   },
   "connections": {
-    "mmfa": [],
-    "pamm": [],
-    "moma": []
+    "mmfa": [
+      {
+        "from": "mmfa-entrance",
+        "to": "mmfa-peace-1",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/"
+      },
+      {
+        "from": "mmfa-passage",
+        "to": "mmfa-bourgie-s2",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/"
+      },
+      {
+        "from": "mmfa-desmarais-s2",
+        "to": "mmfa-passage",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "moderate",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/"
+      }
+    ],
+    "pamm": [
+      {
+        "from": "pamm-1",
+        "to": "pamm-2",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.pamm.org/wp-content/uploads/2025/12/web_map_2025.pdf"
+      },
+      {
+        "from": "pamm-7",
+        "to": "pamm-37",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 4,
+        "source": "https://www.pamm.org/wp-content/uploads/2025/12/web_map_2025.pdf"
+      },
+      {
+        "from": "pamm-14",
+        "to": "pamm-35",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "moderate",
+        "closed": false,
+        "cost": 4,
+        "source": "https://www.pamm.org/wp-content/uploads/2025/12/web_map_2025.pdf"
+      }
+    ],
+    "moma": [
+      {
+        "from": "moma-501",
+        "to": "moma-502",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-502",
+        "to": "moma-503",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "moderate",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-523",
+        "to": "moma-522",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "moderate",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-401",
+        "to": "moma-402",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-405",
+        "to": "moma-407",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-407",
+        "to": "moma-408",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-408",
+        "to": "moma-410",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-410",
+        "to": "moma-412",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-412",
+        "to": "moma-413",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-413",
+        "to": "moma-414",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-215",
+        "to": "moma-216",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-216",
+        "to": "moma-202",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-202",
+        "to": "moma-203",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      },
+      {
+        "from": "moma-207",
+        "to": "moma-208",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "high",
+        "closed": false,
+        "cost": 1,
+        "source": "https://www.moma.org/magazine/articles/1461"
+      }
+    ]
   },
   "mode": "independent-pitch-demo",
-  "updatedAt": "2026-10-30T00:00:00.000Z",
+  "updatedAt": "2026-10-30T13:45:00.000Z",
   "description": "Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.",
   "works": {
     "mmfa-marrel": {
