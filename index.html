@@ -734,7 +734,7 @@ document.addEventListener('click',e=>{const review=e.target.closest('[data-revie
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&el('venuePicker')&&!el('venuePicker').hidden)showMuseumPicker(false)});
 document.addEventListener('change',e=>{if(e.target.id==='scanUpload')upload(e.target.files?.[0],image=>scan(image));else if(e.target.hasAttribute('data-guess-photo')){const artwork=A[state.current]?.id;if(state.stage==='photoquest'&&window.TRACE_DISPLAY?.isActive(artwork))upload(e.target.files?.[0],image=>{if(state.stage!=='photoquest'||A[state.current]?.id!==artwork)return;state.scanImage=thumb(image);render()})}else if(e.target.hasAttribute('data-compare-photo')){const artwork=A[state.current]?.id;if(state.stage==='manualreview'&&window.TRACE_DISPLAY?.isActive(artwork))upload(e.target.files?.[0],image=>{if(state.stage!=='manualreview'||A[state.current]?.id!==artwork)return;state.scanImage=thumb(image);render()})}else if(e.target.dataset.refupload)importReference(e.target.dataset.refupload,e.target.files?.[0]);else if(e.target.dataset.mapRoom){state.rooms[e.target.dataset.mapRoom]=e.target.value.trim().slice(0,60);save()}});
 async function loadReference(a){
-  if(a.previewOnly){a.asset=a.source;return false}
+  if(a.previewOnly&&a.museum!=='moma'){a.asset=a.source;return false}
   // References stored in this GitHub Pages repo are same-origin; canvas pixel access cannot be blocked by CORS.
   // Explicitly fallback to external original sources while licensing is reviewed; some may fail.
   const local=LOCAL_ART[a.id];
@@ -749,7 +749,7 @@ async function loadReference(a){
       const c=document.createElement('canvas');c.width=2;c.height=2;
       c.getContext('2d').drawImage(image,0,0,2,2);
       c.getContext('2d').getImageData(0,0,1,1);
-      a.reference=image;a.asset=candidate;a.referenceOrigin=candidate===local?'same-origin':'external';
+      a.reference=image;a.asset=candidate;a.referenceOrigin=candidate===local?'same-origin':'external';if(a.museum==='moma')a.previewOnly=false;
       return true;
     }catch(e){errors.push(candidate+': '+String(e))}
   }
@@ -758,7 +758,7 @@ async function loadReference(a){
 }
 async function rebuild(){const refs=ALL.filter(a=>a.reference&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(a.id)));if(!refs.length){ready=false;el('status').textContent='IMPORT ARTWORK IMAGES';return}try{await prepareLibrary(refs);loaded=refs;ready=true;el('status').textContent=`SCAN READY · ${refs.length} IMAGE REFERENCES · ${ALL.length} WORKS`;el('status').classList.add('ready')}catch(e){ready=false;el('status').textContent='MATCHER ERROR';console.error(e)}}
 async function ensureActiveReferences(){const wanted=ALL.filter(a=>window.TRACE_DISPLAY?.isActive(a.id)&&!a.reference);await Promise.all(wanted.map(loadReference));await rebuild();render()}
-async function boot(){render();el('status').textContent='LOADING ARTWORK REFERENCES…';await Promise.all(ALL.filter(a=>!a.previewOnly).map(loadReference));await rebuild();render()}
+async function boot(){render();el('status').textContent='LOADING ARTWORK REFERENCES…';await Promise.all(ALL.filter(a=>!a.previewOnly||a.museum==='moma').map(loadReference));await rebuild();render()}
 window.TRACE_LOAD_ACTIVE=ensureActiveReferences;
 window.__traceAppRender=render;
 boot();
