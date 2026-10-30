@@ -55,7 +55,7 @@ function hub(){
  return '<div class="t1-screen"><div class="t1-overline">ADVENTURE MAP · '+esc(world.name)+'</div><h2 class="t1-h1">Where shall we explore?</h2>'+paintProgress()+
  mascot(companion)+
  '<div class="t1-map"><div class="t1-map-head"><div class="t1-overline">A MAGICAL QUEST MAP</div><h3>Three secrets to find</h3></div><div class="t1-islands">'+nodes+'</div><p class="t1-legend">✦ Choose unlocked mysteries in any order. The map shows story chapters, not actual room positions.</p></div>'+
- (n>=2?'<div class="t1-secret"><div class="t1-overline">BONUS DISCOVERY UNLOCKED</div><p>Family secret: compare two completed works. How does one artist lead your eye differently from the other? Share your answer together.</p><button class="button outline" data-action="album">See my earlier discoveries</button></div>':'')+
+ (n>=2?'<div class="tb-bonus-card"><div class="t1-overline">✦ A SECRET CHALLENGE HAS OPENED</div><h3>Connect the Artworks</h3><p>Two artworks. A sliding comparison lens. A new connection only you can create. Find the links hidden between paintings, then collect an Art Connector badge.</p><p><strong>✧ '+(window.TRACE_BONUS?.links()?.length||0)+' of 3 possible bridges found</strong></p><button class="button" type="button" data-bonus-open>✧ Play the comparison bonus →</button></div>':'')+
  (done?'<div class="t1-complete"><h2 class="t1-h2">Your creative lens is restored! ✦</h2><p class="t1-small">Mica’s missing powers are safe in your passport. Every work of art can become a new adventure.</p>'+btn('Open my discovery passport','album')+'</div>':'')+
  '<div class="t1-team"><h3>How will you play?</h3>'+picks()+'<p class="t1-small">You can switch modes without losing your discoveries.</p></div>'+
  '<div class="t1-task">⌖ Want the real museum floor plan? Open the <strong>MAP</strong> tab. We only show verified room assignments when a museum supplies them.</div>'+
@@ -132,6 +132,7 @@ function success(){
 }
 function renderGame(v){
  if(state.tab!=='quest')return false;
+ if(state.stage==='bonus'){if(window.TRACE_BONUS?.render(v))return true;v.innerHTML=hub();return true}
  if(state.stage==='intro'){v.innerHTML=intro();return true}
  if(state.stage==='hub'){v.innerHTML=hub();return true}
  if(state.stage==='clue'){v.innerHTML=clue();window.TRACE_COOP?.install();return true}
