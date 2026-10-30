@@ -1,4 +1,4 @@
-name: Validate TRACE v2.6 interactive MoMA rebuild
+name: Validate TRACE v2.7 MoMA scanner and eight PAMM games
 on:
   workflow_dispatch:
   push:
@@ -10,6 +10,10 @@ on:
       - "trace-moma-i18n.js"
       - "trace-photo-i18n.js"
       - "scripts/test_moma.py"
+      - "scripts/test_moma_recognition.py"
+      - "scripts/test_pamm_rebuild.py"
+      - "trace-pamm-games.js"
+      - "trace-pamm-games.css"
       - "scripts/test_oppenheim_materials.py"
       - "trace-i18n.js"
       - "trace-i18n-art.js"
@@ -69,6 +73,7 @@ jobs:
         run: |
           node --check trace-moma-data.js
           node --check trace-moma-games.js
+          node --check trace-pamm-games.js
           node --check trace-moma-i18n.js
           node --check trace-photo-i18n.js
           node --check trace-i18n.js
@@ -88,23 +93,25 @@ jobs:
           python scripts/check_syntax.py
           python -m json.tool display-status.json >/dev/null
           python -m http.server 8765 --bind 127.0.0.1 >/tmp/trace-local-http.log 2>&1 &
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=26 python scripts/test_detail_reveal.py
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=26 python scripts/test_moma.py
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=26 python scripts/test_oppenheim_materials.py
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=26 python scripts/test_locale.py
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=26 python scripts/test_welcome.py
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=26 python scripts/test_v1.py
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=26 python scripts/test_bonus.py
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=26 python scripts/test_expansion.py
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=26 python scripts/test_portals.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=27 python scripts/test_detail_reveal.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=27 python scripts/test_moma_recognition.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=27 python scripts/test_moma.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=27 python scripts/test_pamm_rebuild.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=27 python scripts/test_oppenheim_materials.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=27 python scripts/test_locale.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=27 python scripts/test_welcome.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=27 python scripts/test_v1.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=27 python scripts/test_bonus.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=27 python scripts/test_expansion.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=27 python scripts/test_portals.py
       - name: Recheck full experience at public HTTPS address after publication
         if: github.run_attempt > 1
         run: |
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=26 python scripts/test_detail_reveal.py
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=26 python scripts/test_moma.py
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=26 python scripts/test_locale.py
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=26 python scripts/test_welcome.py
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=26 python scripts/test_v1.py
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=26 python scripts/test_bonus.py
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=26 python scripts/test_expansion.py
-          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=26 python scripts/test_portals.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=27 python scripts/test_detail_reveal.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=27 python scripts/test_moma.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=27 python scripts/test_locale.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=27 python scripts/test_welcome.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=27 python scripts/test_v1.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=27 python scripts/test_bonus.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=27 python scripts/test_expansion.py
+          TRACE_TEST_URL=https://jamesbenja.github.io/trace-museum-demo/?v=27 python scripts/test_portals.py
