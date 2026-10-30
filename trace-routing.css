@@ -140,3 +140,17 @@
 .tn-review-actions button{padding:8px 9px;font-size:10px;font-weight:800;border:1px solid #c4d8c6;background:#e8f1e8;color:#2c634f;border-radius:7px}
 .tn-review-actions [data-tn-closure]{background:#f5edd9;border-color:#e1d2ae;color:#785f3b}
 .tn-review-actions [data-tn-unlink]{background:#f8e9e2;border-color:#eccbbf;color:#8f574a}
+
+/* MMFA connected provisional visits: compact, inspectable per-stop wayfinding */
+.tn-stop-preview{border:1px dashed #cdb47a;border-radius:10px;background:#fffaec;margin:9px 0;padding:10px}
+.tn-stop-preview summary{cursor:pointer;font-size:11px;font-weight:800;line-height:1.5;color:#806337}
+.tn-stop-preview ol{margin:11px 0 8px;padding-left:19px;display:grid;gap:7px}
+.tn-stop-preview li{font-size:10px;line-height:1.5;color:#3c6351}
+.tn-stop-preview li small{color:#8a795b}
+.tn-stop-preview p{font-size:10px;color:#866d41;line-height:1.5}
+.tn-review-list{background:#f5f8ed}
+.tn-review-list>summary{cursor:pointer;padding:3px 0 7px;color:#285c48;font-size:12px;line-height:1.5}
+.tn-review-list>summary strong{font:650 17px 'Fraunces',Georgia,serif}
+.tn-review-reason{padding:3px 0;margin-top:4px;color:#52705a}
+.tn-review-reason summary{font-size:10px;font-weight:750;cursor:pointer}
+.tn-review-reason p{font-size:10px;line-height:1.5;color:#687b67;margin:5px 0}
