@@ -139,7 +139,7 @@ with sync_playwright() as p:
                 assert page.evaluate("state.venue")==alternate
                 assert page.evaluate("state.found.length")==0
                 page.locator('#venueSwitcher').click()
-                assert ('1 of 3 discoveries' in page.locator('#'+museum+'SavedCount').inner_text())
+                assert ('1 of 8 discoveries' in page.locator('#'+museum+'SavedCount').inner_text())
                 page.locator('#venuePicker [data-venue="'+museum+'"]').click()
                 assert page.evaluate("state.found.slice()")==previous_ids
                 assert page.evaluate("state.stage")==current_stage
