@@ -10,7 +10,7 @@ with sync_playwright() as p:
  errors=[]
  page.on("pageerror",lambda error:errors.append(str(error)))
  response=page.goto(URL,wait_until="domcontentloaded",timeout=45000)
- assert response.status==200 and "v2.6" in page.title()
+ assert response.status==200 and "v2.7" in page.title()
  page.wait_for_function("window.TRACE_DISPLAY && !window.TRACE_DISPLAY.loading && window.TRACE_ROUTING && window.TRACE_V1",timeout=60000)
  assert page.evaluate("ALL.length")==16
  assert page.evaluate("window.TRACE_DISPLAY.activeWorks('mmfa').length")==3
