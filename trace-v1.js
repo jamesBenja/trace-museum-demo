@@ -41,14 +41,21 @@ function btn(label,act,variant){
 }
 function picks(){return '<div class="t1-choices"><button class="t1-choice '+(prefs.mode==='family'?'selected':'')+'" data-t1-mode="family"><span>👨‍👩‍👧</span>Family team<small style="display:block;font-weight:500;margin-top:4px">Share discoveries together</small></button><button class="t1-choice '+(prefs.mode==='solo'?'selected':'')+'" data-t1-mode="solo"><span>🔎</span>Solo explorer<small style="display:block;font-weight:500;margin-top:4px">Play at your own pace</small></button></div>'+
  '<div class="t1-choose" role="group" aria-label="Age or challenge level">'+[['5-7','Little eyes'],['8-12','Detective'],['teen','Explorer+']].map(([id,label])=>'<button class="'+(prefs.age===id?'active':'')+'" data-t1-age="'+id+'">'+label+'</button>').join('')+'</div>'}
+const INTRO_LANG={
+ en:{hello:'Hello! I’m Mica, your spark of curiosity. I have something exciting to show you about this museum!',style:'CHOOSE YOUR ADVENTURE STYLE',task:'Explore the real art, spot clues and discover stories. First, meet Mica for a short animated introduction to the museum and how to explore it safely.',start:'✧ Meet Mica and start the adventure',foot:'Use MAP for the real museum floor plan. Artworks may not be on display, and museum rules should always be followed.',lang:'CHOOSE YOUR LANGUAGE'},
+ fr:{hello:'Bonjour ! Je suis Mica, ton étincelle de curiosité. J’ai tant de choses à te montrer dans ce musée !',style:'CHOISIS TON STYLE D’AVENTURE',task:'Explore de vraies œuvres, suis des indices et découvre leurs histoires. D’abord, Mica te présente le musée et comment le visiter avec respect.',start:'✧ Rencontre Mica et commence l’aventure',foot:'Consulte CARTE pour le plan réel du musée. Certaines œuvres ne sont peut-être pas exposées.',lang:'CHOISIS TA LANGUE'},
+ es:{hello:'¡Hola! Soy Mica, tu chispa de curiosidad. ¡Tengo muchas cosas que enseñarte en este museo!',style:'ELIGE TU ESTILO DE AVENTURA',task:'Explora obras de arte reales, sigue pistas y descubre sus historias. Primero, Mica te presenta el museo y cómo visitarlo con respeto.',start:'✧ Conoce a Mica y empieza la aventura',foot:'Usa MAPA para ver el plano real del museo. Algunas obras podrían no estar expuestas.',lang:'ELIGE TU IDIOMA'}
+};
 function intro(){
- const world=L[state.venue];
- return '<div class="t1-screen"><div class="t1-head"><div class="t1-overline">TRACE 1.0 · ART BECOMES AN ADVENTURE</div><h2>'+esc(world.name)+'</h2><p>'+esc(world.description)+'</p><div class="venueSelect"><button data-venue="mmfa" class="'+(state.venue==='mmfa'?'chosen':'')+'">MONTRÉAL · MMFA</button><button data-venue="pamm" class="'+(state.venue==='pamm'?'chosen':'')+'">MIAMI · PAMM</button></div></div>'+
- mascot('Hello! I’m Mica. I’m a little spark of paint, and the museum has misplaced eight artistic powers. Will you help me find them?')+
- '<div class="t1-overline">CHOOSE YOUR ADVENTURE STYLE</div>'+picks()+'<div class="v7-language"><button data-lang="en">EN</button><button data-lang="fr">FR</button><button data-lang="es">ES</button></div><p class="tiny">The new game interface is currently in English; artist stories and original quiz translations remain available in the earlier discovery views. Full localization is pending review.</p>'+
- '<div class="t1-task">Explore the real art, spot a clue and scan it. Every discovery unlocks something you can make or try. Choose your own route through the museum’s currently available artworks.</div>'+
- btn('✧ Enter the adventure map','t1-start')+
- '<p class="tiny">The quest map is a fantasy game illustration, not a museum floor plan. Artworks may not be displayed; the separate MAP tab links to museum maps. No museum endorsement or commercial image permissions are implied.</p></div>';
+ const world=L[state.venue],l=INTRO_LANG[state.lang]||INTRO_LANG.en;
+ const localized=typeof V7_OPENINGS!=='undefined'?V7_OPENINGS[state.lang]?.[state.venue]:null;
+ return '<div class="t1-screen"><div class="t1-head"><div class="t1-overline">TRACE · ART BECOMES AN ADVENTURE</div><h2>'+esc(localized?.title||world.name)+'</h2><p>'+esc(localized?.intro||world.description)+'</p><div class="venueSelect"><button data-venue="mmfa" class="'+(state.venue==='mmfa'?'chosen':'')+'">MONTRÉAL · MMFA</button><button data-venue="pamm" class="'+(state.venue==='pamm'?'chosen':'')+'">MIAMI · PAMM</button></div></div>'+
+ mascot(l.hello)+
+ '<div class="t1-overline">'+esc(l.lang)+'</div><div class="v7-language">'+['en','fr','es'].map(code=>'<button data-lang="'+code+'" class="'+(state.lang===code?'active':'')+'" aria-pressed="'+(state.lang===code)+'">'+code.toUpperCase()+'</button>').join('')+'</div>'+
+ '<div class="t1-overline">'+esc(l.style)+'</div>'+picks()+
+ '<div class="t1-task">'+esc(l.task)+'</div>'+
+ btn(l.start,'t1-start')+
+ '<p class="tiny">'+esc(l.foot)+'</p></div>';
 }
 function hub(){
  const world=L[state.venue],arts=activeArts(),n=t1Found().length,done=allDone(),found=new Set(t1Found().map(a=>a.id));
@@ -66,7 +73,8 @@ function hub(){
  (n>=2?'<div class="tb-bonus-card"><div class="t1-overline">✦ A SECRET CHALLENGE HAS OPENED</div><h3>Connect the Artworks</h3><p>Explore two completed works together, compare them through a sliding lens and collect an Art Connector badge.</p><p><strong>✧ '+(window.TRACE_BONUS?.links()?.length||0)+' saved connections · up to '+maxPairs+' curated pairs per museum</strong></p><button class="button" type="button" data-bonus-open>✧ Play the comparison bonus →</button></div>':'')+
  (done?'<div class="t1-complete"><h2 class="t1-h2">All available artworks discovered! ✦</h2><p class="t1-small">Come back when the museum activates more artworks. Your discoveries stay saved.</p>'+btn('Open my discovery passport','album')+'</div>':'')+
  '<div class="t1-team"><h3>How will you play?</h3>'+picks()+'<p class="t1-small">Switch modes without losing progress.</p></div>'+
- btn('⌖ Plan my museum route','map','outline')+btn('View my passport','album','outline')+'</div>';
+ btn('⌖ Plan my museum route','map','outline')+btn('View my passport','album','outline')+
+ '<button class="button ghost" type="button" data-t1-replay>'+esc(window.TRACE_WELCOME?.translations[state.lang]?.replay||'Watch Mica’s welcome again')+'</button></div>';
 }
 
 function roleMessage(){
@@ -147,6 +155,7 @@ function renderGame(v){
  if(state.tab!=='quest')return false;
  if(state.stage==='bonus'){if(window.TRACE_BONUS?.render(v))return true;v.innerHTML=hub();return true}
  if(state.stage==='intro'){v.innerHTML=intro();return true}
+ if(state.stage==='welcome'){v.innerHTML=window.TRACE_WELCOME?.render()||intro();return true}
  if(state.stage==='hub'){v.innerHTML=hub();return true}
  if(state.stage==='clue'){v.innerHTML=clue();window.TRACE_COOP?.install();return true}
  if(state.stage==='puzzle'){v.innerHTML=puzzle();if(!window.TRACE_EXTRA?.has(A[state.current]?.id))installPuzzle();return true}
@@ -202,11 +211,13 @@ function moveXY(x,y){
  }
 }
 function event(e){
- const click=e.target.closest('[data-t1-mode],[data-t1-age],[data-t1-open],[data-t1-start],[data-t1-hub],[data-t1-move],[data-t1-symbol],[data-t1-photo-choice],[data-t1-place],[data-t1-cell],[data-t1-finish],[data-t1-assist]');
+ const click=e.target.closest('[data-t1-replay],[data-t1-mode],[data-t1-age],[data-t1-open],[data-t1-start],[data-t1-hub],[data-t1-move],[data-t1-symbol],[data-t1-photo-choice],[data-t1-place],[data-t1-cell],[data-t1-finish],[data-t1-assist]');
  if(click){e.stopImmediatePropagation();e.preventDefault();const d=click.dataset;
+  if(d.t1Replay!==undefined){window.TRACE_WELCOME?.enter();return}
   if(d.t1Mode){settingMode(d.t1Mode);return}
   if(d.t1Age){settingAge(d.t1Age);return}
-  if(d.t1Start!==undefined||d.t1Hub!==undefined){stage('hub');return}
+  if(d.t1Start!==undefined){if(window.TRACE_WELCOME)window.TRACE_WELCOME.enter();else stage('hub');return}
+  if(d.t1Hub!==undefined){window.TRACE_WELCOME?.cleanup();stage('hub');return}
   if(d.t1Open!==undefined){openWork(Number(d.t1Open));return}
   if(d.t1Move){const q={left:[-8,0],up:[0,-8],down:[0,8],right:[8,0]}[d.t1Move];if(q)moveXY(C.xy.x+q[0],C.xy.y+q[1]);return}
   if(d.t1Symbol){
