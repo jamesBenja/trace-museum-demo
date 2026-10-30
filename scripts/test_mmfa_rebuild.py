@@ -48,14 +48,10 @@ with sync_playwright() as pw:
    board=page.locator('.mf-garden')
    board.scroll_into_view_if_needed()
    r=board.evaluate("""e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}""")
-   pt={"x":r['x']+r['width']*.10,"y":r['y']+r['height']*.91}
-   print("COPPER TARGET",page.evaluate("""p=>{const el=document.elementFromPoint(p.x,p.y);return {target:el?.outerHTML.slice(0,160),venue:state.venue,stage:state.stage,tab:state.tab,hasPuzzle:!!window.TRACE_V1.puzzle}}""",pt),flush=True)
-   page.evaluate("""()=>{window.__copperEvents=[];document.addEventListener('pointerdown',e=>window.__copperEvents.push(['down',e.target.className?.baseVal||e.target.className]),true);document.addEventListener('pointermove',e=>{if(e.buttons)window.__copperEvents.push(['move',e.clientX,e.clientY])},true)}""")
    for n in range(4):
     gesture(page,(r['x']+r['width']*.10,r['y']+r['height']*.91),
              (r['x']+r['width']*.63,r['y']+r['height']*.91),steps=12)
    assert page.locator('.mf-painted-lizard').count()==2,"Lizards are not visibly painted in the garden"
-   print("COPPER GESTURE DETAIL",page.evaluate("window.TRACE_V1.puzzle.extra.rubs.map(p=>p.length)"),page.evaluate("window.TRACE_V1.puzzle.extra.sweep"),page.evaluate("window.__copperEvents.slice(0,24)"),flush=True)
    assert page.evaluate("window.TRACE_V1.puzzle.extra.rubs.some(p=>p.length>2)"),"Copper brush did not record local polish strokes"
    for n in range(5):
     page.locator('[data-mf="find"][data-v="'+str(n)+'"]').click()
@@ -101,6 +97,12 @@ with sync_playwright() as pw:
    assert page.locator('.mf-guardian').count()==2
    for n in range(2):page.locator('[data-mf="face"][data-v="'+str(n)+'"]').click()
    assert page.locator('.mf-gaze-line').count()==1
+   page.locator('[data-mf="select-guardian"][data-v="0"]').click()
+   page.locator('[data-mf="guardian"][data-v="2"]').click()
+   assert page.evaluate("window.TRACE_V1.puzzle.extra.guardians")==[2,4],"Guardians cannot move after solving"
+   assert not page.evaluate("window.TRACE_V1.puzzle.done"),"Moving guardian should reopen the pose challenge"
+   for n in range(2):page.locator('[data-mf="face"][data-v="'+str(n)+'"]').click()
+   assert page.locator('.mf-gaze-line').count()==1,"Guardians cannot reorient after moving"
   elif name=='riopelle':
    page.locator('[data-mf="base"][data-v="dark"]').click()
    for part in ('wheel','wire','fabric'):page.locator('[data-mf="piece"][data-v="'+part+'"]').click()
