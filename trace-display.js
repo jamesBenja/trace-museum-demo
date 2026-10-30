@@ -154,7 +154,7 @@ function adminUI(){
  '<div class="td-work-head"><h3>'+h(venue==='mmfa'?'MMFA · Montréal':'PAMM · Miami')+' artworks</h3><p>Toggle immediately to preview what visitors would see on this device.</p></div>'+
  '<div class="td-work-list">'+rows+'</div>'+
  '<div class="td-publish"><h3>Publish these changes to every visitor</h3><p>Because this is a static site, the switches above do not publish globally. Export the full configuration, then commit it as <code>display-status.json</code> to the GitHub repository. GitHub Pages will publish it, and the site loads it on each visit.</p>'+
- '<div class="td-publish-actions"><button class="button" type="button" data-td-export>↓ Download configuration JSON</button>'+
+ '<div class="td-publish-actions"><a class="button" data-td-export download="display-status.json" href="data:application/json;charset=utf-8,'+encodeURIComponent(exportJSON())+'">↓ Download configuration JSON</a>'+
  '<button class="button outline" type="button" data-td-copy>Copy configuration JSON</button>'+
  '<a class="button outline" href="https://github.com/jamesBenja/trace-museum-demo/edit/main/display-status.json" rel="noopener noreferrer" target="_blank">Open GitHub publisher ↗</a>'+
  '<button class="button ghost" type="button" data-td-reset>Discard local draft / use published version</button></div>'+
@@ -198,6 +198,7 @@ document.addEventListener('change',ev=>{
 document.addEventListener('click',ev=>{
  const button=ev.target.closest('[data-td-export],[data-td-copy],[data-td-reset]');
  if(!button)return;
+ if(button.tagName==='A'&&button.dataset.tdExport!==undefined)return;
  ev.stopImmediatePropagation();ev.preventDefault();
  if(button.dataset.tdExport!==undefined){download();return}
  if(button.dataset.tdCopy!==undefined){
