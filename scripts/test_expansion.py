@@ -15,7 +15,7 @@ with sync_playwright() as p:
   page.on('pageerror',lambda e:errors.append(str(e)))
   res=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
   assert res and res.status==200, 'HTTP error'
-  assert 'v1.5' in page.title(),page.title()
+  assert 'v1.6' in page.title(),page.title()
   page.wait_for_function("window.TRACE_EXTRA && window.TRACE_V1 && document.querySelector('#status')?.textContent.includes('IMAGE REFERENCES')",timeout=50000)
   if museum=='pamm':
    page.locator('#venueSwitcher').click()
