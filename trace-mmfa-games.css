@@ -109,8 +109,8 @@
 .mf-rodin .mf-body-handle{right:4%;top:72%;width:46px;height:46px;z-index:3}
 /* The abstract sculpture rotates about the Y axis with a deep perspective, not a lateral slide. */
 .mf-cragg{min-height:270px}
-.mf-cragg-backdrop{position:absolute;inset:0;display:grid;place-items:center;perspective:430px;background:radial-gradient(circle at 50% 42%,#f7f3df,#c2d5c8)}
-.mf-turntable{position:relative;width:78%;height:93%;transform-style:preserve-3d;transform:rotateY(var(--turn));transition:transform .65s cubic-bezier(.23,.65,.22,1);filter:drop-shadow(5px 9px 8px #54796b55)}
+ .mf-cragg-backdrop{position:absolute;inset:0;perspective:430px;background:radial-gradient(circle at 50% 42%,#f7f3df,#c2d5c8)}
+ .mf-turntable{position:absolute;left:10%;top:4%;width:80%;height:90%;transform-style:preserve-3d;transform:rotateY(var(--turn));transition:transform .65s cubic-bezier(.23,.65,.22,1);filter:drop-shadow(5px 9px 8px #54796b55)}
 .mf-cragg-model{width:100%;height:100%;display:block;backface-visibility:visible}
 .mf-cragg-shadow{position:absolute;bottom:8px;width:58%;height:22px;background:#536e5d45;border-radius:50%;filter:blur(8px);pointer-events:none;transition:transform .55s}
 .mf-cragg .mf-face-hotspot{z-index:4;top:41%;transition:left .32s;animation:mf-shimmer 2s infinite}
