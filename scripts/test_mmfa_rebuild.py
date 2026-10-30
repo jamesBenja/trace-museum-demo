@@ -46,8 +46,8 @@ with sync_playwright() as pw:
    board.scroll_into_view_if_needed()
    r=board.bounding_box()
    for n in range(4):
-    gesture(page,(r['x']+r['width']*.27,r['y']+r['height']*.72),
-             (r['x']+r['width']*.64,r['y']+r['height']*.72),steps=12)
+    gesture(page,(r['x']+r['width']*.10,r['y']+r['height']*.91),
+             (r['x']+r['width']*.63,r['y']+r['height']*.91),steps=12)
    for n in range(5):
     page.locator('[data-mf="find"][data-v="'+str(n)+'"]').click()
    assert page.locator('.mf-secret.found').count()==5
