@@ -111,3 +111,32 @@
 .tn-manage-rooms>summary{font-size:12px;font-weight:800;cursor:pointer}
 .tn-room-row small{color:#7e917b}
 @media(max-width:380px){.tn-route-modes button{font-size:10px}.tn-mini-rooms{grid-template-columns:1fr 1fr}.tn-page,.td-screen{padding-left:15px;padding-right:15px}}
+
+/* TRACE navigator v3: source-graded graph and room finder */
+.tn-connectivity{background:linear-gradient(150deg,#f0f6ed,#fffdf5);border:1px solid #c9ddce;border-radius:17px;padding:15px;margin:14px 0}
+.tn-connectivity-title{display:flex;gap:10px;align-items:center}
+.tn-connectivity-title h3{font:650 20px/1.25 'Fraunces',Georgia,serif;margin:2px 0 5px;color:#225d4b}
+.tn-connectivity-title small{font-weight:800;font-size:9px;letter-spacing:1.5px;color:#758a78}
+.tn-connectivity-mica{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#dde9cf;color:#376b58;font-size:23px;flex:none}
+.tn-connectivity>p{font-size:11px;line-height:1.65;color:#546e5d;margin:9px 0}
+.tn-path-line{display:flex;align-items:center;gap:5px;overflow-x:auto;padding:12px 2px;scrollbar-width:thin}
+.tn-path-node{background:#fff;border:1px solid #b6cebe;border-radius:9px;padding:8px;min-width:90px;max-width:185px;flex-shrink:0;font-size:10px;font-weight:800;line-height:1.4;color:#265c49}
+.tn-path-arrow{font-size:17px;color:#5d8c74;flex-shrink:0}
+.tn-source-links{border:1px solid #d9e4d5;background:#fff;border-radius:11px;margin:12px 0;padding:10px}
+.tn-source-links summary{font-weight:800;cursor:pointer;color:#2f6956;font-size:11px;line-height:1.5}
+.tn-link-group{margin-top:12px;padding-top:8px;border-top:1px solid #edf1e8}
+.tn-link-group>b{font-size:11px;color:#486e5a}
+.tn-link-line{border-left:3px solid #5e9d78;padding:7px 9px;background:#f2f7ef;margin:5px 0;display:grid;gap:3px}
+.tn-link-line.tn-unverified{border-left-color:#d2a663;background:#fbf5e7}
+.tn-link-line>span{font-size:11px;color:#335e4d;line-height:1.45}
+.tn-link-line small{font-size:9px;color:#7e795f}
+.tn-map-caution{color:#8a7c5b!important;font-size:10px!important}
+.tn-access-note{padding:10px;background:#fff1dc;border-radius:9px}
+.tn-review-link{background:#fff;border:1px solid #dce7d9;border-radius:11px;margin:9px 0;padding:10px;display:grid;gap:9px}
+.tn-review-link strong{font-size:11px;color:#285943;display:block;line-height:1.4}
+.tn-review-link small{display:block;color:#7e765c;font-size:10px;margin-top:4px}
+.tn-review-link a{font-size:10px;color:#346b57;display:inline-block;margin-top:5px}
+.tn-review-actions{display:flex;gap:6px;flex-wrap:wrap}
+.tn-review-actions button{padding:8px 9px;font-size:10px;font-weight:800;border:1px solid #c4d8c6;background:#e8f1e8;color:#2c634f;border-radius:7px}
+.tn-review-actions [data-tn-closure]{background:#f5edd9;border-color:#e1d2ae;color:#785f3b}
+.tn-review-actions [data-tn-unlink]{background:#f8e9e2;border-color:#eccbbf;color:#8f574a}
