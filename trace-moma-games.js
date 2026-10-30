@@ -93,7 +93,7 @@ function dance(s,t){
  content+='</g><path id="mg-dance-ghost" fill="none" stroke="#ffe8ae" stroke-width="8" stroke-linecap="round"/>';
  return '<div class="mg-scene mg-dance-scene">'+svgWrap(content)+'</div><div class="mg-meter">'+h(t.count)+' <b>'+s.links.length+'/5</b></div><div class="mg-nudges">'+Array.from({length:5},(_,i)=>action((s.links.includes(i)?'✓ ':'✋ ')+(i+1),'connect',i,s.links.includes(i)?'is-active':'')).join('')+'</div>';
 }
-const PADPOS=[[52,57],[107,118],[171,76],[240,109],[298,61],[82,199],[196,183],[281,203]];
+const PADPOS=[[45,126],[109,150],[173,100],[243,138],[298,102],[83,212],[197,197],[282,217]];
 function lilies(s,t){
  const bright=(.12+s.sun*.88).toFixed(2);
  let art='<defs><linearGradient id="mgPond" x2="0" y2="1"><stop stop-color="#486fa1"/><stop offset=".45" stop-color="#588ea6"/><stop offset="1" stop-color="#315e75"/></linearGradient><linearGradient id="mgReflection" x2="0" y2="1"><stop stop-color="#e9dbd0"/><stop offset=".45" stop-color="#f6d6bd"/><stop offset=".64" stop-color="#b1c9d1"/><stop offset="1" stop-color="#ddd9ac"/></linearGradient></defs><rect width="340" height="270" fill="url(#mgPond)"/><g class="mg-reflected-sky" id="mg-reflect" opacity="'+bright+'"><path d="M0 45q65-35 110 8t130-7t100-4v144H0Z" fill="url(#mgReflection)"/><path d="M-20 105q45-20 80 5t90-8t105 2t110-13" stroke="#faf5e4" stroke-width="21" opacity=".55" fill="none"/><path d="M-30 170q75-22 130 5t120-5t130 8" stroke="#d2ccdf" stroke-width="31" opacity=".65" fill="none"/></g>';
