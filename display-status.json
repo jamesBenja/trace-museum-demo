@@ -103,6 +103,30 @@
         "label": "Underground passage / connector",
         "wing": "Museum passage",
         "floor": "S2"
+      },
+      {
+        "id": "mmfa-desmarais-s1",
+        "label": "Level S1 · Learning and Arts",
+        "wing": "Jean-Noël Desmarais",
+        "floor": "S1"
+      },
+      {
+        "id": "mmfa-desmarais-2",
+        "label": "Level 2 · Aube Café / circulation",
+        "wing": "Jean-Noël Desmarais",
+        "floor": "2"
+      },
+      {
+        "id": "mmfa-desmarais-3",
+        "label": "Level 3 · Exhibition circulation",
+        "wing": "Jean-Noël Desmarais",
+        "floor": "3"
+      },
+      {
+        "id": "mmfa-hornstein-1",
+        "label": "Hornstein Pavilion · Level 1",
+        "wing": "Michal and Renata Hornstein",
+        "floor": "1"
       }
     ],
     "pamm": [
@@ -426,7 +450,8 @@
         "confidence": "high",
         "closed": false,
         "cost": 1,
-        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/"
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "note": "Official museum diagram labels a Level 1 passage to the Pavilion for Peace. Verify visitor door and circulation."
       },
       {
         "from": "mmfa-passage",
@@ -436,7 +461,8 @@
         "confidence": "high",
         "closed": false,
         "cost": 1,
-        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/"
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "note": "Official map identifies Bourgie S2 as leading into the underground passage. Exact entrance needs validation."
       },
       {
         "from": "mmfa-desmarais-s2",
@@ -446,7 +472,371 @@
         "confidence": "moderate",
         "closed": false,
         "cost": 1,
-        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/"
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "note": "Official pavilion diagram shows a S2 underground passage between museum buildings. Passage endpoints need onsite verification."
+      },
+      {
+        "from": "mmfa-entrance",
+        "to": "mmfa-desmarais-s1",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Conceptual successive level connection within Desmarais. The museum confirms elevators are provided, but precise stops and doors require staff verification."
+      },
+      {
+        "from": "mmfa-entrance",
+        "to": "mmfa-desmarais-s1",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 2.5,
+        "note": "Possible internal stair connection between successive levels. Exact accessible staircase/door configuration must be checked onsite."
+      },
+      {
+        "from": "mmfa-desmarais-s1",
+        "to": "mmfa-desmarais-s2",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Conceptual successive level connection within Desmarais. The museum confirms elevators are provided, but precise stops and doors require staff verification."
+      },
+      {
+        "from": "mmfa-desmarais-s1",
+        "to": "mmfa-desmarais-s2",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 2.5,
+        "note": "Possible internal stair connection between successive levels. Exact accessible staircase/door configuration must be checked onsite."
+      },
+      {
+        "from": "mmfa-entrance",
+        "to": "mmfa-desmarais-2",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Conceptual successive level connection within Desmarais. The museum confirms elevators are provided, but precise stops and doors require staff verification."
+      },
+      {
+        "from": "mmfa-entrance",
+        "to": "mmfa-desmarais-2",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 2.5,
+        "note": "Possible internal stair connection between successive levels. Exact accessible staircase/door configuration must be checked onsite."
+      },
+      {
+        "from": "mmfa-desmarais-2",
+        "to": "mmfa-desmarais-3",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Conceptual successive level connection within Desmarais. The museum confirms elevators are provided, but precise stops and doors require staff verification."
+      },
+      {
+        "from": "mmfa-desmarais-2",
+        "to": "mmfa-desmarais-3",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 2.5,
+        "note": "Possible internal stair connection between successive levels. Exact accessible staircase/door configuration must be checked onsite."
+      },
+      {
+        "from": "mmfa-desmarais-3",
+        "to": "mmfa-desmarais-4",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Conceptual successive level connection within Desmarais. The museum confirms elevators are provided, but precise stops and doors require staff verification."
+      },
+      {
+        "from": "mmfa-desmarais-3",
+        "to": "mmfa-desmarais-4",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 2.5,
+        "note": "Possible internal stair connection between successive levels. Exact accessible staircase/door configuration must be checked onsite."
+      },
+      {
+        "from": "mmfa-peace-1",
+        "to": "mmfa-peace-2",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Adjacent exhibition levels in the Pavilion for Peace; elevator access is supported by the museum's general accessibility statement, but landing details are unverified."
+      },
+      {
+        "from": "mmfa-peace-1",
+        "to": "mmfa-peace-2",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 2.5,
+        "note": "Possible stairs between adjacent Pavilion for Peace levels. Verify the specific staircase is open and available to visitors."
+      },
+      {
+        "from": "mmfa-peace-2",
+        "to": "mmfa-peace-3",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Adjacent exhibition levels in the Pavilion for Peace; elevator access is supported by the museum's general accessibility statement, but landing details are unverified."
+      },
+      {
+        "from": "mmfa-peace-2",
+        "to": "mmfa-peace-3",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 2.5,
+        "note": "Possible stairs between adjacent Pavilion for Peace levels. Verify the specific staircase is open and available to visitors."
+      },
+      {
+        "from": "mmfa-peace-3",
+        "to": "mmfa-peace-4",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Adjacent exhibition levels in the Pavilion for Peace; elevator access is supported by the museum's general accessibility statement, but landing details are unverified."
+      },
+      {
+        "from": "mmfa-peace-3",
+        "to": "mmfa-peace-4",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 2.5,
+        "note": "Possible stairs between adjacent Pavilion for Peace levels. Verify the specific staircase is open and available to visitors."
+      },
+      {
+        "from": "mmfa-bourgie-s2",
+        "to": "mmfa-bourgie-s1",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://provencherroy.ca/en/projects/musee-des-beaux-arts-de-montreal",
+        "closed": false,
+        "cost": 2.5,
+        "note": "The Bourgie pavilion architect describes a central staircase linking superimposed gallery levels; confirm individual stair landings and any closures."
+      },
+      {
+        "from": "mmfa-bourgie-s2",
+        "to": "mmfa-bourgie-s1",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Museum confirms that its pavilion galleries have elevator access, although this exact pair of landings needs onsite validation."
+      },
+      {
+        "from": "mmfa-bourgie-s1",
+        "to": "mmfa-bourgie-1",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://provencherroy.ca/en/projects/musee-des-beaux-arts-de-montreal",
+        "closed": false,
+        "cost": 2.5,
+        "note": "The Bourgie pavilion architect describes a central staircase linking superimposed gallery levels; confirm individual stair landings and any closures."
+      },
+      {
+        "from": "mmfa-bourgie-s1",
+        "to": "mmfa-bourgie-1",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Museum confirms that its pavilion galleries have elevator access, although this exact pair of landings needs onsite validation."
+      },
+      {
+        "from": "mmfa-bourgie-1",
+        "to": "mmfa-bourgie-2",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://provencherroy.ca/en/projects/musee-des-beaux-arts-de-montreal",
+        "closed": false,
+        "cost": 2.5,
+        "note": "The Bourgie pavilion architect describes a central staircase linking superimposed gallery levels; confirm individual stair landings and any closures."
+      },
+      {
+        "from": "mmfa-bourgie-1",
+        "to": "mmfa-bourgie-2",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Museum confirms that its pavilion galleries have elevator access, although this exact pair of landings needs onsite validation."
+      },
+      {
+        "from": "mmfa-bourgie-2",
+        "to": "mmfa-bourgie-3",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://provencherroy.ca/en/projects/musee-des-beaux-arts-de-montreal",
+        "closed": false,
+        "cost": 2.5,
+        "note": "The Bourgie pavilion architect describes a central staircase linking superimposed gallery levels; confirm individual stair landings and any closures."
+      },
+      {
+        "from": "mmfa-bourgie-2",
+        "to": "mmfa-bourgie-3",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Museum confirms that its pavilion galleries have elevator access, although this exact pair of landings needs onsite validation."
+      },
+      {
+        "from": "mmfa-bourgie-3",
+        "to": "mmfa-bourgie-4",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://provencherroy.ca/en/projects/musee-des-beaux-arts-de-montreal",
+        "closed": false,
+        "cost": 2.5,
+        "note": "The Bourgie pavilion architect describes a central staircase linking superimposed gallery levels; confirm individual stair landings and any closures."
+      },
+      {
+        "from": "mmfa-bourgie-3",
+        "to": "mmfa-bourgie-4",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Museum confirms that its pavilion galleries have elevator access, although this exact pair of landings needs onsite validation."
+      },
+      {
+        "from": "mmfa-stewart-1",
+        "to": "mmfa-stewart-2",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 3,
+        "note": "Stewart Pavilion is listed on levels 1 and 2 and MMFA says its pavilions offer elevator access; confirm exact landing."
+      },
+      {
+        "from": "mmfa-stewart-1",
+        "to": "mmfa-stewart-2",
+        "type": "stairs",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 2.5,
+        "note": "Potential internal staircase, not shown as an individual connection on the pavilion-level map; staff must verify."
+      },
+      {
+        "from": "mmfa-passage",
+        "to": "mmfa-hornstein-1",
+        "type": "elevator",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/information/physical-accessibility/",
+        "closed": false,
+        "cost": 5,
+        "note": "Provisional accessibility connector between S2 passage and the Hornstein/Stewart pavilion group. Exact landing, lifts and doors not marked on the public diagram."
+      },
+      {
+        "from": "mmfa-hornstein-1",
+        "to": "mmfa-stewart-1",
+        "type": "corridor",
+        "status": "research",
+        "confidence": "moderate",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 2,
+        "note": "Conceptual connecting circulation between adjacent Hornstein and Stewart pavilions; precise corridor and gallery access must be confirmed onsite."
+      },
+      {
+        "from": "mmfa-stewart-1",
+        "to": "mmfa-garden",
+        "type": "outdoor",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 5,
+        "note": "Provisional exit onto Du Musée Avenue sculpture-garden area. Confirm physical public exit and step-free route before issuing directions."
+      },
+      {
+        "from": "mmfa-bourgie-1",
+        "to": "mmfa-garden",
+        "type": "outdoor",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 5,
+        "note": "Conceptual open-air connection between Bourgie pavilion ground level and nearby sculpture garden. Not an approved direct gallery door."
+      },
+      {
+        "from": "mmfa-entrance",
+        "to": "mmfa-garden",
+        "type": "outdoor",
+        "status": "research",
+        "confidence": "low",
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
+        "closed": false,
+        "cost": 9,
+        "note": "Outdoor public route near Sherbrooke Street and Du Musée Avenue. Street crossing, route and public opening require onsite confirmation."
       }
     ],
     "pamm": [
@@ -625,7 +1015,7 @@
     ]
   },
   "mode": "independent-pitch-demo",
-  "updatedAt": "2026-10-30T13:45:00.000Z",
+  "updatedAt": "2026-10-30T14:45:58.823Z",
   "description": "Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.",
   "works": {
     "mmfa-marrel": {
