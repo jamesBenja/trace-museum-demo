@@ -75,7 +75,7 @@ function clue(){
  if(!a)return hub();
  if(C.id!==a.id){C.id=a.id;C.points=[];C.teamCount=0;}
  let txt=prefs.age==='5-7'?'Look carefully at the little picture. Can you find its matching painting?':prefs.age==='teen'?'Investigate the subject, composition and detail, then locate the matching work.':'Search for the artwork containing this unusual fragment. Look at the art before you look at your phone.';
- return '<div class="t1-screen"><div class="t1-overline">MYSTERY '+(state.current+1)+' OF 3 · '+esc(node.subtitle)+'</div><h2 class="t1-h1">'+esc(node.name)+'</h2>'+paintProgress()+
+ return '<div class="t1-screen"><div class="t1-overline">MYSTERY '+(state.current+1)+' OF '+A.length · '+esc(node.subtitle)+'</div><h2 class="t1-h1">'+esc(node.name)+'</h2>'+paintProgress()+
  mascot(node.friend)+
  '<div class="t1-task">'+txt+'</div>'+
  '<div class="v7-fragment"><img src="'+img(a)+'" style="object-position:'+focus+'" alt="Mystery fragment from selected artwork"><div class="v7-cover">FIND THIS DETAIL</div></div>'+
@@ -84,7 +84,7 @@ function clue(){
  (state.hints.includes(a.id)?'<div class="t1-task">✧ '+esc(a.hint)+'</div>':btn('✧ Ask Mica for a hint','hint','ghost'))+
  btn('← Back to adventure map','t1-hub','ghost')+
  (a.previewOnly?'':'<details class="v7-cms"><summary style="font-size:12px;cursor:pointer;font-weight:800">Demo testing tools</summary><p class="t1-small">This artwork might not be on display. Test with the published collection image on a second screen, or use the simulated image test below.</p>'+
- btn('Test matching with a reference','sample:'+a.id,'outline>')+
+ btn('Test matching with a reference','sample:'+a.id,'outline')+'</details>')+
  '<p class="tiny">Museum collection image rights belong to their respective holders. <a target="_blank" rel="noopener noreferrer" href="'+a.url+'">Collection record ↗</a></p></div>';
 }
 function puzzleIntro(a){return '<div class="t1-overline">CREATE, EXPERIMENT, DISCOVER · '+esc(a.artist)+'</div><h2 class="t1-h1">'+esc(a.chapter)+'</h2>'+
