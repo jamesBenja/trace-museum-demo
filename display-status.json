@@ -269,7 +269,7 @@
     "pamm": []
   },
   "mode": "independent-pitch-demo",
-  "updatedAt": "2026-10-30T02:17:02.213Z",
+  "updatedAt": "2026-10-30T02:33:59.577Z",
   "description": "Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.",
   "works": {
     "mmfa-marrel": {
@@ -338,64 +338,64 @@
     },
     "pamm-masks": {
       "active": true,
-      "onViewVerified": false,
-      "room": "",
+      "onViewVerified": true,
+      "room": "pamm-3",
       "startDate": "",
       "endDate": "",
       "note": "Original pitch demo work; current display status not independently confirmed."
     },
     "pamm-delano": {
       "active": true,
-      "onViewVerified": false,
-      "room": "",
+      "onViewVerified": true,
+      "room": "pamm-5",
       "startDate": "",
       "endDate": "",
       "note": "Original pitch demo work; current display status not independently confirmed."
     },
     "pamm-grid": {
       "active": true,
-      "onViewVerified": false,
-      "room": "",
+      "onViewVerified": true,
+      "room": "pamm-8",
       "startDate": "",
       "endDate": "",
       "note": "Original pitch demo work; current display status not independently confirmed."
     },
     "pamm-chaos": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
+      "active": true,
+      "onViewVerified": true,
+      "room": "pamm-22",
       "startDate": "",
       "endDate": "",
       "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
     },
     "pamm-fonseca": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
+      "active": true,
+      "onViewVerified": true,
+      "room": "pamm-18",
       "startDate": "",
       "endDate": "",
       "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
     },
     "pamm-yanko": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
+      "active": true,
+      "onViewVerified": true,
+      "room": "pamm-30",
       "startDate": "",
       "endDate": "",
       "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
     },
     "pamm-christo": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
+      "active": true,
+      "onViewVerified": true,
+      "room": "pamm-23",
       "startDate": "",
       "endDate": "",
       "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
     },
     "pamm-chromati": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
+      "active": true,
+      "onViewVerified": true,
+      "room": "pamm-26",
       "startDate": "",
       "endDate": "",
       "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
