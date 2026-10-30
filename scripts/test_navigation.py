@@ -89,7 +89,7 @@ with sync_playwright() as p:
  assert len(exported["rooms"]["pamm"])>=20
  assert exported["connections"]["mmfa"][0]=={"from":"mmfa-entrance","to":"mmfa-peace-3","type":"corridor"}
  with page.expect_download() as download_info:
-  page.locator("[data-td-export]").click()
+  page.locator("[download=display-status.json]").click()
  assert download_info.value.suggested_filename=="display-status.json"
  # Museum settings are independent.
  page.locator("#venueSwitcher").click()
