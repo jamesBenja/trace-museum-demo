@@ -29,14 +29,14 @@ MMFA publishes pavilions, collection sections and levels, rather than all indivi
 
 ## Museum administrator preview
 
-Tap **MUSEUM** in the bottom navigation. Use the museum switcher to choose which institution you are editing.
+After signing in to the admin portal, open **MUSEUM** in the bottom navigation. At the top of **Manage works on display**, use the large **MMFA · Montréal** / **PAMM · Miami** buttons to switch institutions without leaving the editor. The active museum is highlighted. The small museum switcher in the header also works, and your unpublished edits for either museum stay in the same draft.
 
 1. Mark a work in or out of the visitor route.
 2. Confirm its on-display status, and assign a room from the official map's gallery list (or add a custom room).
 3. Optionally set start/end dates so an artwork can automatically become available or unavailable for a specific exhibition period.
 4. Under **Connect walkable rooms**, link actual adjacent rooms and designate each connection as corridor, elevator, outdoor passage or stairs. Only enter connections physically confirmed by staff.
-5. Open **MAP** to preview how the visitor's route changes. Taking a work off the route automatically removes it from route choices without deleting discoveries from the visitor's passport.
-6. Export or copy the generated **display-status.json** configuration for publication.
+5. Switch to the other museum to edit its independent artworks and rooms, then open **MAP** to preview how the visitor's route changes. Taking a work off the route automatically removes it from route choices without deleting discoveries from the visitor's passport.
+6. Select **Publish changes for all visitors** to commit both museums' changes together to the shared GitHub catalogue. Alternatively, export a JSON backup. A visitor refresh will reflect the newly published catalogue.
 
 **Important publication limitation:** The administrator interface is a **local draft editor** on a public GitHub Pages site, not a secure multi-device CMS. Changes affect only the current browser until the museum-approved JSON is committed to this GitHub repository and Pages redeploys. Museum-grade production requires account authentication, role permissions, audit logs, server-side publishing, versioned floor plans, and onsite route validation. Do not share the current public editing controls as secure administrative access.
 
