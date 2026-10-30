@@ -150,7 +150,7 @@ with sync_playwright() as p:
     png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAJ/q7UcAAAAASUVORK5CYII=')
     for n in (0,1):
      page.locator('[data-view-shot="'+str(n)+'"]').set_input_files({'name':'view-'+str(n)+'.png','mimeType':'image/png','buffer':png})
-     page.wait_for_function("(count)=>document.querySelectorAll('.tv-shot.captured').length===count",n+1)
+     page.wait_for_function("(count)=>document.querySelectorAll('.tv-shot.captured').length===count",arg=n+1)
     assert page.locator('.tv-compare-images').count()==0
     page.locator('[data-action="manual-review"]').first.click()
     assert page.locator('.tv-compare-images img').count()==2
