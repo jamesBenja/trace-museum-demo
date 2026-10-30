@@ -30,6 +30,7 @@ def play(p,name):
    source=p.locator('.mg-hand-handle[data-i="'+str(i)+'"]')
    dest=p.locator('.mg-hand-target[data-mg-target="'+str(i)+'"]').bounding_box()
    move(p,source,(dest['x']+dest['width']/2,dest['y']+dest['height']/2))
+   print('DANCE POINTER DIAG',i,p.evaluate('window.__mgPointerDebug'),p.evaluate('window.TRACE_V1.puzzle.extra.links'),flush=True)
    assert p.evaluate('window.TRACE_V1.puzzle.extra.links.length')==i+1
   assert p.locator('.mg-dance-complete').count()==1
  elif name=='lilies':
