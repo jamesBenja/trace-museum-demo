@@ -112,12 +112,130 @@ function warhol(s,t){
  '<div class="mg-meter">'+h(t.count)+' <b>'+s.spins+'</b></div>'+
  (match?'<div class="mg-jackpot">✦ '+h(t.jackpot)+' ✦<div class="mg-pop-grid">'+Array.from({length:9},(_,i)=>'<div style="--i:'+i+'">'+canHtml(s.reels[0],i)+'</div>').join('')+'</div></div>':'');
 }
-function objectPart(name,label,material){
- return '<button class="mg-tea-part mg-tea-'+name+' mg-material-'+material+'" data-mg="apply" data-value="'+name+'" data-mg-drop="'+name+'" aria-label="'+h(label)+'"><span class="mg-tea-shape" aria-hidden="true"><span class="mg-tea-object-shine"></span></span><span class="mg-tea-touch-reaction" aria-hidden="true">'+(material==='ice'?'❄':material==='fur'?'✧':material==='spikes'?'⚡':material==='grass'?'✿':material==='feathers'?'❧':'✦')+'</span><small>'+h(label)+'</small></button>';
+/* All three tea-set objects are actual vector silhouettes. Each material is
+   painted onto their surfaces with a unique SVG pattern and dimensional relief,
+   never onto the background of a generic emoji or div. */
+const TEA_PALETTE={
+ ceramic:['#f3f4ef','#d5e5e1','#879b94'],
+ fur:['#ddc4a3','#b38c6b','#654d3c'],
+ velvet:['#b88bb6','#733873','#3d2450'],
+ ice:['#e8ffff','#95d5e7','#4d9aad'],
+ spikes:['#d1c5af','#8a7d6f','#514c48'],
+ grass:['#bada84','#64934e','#325d3a'],
+ metal:['#f8fbf8','#a9b6b8','#506972'],
+ feathers:['#f6e9d1','#cbad96','#987d72']
+};
+function teaDefs(part,material){
+ const id='mg-tea-'+part,base=TEA_PALETTE[material]||TEA_PALETTE.ceramic;
+ let texture='';
+ if(material==='fur'){
+  for(let i=0;i<34;i++){
+   const x=(i*19+7)%49,y=(i*23+11)%49,dx=(i%4-1.5)*2;
+   texture+='<path d="M'+x+' '+(y+4)+'q'+dx+' -5 '+(dx+2)+' -10" stroke="'+(i%3?'#f5e1bf':'#765743')+'" stroke-width="'+(i%3?1.5:2.4)+'" stroke-linecap="round" fill="none"/>';
+  }
+ }else if(material==='velvet'){
+  texture='<path d="M-8 4 Q16 -3 30 6T58 2 M-8 18Q14 11 31 21T56 16 M-8 32 Q16 25 31 36T58 29" fill="none" stroke="#e6b5e2" stroke-width="2" opacity=".42"/>';
+  for(let i=0;i<26;i++)texture+='<circle cx="'+(i*17%48)+'" cy="'+(i*29%48)+'" r=".9" fill="#fce4f0" opacity=".48"/>';
+ }else if(material==='ice'){
+  texture='<path d="M0 0L21 16L44 0 M21 16L13 45L48 34 M0 38L21 16 M21 16L34 25" stroke="#ffffff" stroke-width="2.3" opacity=".8" fill="none"/><path d="M0 15l13-15h25l-9 14-13 12z" fill="#d9fcff" opacity=".48"/><circle cx="36" cy="10" r="3" fill="#ffffff"/>';
+ }else if(material==='spikes'){
+  texture='<path d="M0 15L10 0L18 19L30 4L45 20L48 0V42L35 30L23 46L10 29L0 46Z" fill="#423f3d" opacity=".57"/><path d="M10 0L18 19L30 4L35 30L23 46" stroke="#fbefd5" stroke-width="2" fill="none" opacity=".65"/>';
+ }else if(material==='grass'){
+  for(let i=0;i<20;i++){const x=i*11%48,y=(i*19)%48;texture+='<path d="M'+x+' '+(y+12)+'q'+(i%2?8:-8)+' -10 '+(i%3?4:-4)+' -19" stroke="'+(i%3?'#285b33':'#d1ef8e')+'" stroke-width="2.1" fill="none"/>'}
+ }else if(material==='metal'){
+  texture='<path d="M-10 8H60 M-10 15H60 M-10 32H60 M-10 40H60" stroke="#effbfb" stroke-width="5" opacity=".48"/><path d="M0 10h48 M0 34h48" stroke="#546c74" stroke-width="3" opacity=".28"/>';
+ }else if(material==='feathers'){
+  for(let y=-8;y<=55;y+=17)for(let x=-7;x<=57;x+=19){
+   texture+='<path d="M'+x+' '+(y+12)+'Q'+(x+12)+' '+(y-4)+' '+(x+19)+' '+(y+11)+'Q'+(x+8)+' '+(y+20)+' '+x+' '+(y+12)+'Z" fill="#f8eacc" stroke="#a48a79" stroke-width="1.1"/><path d="M'+(x+9)+' '+(y+4)+'v13" stroke="#ae9383" stroke-width=".7"/>';
+  }
+ }else{
+  texture='<path d="M0 12Q24 6 48 12 M0 33Q24 27 48 33" fill="none" stroke="#ffffff" opacity=".45" stroke-width="2"/>';
+ }
+ return '<defs>'+
+  '<linearGradient id="'+id+'-base" x1="0" x2="1" y1="0" y2=".7"><stop stop-color="'+base[0]+'"/><stop offset=".45" stop-color="'+base[1]+'"/><stop offset="1" stop-color="'+base[2]+'"/></linearGradient>'+
+  '<linearGradient id="'+id+'-depth" x1="0" x2="1"><stop stop-color="#ffffff" stop-opacity=".56"/><stop offset=".3" stop-color="#ffffff" stop-opacity=".02"/><stop offset=".82" stop-color="#1c2424" stop-opacity=".10"/><stop offset="1" stop-color="#171b1a" stop-opacity=".3"/></linearGradient>'+
+  '<pattern id="'+id+'-coat" patternUnits="userSpaceOnUse" width="48" height="48">'+
+  '<rect width="48" height="48" fill="url(#'+id+'-base)"/>'+texture+'</pattern>'+
+  '</defs>';
+}
+function teaFringe(part,material){
+ if(!['fur','grass','spikes','feathers'].includes(material))return '';
+ const points=[];
+ if(part==='cup'){
+  for(let y=52;y<=124;y+=5){points.push([23+(y-52)*.16,y,-1,0],[105-(y-52)*.15,y,1,0])}
+  for(let x=35;x<=97;x+=5)points.push([x,130-7*Math.abs(x-66)/32,0,1]);
+ }else if(part==='saucer'){
+  for(let i=0;i<48;i++){const a=i*Math.PI*2/48;points.push([70+61*Math.cos(a),96+24*Math.sin(a),Math.cos(a),Math.sin(a)])}
+ }else{
+  for(let i=0;i<33;i++){const a=i*Math.PI*2/33;points.push([70+23*Math.cos(a),48+29*Math.sin(a),Math.cos(a),Math.sin(a)])}
+  for(let y=89;y<=145;y+=5)points.push([62,y,-1,0],[78,y,1,0]);
+ }
+ let marks='';
+ const count=material==='feathers'?Math.ceil(points.length/3):points.length;
+ for(let i=0;i<count;i++){
+  const [x,y,dx,dy]=points[material==='feathers'?i*3:i];
+  const v=material==='spikes'?9+(i%3)*3:material==='grass'?8+(i%4)*2:material==='feathers'?12:6+(i%4)*2;
+  const bend=(i%4-1.5)*2.3;
+  if(material==='spikes'){
+   const px=-dy*3,py=dx*3;
+   marks+='<path d="M'+(x+px).toFixed(1)+' '+(y+py).toFixed(1)+'L'+(x+dx*v).toFixed(1)+' '+(y+dy*v).toFixed(1)+'L'+(x-px).toFixed(1)+' '+(y-py).toFixed(1)+'Z" fill="#999185" stroke="#5d5b57" stroke-width=".8"/>';
+  }else if(material==='feathers'){
+   marks+='<path d="M'+x.toFixed(1)+' '+y.toFixed(1)+'q'+(dx*v-dy*4).toFixed(1)+' '+(dy*v+dx*4).toFixed(1)+' '+(dx*(v+7)).toFixed(1)+' '+(dy*(v+7)).toFixed(1)+'q-7 -4 '+(-dx*(v+7)).toFixed(1)+' '+(-dy*(v+7)).toFixed(1)+'Z" fill="#f6e3c4" stroke="#ad9982" stroke-width=".8"/>';
+  }else{
+   marks+='<path d="M'+x.toFixed(1)+' '+y.toFixed(1)+'q'+(dx*v*.65-dy*bend).toFixed(1)+' '+(dy*v*.65+dx*bend).toFixed(1)+' '+(dx*v).toFixed(1)+' '+(dy*v).toFixed(1)+'" fill="none" stroke="'+(material==='fur'?(i%3?'#e5c8a7':'#977358'):(i%3?'#9ad070':'#356d42'))+'" stroke-width="'+(material==='fur'?2.5:2)+'" stroke-linecap="round"/>';
+  }
+ }
+ return '<g class="mg-tea-fringe mg-tea-fringe-'+material+'" aria-hidden="true">'+marks+'</g>';
+}
+function teaCup(material){
+ const coat='url(#mg-tea-cup-coat)',shadow='url(#mg-tea-cup-depth)';
+ const body='M23 47 Q64 39 105 47 L97 121 Q92 138 64 140 Q35 139 31 122 Z';
+ return '<ellipse cx="66" cy="149" rx="50" ry="6" fill="#493e3455"/>'+
+  '<path d="M105 60 C139 42 144 103 106 113" fill="none" stroke="#85786b" stroke-width="19"/>'+
+  '<path class="mg-tea-coating mg-tea-handle-coat" d="M105 60 C139 42 144 103 106 113" fill="none" stroke="'+coat+'" stroke-width="13"/>'+
+  teaFringe('cup',material)+
+  '<path class="mg-tea-coating mg-tea-cup-body" d="'+body+'" fill="'+coat+'" stroke="#746958" stroke-width="3"/>'+
+  '<path d="'+body+'" fill="'+shadow+'" pointer-events="none"/>'+
+  '<ellipse cx="64" cy="47" rx="41.5" ry="13" fill="'+coat+'" stroke="#827467" stroke-width="3"/>'+
+  '<ellipse cx="64" cy="46" rx="32" ry="7" fill="'+(material==='ice'?'#a8effa':material==='fur'?'#8c6b4f':'#5b6666')+'" opacity=".48"/>'+
+  '<path d="M34 61Q37 105 45 123" fill="none" stroke="#ffffff" stroke-width="3" opacity=".48" stroke-linecap="round"/>';
+}
+function teaSaucer(material){
+ const coat='url(#mg-tea-saucer-coat)',shadow='url(#mg-tea-saucer-depth)';
+ return '<ellipse cx="70" cy="141" rx="65" ry="6" fill="#443b3650"/>'+
+  teaFringe('saucer',material)+
+  '<path class="mg-tea-coating mg-tea-saucer-body" d="M10 95 Q14 80 70 75 Q127 80 130 95 Q133 119 98 133 Q70 145 41 133 Q8 117 10 95Z" fill="'+coat+'" stroke="#786c5d" stroke-width="3"/>'+
+  '<path d="M10 95 Q14 80 70 75 Q127 80 130 95 Q133 119 98 133 Q70 145 41 133 Q8 117 10 95Z" fill="'+shadow+'"/>'+
+  '<ellipse class="mg-tea-coating mg-tea-saucer-rim" cx="70" cy="93" rx="60" ry="21" fill="'+coat+'" stroke="#aa977d" stroke-width="3"/>'+
+  '<ellipse cx="70" cy="92" rx="38" ry="11.5" fill="none" stroke="#fff9e4" stroke-width="4" opacity=".67"/>'+
+  '<path d="M13 104 Q70 145 127 104" fill="none" stroke="#fff7e0" opacity=".56" stroke-width="2.5"/>';
+}
+function teaSpoon(material){
+ const coat='url(#mg-tea-spoon-coat)',shadow='url(#mg-tea-spoon-depth)';
+ return '<ellipse cx="78" cy="153" rx="29" ry="4" fill="#44362f44"/>'+
+  '<g transform="rotate(26 70 91)">'+
+  teaFringe('spoon',material)+
+  '<path d="M63 80 Q59 104 62 145 Q70 154 78 145 Q81 104 77 80Z" class="mg-tea-coating mg-tea-spoon-handle" fill="'+coat+'" stroke="#766e68" stroke-width="3"/>'+
+  '<path d="M63 80 Q59 104 62 145 Q70 154 78 145 Q81 104 77 80Z" fill="'+shadow+'"/>'+
+  '<path class="mg-tea-coating mg-tea-spoon-bowl" d="M70 19 C44 20 41 57 52 76 Q60 93 70 91 Q82 93 89 76 C99 56 96 19 70 19Z" fill="'+coat+'" stroke="#8d7b6c" stroke-width="3"/>'+
+  '<path d="M70 19 C44 20 41 57 52 76 Q60 93 70 91 Q82 93 89 76 C99 56 96 19 70 19Z" fill="'+shadow+'"/>'+
+  '<path d="M58 39Q55 59 61 75" fill="none" stroke="#ffffff" stroke-width="3" opacity=".62"/>'+
+  '<path d="M65 103Q64 132 68 141" fill="none" stroke="#ffffff" stroke-width="2" opacity=".57"/>'+
+  '</g>';
+}
+function objectPart(name,label,material,t){
+ const words=t||tr().oppenheim;
+ const materialName=words.materials[MAT.indexOf(material)]||material;
+ const drawing=name==='cup'?teaCup(material):name==='saucer'?teaSaucer(material):teaSpoon(material);
+ const effect=material==='fur'?'✧':material==='ice'?'❄':material==='spikes'?'✦':material==='grass'?'✿':material==='feathers'?'❧':material==='velvet'?'✧':material==='metal'?'✧':'';
+ return '<button type="button" class="mg-tea-part mg-tea-'+name+' mg-material-'+material+'" data-mg="apply" data-value="'+name+'" data-mg-drop="'+name+'" data-object="'+name+'" data-material="'+material+'" aria-label="'+h(label+' · '+materialName)+'">'+
+ '<svg class="mg-tea-illustration" viewBox="0 0 140 160" aria-hidden="true" focusable="false">'+teaDefs(name,material)+'<g class="mg-tea-object mg-coat-'+material+'" data-object-surface="'+name+'" data-material="'+material+'">'+drawing+'</g></svg>'+
+ (effect?'<span class="mg-tea-touch-reaction" aria-hidden="true">'+effect+'</span>':'')+
+ '<small class="mg-tea-part-label">'+h(label)+'</small><span class="mg-tea-material-name">'+h(materialName)+'</span></button>';
 }
 function oppenheim(s,t){
  const textureKeys=Object.values(s.textures),n=textureKeys.filter(x=>x!=='ceramic'&&x!=='metal').length;
- return '<div class="mg-material-lab"><div class="mg-tea-stage">'+['cup','saucer','spoon'].map((part,i)=>objectPart(part,t.part[i],s.textures[part])).join('')+'</div>'+
+ return '<div class="mg-material-lab"><div class="mg-tea-stage">'+['cup','saucer','spoon'].map((part,i)=>objectPart(part,t.part[i],s.textures[part],t)).join('')+'</div>'+
  '<div class="mg-texture-palette" role="group" aria-label="'+h(t.intro)+'">'+MAT.map((m,i)=>'<button class="mg-texture-swatch mg-material-'+m+' '+(s.chosenTexture===m?'is-selected':'')+'" type="button" data-mg="texture" data-value="'+m+'" data-mg-drag="texture" data-material="'+m+'" aria-pressed="'+(s.chosenTexture===m)+'"><span class="mg-texture-sample"></span><small>'+h(t.materials[i])+'</small></button>').join('')+'</div>'+
  '<div class="mg-reaction"><p>'+h(t.prompt)+'</p><div class="mg-reaction-options">'+t.feelings.map((f,i)=>action((s.reaction===String(i)?'✓ ':'')+f,'reaction',i,s.reaction===String(i)?'is-active':'')).join('')+'</div></div><div class="mg-meter">'+n+'/3 · '+h(t.part.join(' · '))+'</div></div>';
 }
