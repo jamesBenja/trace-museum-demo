@@ -1,0 +1,42 @@
+/* TRACE v2.4: Mica reveals only an optional tightly zoomed clue, never the full artwork. */
+.t1-word-clue{margin:16px 0 10px;padding:17px 16px;background:#fffdf4;border:1px solid #ebd8ad;border-radius:17px;box-shadow:0 5px 15px #6b5d3920}
+.t1-word-clue h3{font:650 21px/1.2 'Fraunces',Georgia,serif;color:#22463d;margin:9px 0}
+.t1-word-clue p{font-size:13px;color:#49665a;margin:0}
+.t1-detail-section{margin:20px 0 20px}
+.t1-detail-section>.t1-overline{margin-bottom:9px}
+.t1-detail-trigger{width:100%;min-height:152px;border:2px dashed #8dad9a;border-radius:20px;padding:17px 14px 17px 15px;display:flex;align-items:center;gap:12px;text-align:left;background:radial-gradient(circle at 8% 20%,#fff5c9,#dbede0 62%,#c7dfd2);color:#245b4b;cursor:pointer;box-shadow:0 8px 16px #31564216}
+.t1-detail-trigger-icon{width:74px;height:86px;min-width:74px;background:#fff8e5;border:1px solid #e4cf9d;border-radius:17px;display:grid;place-items:center;position:relative;overflow:hidden}
+.t1-detail-preview-spark{font-size:54px;color:#d59b5f;animation:t1-detail-pulse 2.4s ease-in-out infinite}
+.t1-detail-mini-mica{position:absolute;right:5px;bottom:4px;background:#e7aa7b;border-radius:50%;font-size:19px;color:#6a503a;padding:2px 5px;transform:rotate(10deg)}
+.t1-detail-trigger-copy{display:flex;flex-direction:column;gap:7px;min-width:0;flex:1}
+.t1-detail-trigger-copy strong{font:650 18px/1.2 'Fraunces',Georgia,serif;letter-spacing:-.25px}
+.t1-detail-trigger-copy small{font-size:11px;line-height:1.45;color:#557368}
+.t1-detail-chevron{font-size:29px;color:#49816d}
+.t1-detail-trigger:focus-visible,.t1-detail-hide:focus-visible{outline:3px solid #e8a66a;outline-offset:3px}
+.t1-detail-trigger:hover{background:radial-gradient(circle at 8% 20%,#fff4c4,#cbe7d2 70%)}
+.t1-detail-expanded{position:relative;isolation:isolate;min-height:338px;background:linear-gradient(160deg,#f2ead1,#d6e8d7);border:2px solid #9cbda7;border-radius:19px;padding:16px 13px 14px;overflow:hidden;box-shadow:0 8px 23px #2c64431c;animation:t1-detail-enter .55s cubic-bezier(.17,.67,.17,1) both}
+.t1-detail-frame{height:202px;max-width:100%;position:relative;overflow:hidden;border-radius:15px;background:#c9dbc7;border:5px solid #fffaf0;box-shadow:0 6px 18px #304e3e34;isolation:isolate}
+.t1-detail-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(3.2);display:block;max-width:none;animation:t1-detail-magnify 1.05s cubic-bezier(.16,.7,.28,1) both}
+.t1-detail-frame-label{position:absolute;bottom:0;left:0;right:0;padding:19px 9px 7px;background:linear-gradient(transparent,#193c35d9);color:#fff4db;font-size:9px;font-weight:850;letter-spacing:1.05px;text-align:center;z-index:5}
+.t1-detail-shutter{position:absolute;z-index:4;inset:0;background:radial-gradient(circle at 37% 33%,#ffdba4,#d0e6cd 64%);animation:t1-detail-curtain 1.15s cubic-bezier(.37,.02,.3,1) both}
+.t1-detail-mica{position:absolute;right:18px;top:0;width:66px;height:78px;z-index:8;pointer-events:none;animation:t1-detail-mica-pop 1.15s cubic-bezier(.34,.76,.31,1) both}
+.t1-detail-mica-body{position:absolute;inset:9px 6px 8px 8px;border-radius:37% 58% 42% 52%;background:radial-gradient(circle at 28% 20%,#ffe7a7,#ecae7f 55%,#d58669);border:2px solid #f3cf9a;box-shadow:0 4px 10px #714d3655;display:grid;place-items:center;transform:rotate(12deg)}
+.t1-detail-mica-face{font-size:22px;font-weight:900;color:#315448;white-space:nowrap}
+.t1-detail-wand{position:absolute;right:-5px;top:4px;font-size:27px;color:#f6d27b;filter:drop-shadow(0 2px 5px #81552d);animation:t1-detail-wand 1s ease-in-out 2}
+.t1-detail-stars{position:absolute;inset:0;pointer-events:none;z-index:7;overflow:hidden}
+.t1-detail-stars span{position:absolute;font-size:24px;color:#dbac63;animation:t1-detail-stars .8s ease-out both}
+.t1-detail-stars span:nth-child(1){top:9%;left:7%}.t1-detail-stars span:nth-child(2){top:28%;right:6%;animation-delay:.12s}.t1-detail-stars span:nth-child(3){top:49%;left:10%;animation-delay:.24s}.t1-detail-stars span:nth-child(4){top:61%;right:12%;animation-delay:.36s}
+.t1-detail-annotation{background:#fffef8e8;border:1px solid #e6d5b8;border-radius:13px;padding:11px 13px;margin-top:11px}
+.t1-detail-annotation>span{display:block;font-size:10px;letter-spacing:1px;color:#a16a4f;font-weight:900}
+.t1-detail-annotation p{font-size:13px;font-weight:700;line-height:1.5;color:#285749;margin:7px 0}
+.t1-detail-annotation small{font-size:11px;line-height:1.5;color:#6b7e70;display:block}
+.t1-detail-hide{display:block;margin:10px auto 0;background:transparent;color:#326e58;text-decoration:underline;padding:10px;font-weight:800;font-size:12px}
+@keyframes t1-detail-enter{from{opacity:0;translate:0 14px}to{opacity:1;translate:0 0}}
+@keyframes t1-detail-magnify{from{opacity:.18;transform:scale(1.1)}to{opacity:1;transform:scale(3.2)}}
+@keyframes t1-detail-curtain{0%{opacity:1;clip-path:circle(150% at 50% 50%)}45%{opacity:1;clip-path:circle(90% at 50% 50%)}100%{opacity:0;clip-path:circle(0% at 50% 50%);visibility:hidden}}
+@keyframes t1-detail-mica-pop{0%{opacity:0;transform:translate(8px,80px) rotate(25deg)}45%{opacity:1;transform:translate(0,17px) rotate(-14deg)}100%{opacity:1;transform:translate(0,-12px) rotate(5deg)}}
+@keyframes t1-detail-wand{0%,100%{transform:rotate(-16deg)}50%{transform:rotate(32deg)}}
+@keyframes t1-detail-stars{0%{opacity:0;transform:translateY(30px) scale(.3)}45%{opacity:1;transform:translateY(-7px) scale(1.25)}100%{opacity:0;transform:translateY(-29px) scale(.6)}}
+@keyframes t1-detail-pulse{0%,100%{transform:scale(1);opacity:.75}50%{transform:scale(1.16);opacity:1}}
+@media(max-width:365px){.t1-detail-trigger{padding:12px 10px}.t1-detail-trigger-icon{width:60px;min-width:60px}.t1-detail-trigger-copy strong{font-size:16px}.t1-detail-frame{height:175px}}
+@media(prefers-reduced-motion:reduce){.t1-detail-trigger *,.t1-detail-expanded,.t1-detail-expanded *{animation:none!important;transition:none!important;translate:none!important}.t1-detail-frame img{transform:scale(3.2)}.t1-detail-shutter,.t1-detail-stars{display:none}.t1-detail-mica{transform:translateY(-10px)}}
