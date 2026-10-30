@@ -46,7 +46,6 @@ with sync_playwright() as p:
   add_link(b,c,'elevator')
   page.evaluate("tab('map')")
   assert 'SUGGESTED GALLERY ORDER' in page.locator('#view').inner_text()
-  assert page.evaluate("TRACE_ROUTING.path(arguments[0],arguments[1])",[config['entry'],b]) is None if False else True
   page.locator('[data-tn-access]').select_option('all')
   assert 'ROOM ROUTE FROM CURATOR-CONFIGURED CONNECTIONS' in page.locator('#view').inner_text()
   assert 'Take the stairs' in page.locator('#view').inner_text()
@@ -54,7 +53,6 @@ with sync_playwright() as p:
   assert 'SUGGESTED GALLERY ORDER' in page.locator('#view').inner_text()
   # Add elevator alternative. Step-free route should work.
   page.evaluate("tab('museum')")
-  add_link(a,b,'elevator') if False else None
   # Existing a-b stairs edge prevents parallel link; create step-free shortcut
   add_link(config['entry'],b,'elevator')
   page.evaluate("tab('map')")
