@@ -47,6 +47,9 @@ with sync_playwright() as p:
    page.wait_for_function('(needle)=>document.querySelector("#view")?.textContent.includes(needle)',arg=work)
    assert page.locator('.t1-screen').count()>0
    # This new sculpture has a visually-confirmed flow.
+   assert page.locator('.v7-fragment img').count()==0
+   page.locator('[data-action="photo-quest"]').first.click()
+   assert page.locator('.tv-compare-pair img').count()==0
    page.locator('[data-action="manual-review"]').first.click()
    confirmation={'fr':'Est-ce la même œuvre ?','es':'¿Es la misma obra?','en':'Is this the same artwork?'}[lang]
    page.wait_for_function('(needle)=>document.querySelector("#view")?.textContent.includes(needle)',arg=confirmation)
