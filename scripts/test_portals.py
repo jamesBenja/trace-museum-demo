@@ -1,4 +1,4 @@
-"""TRACE v1.8 end-to-end test: admin sign-in, GitHub-backed publication and two visitors.
+"""TRACE v1.9 end-to-end test: admin sign-in, GitHub-backed publication and two visitors.
 The GitHub REST transport is mocked so no real museum exhibition records are changed.
 Every UI, credential gate, draft, PUT payload, shared visitor refresh and role restriction is executed in Chromium.
 """
@@ -6,10 +6,10 @@ import os,json,base64
 from urllib.parse import urlsplit
 from playwright.sync_api import sync_playwright
 
-BASE=os.getenv("TRACE_TEST_URL","http://127.0.0.1:8765/?v=18")
+BASE=os.getenv("TRACE_TEST_URL","http://127.0.0.1:8765/?v=19")
 parts=urlsplit(BASE)
 ROOT=parts.scheme+"://"+parts.netloc+parts.path.rsplit("/",1)[0]+"/"
-def url(page):return ROOT+page+"?v=18"
+def url(page):return ROOT+page+"?v=19"
 with sync_playwright() as p:
  browser=p.chromium.launch(headless=True,args=["--no-sandbox"])
  seed_ctx=browser.new_context()
