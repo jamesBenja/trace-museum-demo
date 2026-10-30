@@ -15,9 +15,9 @@ def solve_puzzle(page,art):
         board.scroll_into_view_if_needed()
         b=board.bounding_box()
         for i in range(4):
-            page.mouse.move(b['x']+b['width']*.24,b['y']+b['height']*.77)
+            page.mouse.move(b['x']+b['width']*.10,b['y']+b['height']*.91)
             page.mouse.down()
-            page.mouse.move(b['x']+b['width']*.76,b['y']+b['height']*.77,steps=15)
+            page.mouse.move(b['x']+b['width']*.63,b['y']+b['height']*.91,steps=15)
             page.mouse.up()
         for i in range(5):page.locator('[data-mf="find"][data-v="'+str(i)+'"]').click()
     elif art=='mmfa-witte':
