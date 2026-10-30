@@ -49,7 +49,7 @@
 .mf-assembly-base{width:87%;max-width:300px;min-height:191px;position:relative;margin:8px auto 0;border:9px solid #b1a49a;border-radius:7px;box-shadow:4px 7px 12px #72645166;display:grid;place-items:center;color:#88776a;background:linear-gradient(35deg,#ded5bd,#c2b395)}
 .mf-assembly-base.wood-dark{background:repeating-linear-gradient(34deg,#705343 0 16px,#876549 18px 22px,#4e3d34 24px 34px);border-color:#644f45}
 .mf-assembly-base.wood-light{background:repeating-linear-gradient(42deg,#dfc499 0 18px,#efddb1 19px 23px,#c9aa82 25px 33px);border-color:#c7a984}
-.mf-junk{position:absolute;transform:rotate(calc(var(--i) * 38deg - 30deg));font-size:61px;color:#2f6572;text-shadow:3px 4px 1px #d5dad47d;filter:drop-shadow(0 6px 3px #4439394a);animation:mf-junk-enter .55s both}
+.mf-assembly-base .mf-junk{position:absolute;transform:rotate(calc(var(--i) * 38deg - 30deg));font-size:61px;color:#2f6572;text-shadow:3px 4px 1px #d5dad47d;filter:drop-shadow(0 6px 3px #4439394a);animation:mf-junk-enter .55s both}
 .mf-junk-wire{color:#e1cfb8}.mf-junk-scrap{color:#8c7c76}.mf-junk-fabric{color:#b48b91}.mf-junk-bark{color:#735337}
 .mf-assembly-wires{height:8px;width:70%;background:repeating-linear-gradient(100deg,#789b8b 0 5px,transparent 6px 12px);border-radius:50%;margin:5px 0}
 .mf-rodin{background:#ece5d3}
@@ -70,3 +70,50 @@
 @keyframes mf-junk-enter{from{opacity:0;transform:translateY(50px) rotate(-90deg) scale(.5)}to{opacity:1;transform:rotate(calc(var(--i) * 38deg - 30deg))}}
 @media(max-width:360px){.mf-screen .t1-h1{font-size:26px}.mf-btn{font-size:10px}.mf-board{min-height:218px}.mf-svg{min-height:213px}.mf-junk{font-size:47px}}
 @media(prefers-reduced-motion:reduce){.mf-screen *{animation:none!important;transition:none!important}}
+
+/* TRACE MMFA hands-on restoration: show the full flower/lizard painting under a truly local patina brush. */
+.mf-garden{touch-action:none;cursor:crosshair}
+.mf-copper-overlay{position:absolute;inset:0;z-index:2;width:100%;height:100%;pointer-events:none}
+.mf-painted-lizard{filter:drop-shadow(1px 2px 2px #1d423866)}
+.mf-garden .mf-secret{z-index:4}
+.mf-garden .mf-svg{position:relative;z-index:1}
+.mf-monument{isolation:isolate}
+.mf-eye-city,.mf-big-eye{transition:transform .48s cubic-bezier(.2,.7,.25,1)}
+.mf-perspective-caption{position:absolute;top:12px;left:10px;right:10px;z-index:2;background:#faf4dcdd;border:1px solid #e9c791;color:#3e6355;text-align:center;border-radius:9px;padding:7px;font-size:11px;font-weight:750;pointer-events:none}
+.mf-size-handle{z-index:3}
+.mf-guardian{z-index:2;pointer-events:auto;cursor:grab;touch-action:none;animation:mf-guardian-enter .35s ease-out both}
+.mf-guardian.is-selected{filter:drop-shadow(0 0 8px #dbb66a) drop-shadow(3px 4px 4px #536b6177)}
+.mf-guardian svg{pointer-events:none}
+.mf-courtyard-spot{z-index:3}
+.mf-gaze-line{top:27%;height:3px;background:repeating-linear-gradient(90deg,#c08b4d 0 9px,transparent 9px 22px);opacity:.7}
+@keyframes mf-guardian-enter{from{opacity:.4}to{opacity:1}}
+/* Found objects become a single vertical, jointed construction when anchored. */
+.mf-assemblage{min-height:290px;padding:8px;display:block}
+.mf-assembly-back{text-align:center}
+.mf-assembly-sculpture{width:100%;height:245px;display:block;overflow:visible;filter:drop-shadow(4px 7px 5px #4a4e3a55)}
+.mf-assembly-sculpture .mf-junk{cursor:default;stroke-linejoin:round}
+.mf-assembly-sculpture.assembled .mf-junk{animation:mf-assembly-lock .75s cubic-bezier(.18,.8,.2,1) both;transform-box:fill-box;transform-origin:center}
+.mf-assembly-sculpture .mf-assembly-joints{animation:mf-assembly-joins .5s .15s both}
+.mf-assembly-sparks{animation:mf-shimmer 1.8s infinite}
+@keyframes mf-assembly-joins{from{opacity:0}to{opacity:1}}
+@keyframes mf-assembly-lock{from{opacity:.5}to{opacity:1}}
+.mf-assembly-wires{display:none}
+/* Multiple articulated joints can be dragged independently instead of stepping through static poses. */
+.mf-rodin{touch-action:none}
+.mf-rodin .mf-joint-handle{position:absolute;width:38px;height:38px;z-index:3;transform:translate(-50%,-50%);border:2px solid #fff6cc;border-radius:50%;box-shadow:0 0 0 3px #b78c69aa,0 4px 10px #493d3366;background:#f3dba1df;color:#34574e;font-size:20px;display:grid;place-items:center;cursor:grab;touch-action:none}
+.mf-rodin .mf-joint-handle:active,.mf-guardian:active{cursor:grabbing}
+.mf-rodin .mf-joint-head{width:40px;height:40px}
+.mf-rodin .mf-joint-elbow{background:#cce7d3e8}
+.mf-rodin .mf-joint-hand{background:#f6c5c0e8}
+.mf-rodin .mf-joint-knee{background:#d8ceebed}
+.mf-rodin .mf-body-handle{right:4%;top:72%;width:46px;height:46px;z-index:3}
+/* The abstract sculpture rotates about the Y axis with a deep perspective, not a lateral slide. */
+.mf-cragg{min-height:270px}
+.mf-cragg-backdrop{position:absolute;inset:0;display:grid;place-items:center;perspective:430px;background:radial-gradient(circle at 50% 42%,#f7f3df,#c2d5c8)}
+.mf-turntable{position:relative;width:78%;height:93%;transform-style:preserve-3d;transform:rotateY(var(--turn));transition:transform .65s cubic-bezier(.23,.65,.22,1);filter:drop-shadow(5px 9px 8px #54796b55)}
+.mf-cragg-model{width:100%;height:100%;display:block;backface-visibility:visible}
+.mf-cragg-shadow{position:absolute;bottom:8px;width:58%;height:22px;background:#536e5d45;border-radius:50%;filter:blur(8px);pointer-events:none;transition:transform .55s}
+.mf-cragg .mf-face-hotspot{z-index:4;top:41%;transition:left .32s;animation:mf-shimmer 2s infinite}
+@media(prefers-reduced-motion:reduce){
+ .mf-assembly-sculpture.assembled .mf-junk,.mf-turntable,.mf-eye-city,.mf-big-eye,.mf-guardian{animation:none!important;transition:none!important}
+}
