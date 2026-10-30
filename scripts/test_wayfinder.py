@@ -14,7 +14,27 @@ with sync_playwright() as p:
  assert page.locator(".tn-connectivity").count()==1
  page.locator(".tn-source-links summary").click()
  assert "Map research" in page.locator(".tn-source-links").inner_text()
- assert "SUGGESTED GALLERY ORDER" in page.locator("#view").inner_text()
+ assert "PROVISIONAL CONNECTED VISIT" in page.locator("#view").inner_text()
+ assert page.evaluate("TRACE_DISPLAY.connections('mmfa').length")>=30
+ assert page.evaluate("TRACE_DISPLAY.rooms('mmfa').length")>=21
+ page.locator('[data-tn-mode="all"]').click()
+ assert page.evaluate("TRACE_ROUTING.routeWorks().length")==8
+ assert page.evaluate("TRACE_ROUTING.plannedOrder().provisional===true")
+ assert page.evaluate("TRACE_ROUTING.plannedOrder().optimised===false")
+ assert page.locator(".tn-stop-preview").count()>=6
+ assert page.evaluate("""()=>{
+   const d=TRACE_DISPLAY;
+   return TRACE_ROUTING.routeWorks().every(a=>
+    TRACE_ROUTING.path('mmfa-entrance',d.rec(a.id).room,true)!==null
+   );
+ }"""),"All eight MMFA works should be connected through provisional routes"
+ assert page.evaluate("TRACE_ROUTING.route('mmfa-peace-2','mmfa-peace-3',true).edges.every(e=>e.type!=='stairs')")
+ assert page.evaluate("TRACE_ROUTING.path('mmfa-entrance','mmfa-bourgie-4')===null")
+ page.locator('[data-tn-access]').select_option('all')
+ assert page.evaluate("TRACE_ROUTING.route('mmfa-peace-2','mmfa-peace-3',true).edges.some(e=>e.type==='stairs')")
+ page.locator('[data-tn-access]').select_option('stepfree')
+ assert page.locator(".tn-connectivity").count()==1
+
  assert page.evaluate("TRACE_DISPLAY.connections('mmfa').every(e=>e.status==='research')")
  # Move to MoMA via the standard museum switcher.
  page.locator("#venueSwitcher").click()
