@@ -21,12 +21,12 @@ def play(p,name):
   p.locator('[data-tm="texture"][data-val="fur"]').click()
   for x in ('surprise','strange'):p.locator('[data-tm="feeling"][data-val="'+x+'"]').click()
  elif name=='tinguely':
-  for i in range(3):p.locator('[data-tm="part"][data-val="'+str(i)+'"]').click()
+  for i in range(3):p.locator('.tm-part[data-tm="part"][data-val="'+str(i)+'"]').click()
   slide(p,'turn',80)
  elif name=='brancusi':
   slide(p,'crest',90)
  elif name=='lamelas':
-  for i in range(3):p.locator('[data-tm="source"][data-val="'+str(i)+'"]').click()
+  for i in range(3):p.locator('.tm-channel[data-tm="source"][data-val="'+str(i)+'"]').click()
  assert p.evaluate('window.TRACE_V1.puzzle.done') is True, 'Game did not unlock: '+name
  assert p.locator('[data-t1-finish]').is_enabled()
  print('MOMA GAME PASSED',name,flush=True)
