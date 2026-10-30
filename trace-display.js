@@ -161,7 +161,7 @@ function adminUI(){
  '<strong>SHARED PUBLISHED CATALOGUE</strong><p>Visitors are reading this same public catalogue. Last publication: '+h(published.updatedAt)+'</p>')+'</div>'+
  '<div class="td-caution">Museum staff must confirm current artwork installations and gallery room locations before marking them verified. TRACE is an independent prototype, not an official museum display listing.</div>'+
  (window.TRACE_ROUTING?.adminUI(venue)||'')+
- '<div class="td-work-head"><h3>'+h(venue==='mmfa'?'MMFA · Montréal':'PAMM · Miami')+' artworks</h3><p>Toggle immediately to preview what visitors would see on this device.</p></div>'+
+ '<div class="td-work-head"><h3>'+h(({mmfa:'MMFA · Montréal',pamm:'PAMM · Miami',moma:'MoMA · New York'})[venue]||venue)+' artworks</h3><p>Toggle immediately to preview what visitors would see on this device.</p></div>'+
  '<div class="td-work-list">'+rows+'</div>'+
  '<div class="td-publish"><h3>Publish changes to every visitor</h3><p>Publish commits all artwork, on-display, room and route settings to the shared GitHub repository. Every visitor uses the same public catalogue and refreshes automatically while the app is open.</p>'+
  '<div class="td-publish-actions"><button class="button" type="button" data-td-publish '+(!draft||publishing?'disabled':'')+'>'+(publishing?'Publishing to GitHub…':draft?'✓ Publish changes for all visitors':'Everything published')+'</button>'+
