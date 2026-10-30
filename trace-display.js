@@ -150,34 +150,74 @@ function adminUI(){
  '<p class="td-intro">Your live game can include up to eight collection works per museum. Turn individual works on or off, enter confirmed rooms, and schedule display windows. A work that is off the route disappears from playable quests and scan recognition, but earlier discoveries remain in the visitor passport.</p>'+
  (window.TRACE_AUTH?.adminControls()||'')+
  '<div class="td-kpis"><div><b>'+count(venue)+' / '+arts.length+'</b><span>Playable in this preview</span></div><div><b>'+arts.filter(a=>isActive(a.id)&&isVerified(a.id)).length+'</b><span>Marked display-confirmed</span></div></div>'+
- '<div class="td-mode '+(draft?'td-draft':'')+'">'+(draft?'<strong>LOCAL ADMIN DRAFT</strong><p>Your edits are active in this browser only. Visitors on other devices see the published catalogue until you deploy it.</p>':
- '<strong>PUBLISHED DEMO CONFIGURATION</strong><p>You are viewing the current public artwork configuration. Changing a switch creates a local preview draft.</p>')+'</div>'+
- '<div class="td-caution">IMPORTANT: Display confirmation is supplied by the museum, not automatically verified by TRACE. Original demo works are playable without any claim that they are currently installed. Newly added works start off the route until reviewed. This GitHub Pages demonstration has no secure editor login or shared writing API.</div>'+
+ '<div class="td-mode '+(draft?'td-draft':'')+'">'+(draft?'<strong>UNPUBLISHED ADMIN DRAFT</strong><p>Your edits are visible only in this administrator preview until you select Publish changes for all visitors.</p>':
+ '<strong>SHARED PUBLISHED CATALOGUE</strong><p>Visitors are reading this same public catalogue. Last publication: '+h(published.updatedAt)+'</p>')+'</div>'+
+ '<div class="td-caution">Museum staff must confirm current artwork installations and gallery room locations before marking them verified. TRACE is an independent prototype, not an official museum display listing.</div>'+
  (window.TRACE_ROUTING?.adminUI(venue)||'')+
  '<div class="td-work-head"><h3>'+h(venue==='mmfa'?'MMFA · Montréal':'PAMM · Miami')+' artworks</h3><p>Toggle immediately to preview what visitors would see on this device.</p></div>'+
  '<div class="td-work-list">'+rows+'</div>'+
- '<div class="td-publish"><h3>Publish these changes to every visitor</h3><p>Because this is a static site, the switches above do not publish globally. Export the full configuration, then commit it as <code>display-status.json</code> to the GitHub repository. GitHub Pages will publish it, and the site loads it on each visit.</p>'+
- '<div class="td-publish-actions"><a class="button" download="display-status.json" href="data:application/json;charset=utf-8,'+encodeURIComponent(exportJSON())+'">↓ Download configuration JSON</a>'+
- '<button class="button outline" type="button" data-td-copy>Copy configuration JSON</button>'+
- '<a class="button outline" href="https://github.com/jamesBenja/trace-museum-demo/edit/main/display-status.json" rel="noopener noreferrer" target="_blank">Open GitHub publisher ↗</a>'+
- '<button class="button ghost" type="button" data-td-reset>Discard local draft / use published version</button></div>'+
- '<p class="td-small">'+h(error||'Published configuration last updated: '+published.updatedAt+'. Production museum use will require authenticated staff accounts and a server-side publication service.')+'</p></div>'+
+ '<div class="td-publish"><h3>Publish changes to every visitor</h3><p>Publish commits all artwork, on-display, room and route settings to the shared GitHub repository. Every visitor uses the same public catalogue and refreshes automatically while the app is open.</p>'+
+ '<div class="td-publish-actions"><button class="button" type="button" data-td-publish '+(!draft||publishing?'disabled':'')+'>'+(publishing?'Publishing to GitHub…':draft?'✓ Publish changes for all visitors':'Everything published')+'</button>'+
+ '<button class="button outline" type="button" data-td-export>Download JSON backup</button>'+
+ '<button class="button ghost" type="button" data-td-reset>Discard unpublished draft</button></div>'+
+ '<p class="td-small" role="status" aria-live="polite">'+h(publishStatus||error||(draft?'Unpublished changes on this device. Visitors cannot see them yet.':'Last shared publication: '+published.updatedAt))+'</p></div>'+
  '<button class="button ghost" data-action="quest">← Back to visitor adventure</button></div>';
 }
 function visitorNotice(id){
  const r=rec(id);
  if(isActive(id)&&!r.onViewVerified)return '<div class="td-visitor-notice">DEMO WORK: Museum staff have not yet confirmed that this artwork is on public display. Use collection images to test recognition; do not rely on this as an onsite route.</div>';
- if(isActive(id))return '<div class="td-visitor-confirmed">Museum-curated route: '+h(r.room?'Confirmed room: '+r.room:'Room confirmation pending')+'.</div>';
+ if(isActive(id))return '<div class="td-visitor-confirmed">Museum-curated route: '+h(r.room?'Assigned room: '+(rooms(id.startsWith('pamm-')?'pamm':'mmfa').find(x=>x.id===r.room)?.label||'Unlabelled room'):'Room confirmation pending')+'.</div>';
  return '<div class="td-visitor-notice">This artwork is not currently available in the visitor adventure.</div>';
 }
 async function load(){
+ if(!lastSync)loading=true;
  try{
-  const response=await fetch(URL+'?v=1',{cache:'no-store'});
-  if(!response.ok)throw Error('HTTP '+response.status);
-  published=clean(await response.json());
- }catch(e){error='Could not load published configuration. Defaulting to the original six demo works.';console.warn(error,e)}
- finally{loading=false;afterUpdate()}
+  const r=await fetch(URL+'?t='+Date.now(),{cache:'no-store'});
+  if(!r.ok)throw Error('GitHub shared catalogue HTTP '+r.status);
+  const incoming=clean(await r.json());
+  if(!draft||!admin())published=incoming;
+  syncError='';lastSync=Date.now();error='';
+ }catch(e){
+  try{
+   const r=await fetch('display-status.json?t='+Date.now(),{cache:'no-store'});
+   if(!r.ok)throw Error('HTTP '+r.status);
+   const incoming=clean(await r.json());
+   if(!draft||!admin())published=incoming;
+   syncError='';lastSync=Date.now();
+   error='Shared GitHub refresh unavailable. Showing a published Pages copy that may lag updates.';
+  }catch(err){
+   syncError='Cannot load the shared museum catalogue; no artwork availability can be confirmed.';
+   error=syncError;console.warn(syncError,e,err);
+  }
+ }finally{loading=false;afterUpdate()}
 }
+async function publish(){
+ if(!admin()){publishStatus='Administrator sign-in required';renderApp();return false}
+ if(!draft||publishing)return false;
+ publishing=true;publishStatus='Checking the latest shared catalogue…';renderApp();
+ try{
+  const latest=await window.TRACE_AUTH.getFile();
+  const remote=clean(JSON.parse(latest.content));
+  for(const key of ['works','rooms','connections']){
+   if(JSON.stringify(remote[key])!==JSON.stringify(published[key])){
+    throw Error('Another curator updated the catalogue. Back up this draft, discard it, and refresh before trying again.');
+   }
+  }
+  const toSave=clean(draft);
+  toSave.updatedAt=new Date().toISOString();
+  publishStatus='Publishing to GitHub…';renderApp();
+  await window.TRACE_AUTH.publishFile(JSON.stringify(toSave,null,2)+'\n',latest.sha);
+  published=toSave;draft=null;syncError='';error='';
+  try{localStorage.removeItem(STORE)}catch(err){}
+  lastSync=Date.now();
+  publishStatus='✓ Published to the shared GitHub catalogue. Visitor tabs refresh automatically, though global CDN propagation can take a short time.';
+  return true;
+ }catch(err){
+  publishStatus='Publication FAILED: '+String(err.message||err)+'. Your draft is preserved; visitor data was not changed.';
+  return false;
+ }finally{publishing=false;afterUpdate()}
+}
+
 function exportJSON(){
  const out={...clean(manifest()),updatedAt:new Date().toISOString()};
  return JSON.stringify(out,null,2)+'\n';
@@ -211,7 +251,7 @@ document.addEventListener('click',ev=>{
   return;
  }
  if(button.dataset.tdReset!==undefined){
-  if(draft&&!confirm('Discard your local artwork availability draft? This does not alter published visitor settings.'))return;
+  if(draft&&!confirm('Discard these unpublished changes? The shared visitor catalogue will not be changed.'))return;
   draft=null;error='';
   try{localStorage.removeItem(STORE)}catch(e){}
   afterUpdate();
