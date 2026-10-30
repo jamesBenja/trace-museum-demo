@@ -209,3 +209,29 @@
 .mg-tea-part.mg-material-ice .mg-tea-touch-reaction{color:#5bbdd3}
 .mg-tea-part.mg-material-fur .mg-tea-touch-reaction{color:#af785f}
 @media(max-width:375px){.mg-tea-cup .mg-tea-shape{width:54px;height:64px}.mg-tea-saucer .mg-tea-shape{width:76px}.mg-tea-spoon .mg-tea-shape{height:99px}}
+
+/* Oppenheim v2: actual vector objects with material mapped onto SVG fill surfaces.
+   No dark glyphs and no background-only texture substitution. */
+.mg-material-lab{background:#e8dfd3;padding:14px 10px;border:2px solid #d4c5b1}
+.mg-tea-stage{min-height:259px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:6px;padding:12px 7px;background:radial-gradient(ellipse at 50% 10%,#fffdf0,#e8dfd2 70%,#d8c9b5);border:1px solid #e4d7c4}
+.mg-tea-part{min-width:0;width:100%;height:218px;padding:8px 2px 10px;overflow:visible;border:1px solid #d1c0ac;background:linear-gradient(#fffdf4a9,#f6eddfb5);box-shadow:0 4px 9px #5c4f3b0a;border-radius:13px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px;isolation:isolate;touch-action:manipulation}
+.mg-tea-part:before,.mg-tea-part:after{content:none!important}
+.mg-tea-part:hover{background:#fff9eaf0;border-color:#bca388}
+.mg-tea-illustration{display:block;width:100%;max-width:130px;height:158px;flex:0 0 auto;overflow:visible;filter:drop-shadow(0 5px 4px #48392b27);animation:mg-tea-material-on .45s cubic-bezier(.22,.73,.19,1) both;pointer-events:none}
+.mg-tea-illustration .mg-tea-coating{stroke-linejoin:round;stroke-linecap:round}
+.mg-tea-illustration .mg-tea-fringe{pointer-events:none}
+.mg-tea-illustration .mg-tea-fringe-fur{filter:drop-shadow(0 1px 1px #65493444)}
+.mg-tea-part-label{position:relative;z-index:2;margin-top:1px;background:transparent!important;padding:0 2px!important;font-weight:800;color:#4c5b50!important}
+.mg-tea-material-name{font-size:9px;font-weight:800;color:#7f6555;line-height:1.2;text-align:center}
+.mg-tea-touch-reaction{position:absolute;top:1px;right:4px;background:#fff8ebcf;border:1px solid #e4d3b7;border-radius:50%;font-size:15px;width:27px;height:27px;display:grid;place-items:center;z-index:5;animation:mg-tea-spark .55s ease-out both}
+.mg-tea-part.mg-material-fur{border-color:#ac8c6b}
+.mg-tea-part.mg-material-ice{border-color:#b3d9d9}
+.mg-tea-part.mg-material-velvet{border-color:#a27da8}
+.mg-tea-part.mg-material-grass{border-color:#9ba874}
+.mg-tea-part.mg-material-feathers{border-color:#c7ac91}
+.mg-tea-part.mg-material-spikes{border-color:#9d8f79}
+.mg-tea-part.mg-material-metal{border-color:#a0a7ac}
+@keyframes mg-tea-material-on{0%{opacity:.6;transform:scale(.89) rotate(-3deg)}60%{opacity:1;transform:scale(1.05) rotate(2deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes mg-tea-spark{0%{opacity:0;transform:scale(.4) translateY(9px)}60%{opacity:1;transform:scale(1.2) translateY(-3px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@media(max-width:365px){.mg-tea-stage{gap:3px;padding:10px 3px;min-height:226px}.mg-tea-part{height:199px;padding:4px 1px}.mg-tea-illustration{height:142px}.mg-tea-part-label{font-size:9px!important}.mg-tea-material-name{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.mg-tea-illustration,.mg-tea-touch-reaction{animation:none!important}}
