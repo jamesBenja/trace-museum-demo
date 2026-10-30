@@ -236,3 +236,7 @@ with sync_playwright() as p:
  for ctx in [c1,c2,ca,cr]:ctx.close()
  browser.close()
 print("ALL SHARED PORTAL TESTS PASSED",flush=True)
+
+# Run navigation v3 assertions alongside established multi-user publishing regression.
+import runpy
+runpy.run_path("scripts/test_wayfinder.py",run_name="__main__")
