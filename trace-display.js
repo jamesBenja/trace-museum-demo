@@ -25,7 +25,28 @@ function clean(input){
    note:String(r.note||'').slice(0,500)
   };
  }
- return {schemaVersion:1,mode:'independent-pitch-demo',updatedAt:String(input?.updatedAt||'')||new Date().toISOString(),description:'Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.',works:rows};
+ const rooms={mmfa:[],pamm:[]},connections={mmfa:[],pamm:[]};
+ for(const museum of ['mmfa','pamm']){
+  const incoming=Array.isArray(input?.rooms?.[museum])?input.rooms[museum]:[];
+  const ids=new Set();
+  for(const item of incoming.slice(0,120)){
+   const id=String(item?.id||'').trim().slice(0,64);
+   const label=String(item?.label||'').trim().slice(0,100);
+   if(!/^[a-zA-Z0-9_-]+$/.test(id)||!label||ids.has(id))continue;
+   ids.add(id);
+   rooms[museum].push({id,label,wing:String(item.wing||'').slice(0,100),floor:String(item.floor||'').slice(0,50)});
+  }
+  const known=new Set(rooms[museum].map(x=>x.id));
+  const unique=new Set();
+  for(const x of (Array.isArray(input?.connections?.[museum])?input.connections[museum]:[]).slice(0,250)){
+   const from=String(x?.from||''),to=String(x?.to||'');
+   if(!known.has(from)||!known.has(to)||from===to)continue;
+   const key=[from,to].sort().join('~');
+   if(unique.has(key))continue;
+   unique.add(key);connections[museum].push({from,to});
+  }
+ }
+ return {schemaVersion:1,rooms,connections,mode:'independent-pitch-demo',updatedAt:String(input?.updatedAt||'')||new Date().toISOString(),description:'Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.',works:rows};
 }
 published=clean(published);
 try{const x=JSON.parse(localStorage.getItem(STORE)||'null');if(x&&x.schemaVersion===1)draft=clean(x)}catch(e){}
@@ -72,6 +93,36 @@ function setField(id,field,value){
  try{localStorage.setItem(STORE,JSON.stringify(x))}catch(e){error='Browser storage unavailable. Export the configuration before closing.'}
  afterUpdate();
 }
+function rooms(venue){return (manifest().rooms?.[venue]||[]).map(x=>({...x}))}
+function connections(venue){return (manifest().connections?.[venue]||[]).map(x=>({...x}))}
+function alterRooms(venue,operation,data){
+ if(!['mmfa','pamm'].includes(venue))return false;
+ const x=setDraft();
+ if(operation==='add'){
+  const label=String(data?.label||'').trim().slice(0,100),floor=String(data?.floor||'').trim().slice(0,50),wing=String(data?.wing||'').trim().slice(0,100);
+  if(!label)return false;
+  const id='r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  x.rooms[venue].push({id,label,wing,floor});
+ }
+ if(operation==='remove'){
+  const id=String(data?.id||'');
+  x.rooms[venue]=x.rooms[venue].filter(v=>v.id!==id);
+  x.connections[venue]=x.connections[venue].filter(v=>v.from!==id&&v.to!==id);
+  for(const a of sourceWorks())if(a.museum===venue&&x.works[a.id].room===id)x.works[a.id].room='';
+ }
+ if(operation==='connect'){
+  const from=String(data?.from||''),to=String(data?.to||'');
+  if(from===to||!x.rooms[venue].some(v=>v.id===from)||!x.rooms[venue].some(v=>v.id===to))return false;
+  if(!x.connections[venue].some(v=>v.from===from&&v.to===to||v.from===to&&v.to===from))x.connections[venue].push({from,to});
+ }
+ if(operation==='disconnect'){
+  const from=String(data?.from||''),to=String(data?.to||'');
+  x.connections[venue]=x.connections[venue].filter(v=>!(v.from===from&&v.to===to||v.from===to&&v.to===from));
+ }
+ x.updatedAt=new Date().toISOString();
+ try{localStorage.setItem(STORE,JSON.stringify(x))}catch(e){}
+ afterUpdate();return true;
+}
 function count(venue){return activeWorks(venue).length}
 function statusLabel(id){
  const r=rec(id);
@@ -88,7 +139,7 @@ function adminUI(){
   '<label class="td-switch-wrap"><input type="checkbox" role="switch" aria-label="Include '+h(a.name)+' in the visitor route" data-td-active="'+a.id+'" '+(r.active?'checked':'')+'><span>'+ (r.active?'IN ROUTE':'OFF ROUTE') +'</span></label></div>'+
   '<div class="td-current-status">'+(enabled?'●':'○')+' '+h(statusLabel(a.id))+'</div>'+
   '<label class="td-confirm"><input type="checkbox" data-td-verified="'+a.id+'" '+(verified?'checked':'')+'> Museum has confirmed this artwork is physically on display</label>'+
-  '<div class="td-fields"><label>Gallery / room (optional)<input type="text" data-td-room="'+a.id+'" maxlength="100" placeholder="Enter museum-confirmed location" value="'+h(r.room)+'"></label>'+
+  '<div class="td-fields"><label>Gallery / room <select data-td-room="'+a.id+'"><option value="">Not assigned</option>'+rooms(venue).map(x=>'<option value="'+h(x.id)+'" '+(x.id===r.room?'selected':'')+'>'+h(x.label)+(x.floor?' · '+h(x.floor):'')+'</option>').join('')+'</select></label>'+
   '<label>Show from<input type="date" data-td-start="'+a.id+'" value="'+h(r.startDate)+'"></label>'+
   '<label>Show through<input type="date" data-td-end="'+a.id+'" value="'+h(r.endDate)+'"></label></div>'+
   '<p class="td-origin">Collection record: <a href="'+h(a.url)+'" target="_blank" rel="noopener noreferrer">View source ↗</a> · '+(a.previewOnly?'New candidate':'Original demo work')+'</p></article>';
@@ -99,6 +150,7 @@ function adminUI(){
  '<div class="td-mode '+(draft?'td-draft':'')+'">'+(draft?'<strong>LOCAL ADMIN DRAFT</strong><p>Your edits are active in this browser only. Visitors on other devices see the published catalogue until you deploy it.</p>':
  '<strong>PUBLISHED DEMO CONFIGURATION</strong><p>You are viewing the current public artwork configuration. Changing a switch creates a local preview draft.</p>')+'</div>'+
  '<div class="td-caution">IMPORTANT: Display confirmation is supplied by the museum, not automatically verified by TRACE. Original demo works are playable without any claim that they are currently installed. Newly added works start off the route until reviewed. This GitHub Pages demonstration has no secure editor login or shared writing API.</div>'+
+ (window.TRACE_ROUTING?.adminUI(venue)||'')+
  '<div class="td-work-head"><h3>'+h(venue==='mmfa'?'MMFA · Montréal':'PAMM · Miami')+' artworks</h3><p>Toggle immediately to preview what visitors would see on this device.</p></div>'+
  '<div class="td-work-list">'+rows+'</div>'+
  '<div class="td-publish"><h3>Publish these changes to every visitor</h3><p>Because this is a static site, the switches above do not publish globally. Export the full configuration, then commit it as <code>display-status.json</code> to the GitHub repository. GitHub Pages will publish it, and the site loads it on each visit.</p>'+
@@ -160,6 +212,6 @@ document.addEventListener('click',ev=>{
   afterUpdate();
  }
 },true);
-window.TRACE_DISPLAY={isActive,activeWorks,count,isVerified,room,rec,adminUI,visitorNotice,setField,statusLabel,load,exportJSON,get draft(){return draft},get published(){return published},get loading(){return loading},get error(){return error}};
+window.TRACE_DISPLAY={isActive,activeWorks,count,isVerified,room,rooms,connections,alterRooms,rec,adminUI,visitorNotice,setField,statusLabel,load,exportJSON,get draft(){return draft},get published(){return published},get loading(){return loading},get error(){return error}};
 load();
 })();
