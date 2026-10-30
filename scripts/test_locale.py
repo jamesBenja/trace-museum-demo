@@ -42,6 +42,7 @@ with sync_playwright() as p:
    assert page.locator('.tn-page').count()==1
    page.locator('[data-tab="quest"]').click()
    assert page.evaluate("state.stage")=='hub'
+   page.evaluate("state.found=A.slice(0,3).map(a=>a.id);save();render()")
    page.locator('[data-t1-open="3"]').click()
    page.wait_for_function('(needle)=>document.querySelector("#view")?.textContent.includes(needle)',arg=work)
    assert page.locator('.t1-screen').count()>0
