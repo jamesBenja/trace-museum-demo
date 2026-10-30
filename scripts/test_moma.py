@@ -67,9 +67,17 @@ def play(p,name):
   assert p.locator('.mg-tea-part.mg-material-fur').count()==1
   assert p.locator('.mg-tea-part.mg-material-velvet').count()==1
   assert p.locator('.mg-tea-part.mg-material-ice').count()==1
-  assert p.locator('.mg-tea-shape').count()==3, 'Tactile illustrations missing'
-  assert p.locator('.mg-tea-shape').first.evaluate("(el)=>getComputedStyle(el).backgroundImage")!='none', 'Textures are not applied to the object itself'
-  assert p.locator('.mg-tea-part').first.inner_text().find('☕')==-1, 'Retired cup emoji still visible'
+  assert p.locator('.mg-tea-illustration').count()==3, 'Three vector tea objects missing'
+  assert p.locator('.mg-tea-cup-body').count()==1
+  assert p.locator('.mg-tea-saucer-body').count()==1
+  assert p.locator('.mg-tea-spoon-bowl').count()==1
+  assert p.locator('.mg-tea-spoon-handle').count()==1
+  for part,material in [('cup','fur'),('saucer','velvet'),('spoon','ice')]:
+   piece=p.locator('.mg-tea-part[data-object="'+part+'"]')
+   assert piece.get_attribute('data-material')==material
+   assert piece.locator('.mg-tea-coating').count()>=2
+   assert piece.locator('[data-object-surface="'+part+'"]').get_attribute('data-material')==material
+  assert p.locator('.mg-tea-fringe-fur path').count()>15,'Fur must extend from the cup silhouette'
   p.locator('[data-mg="reaction"][data-value="1"]').click()
  elif name=='tinguely':
   for i,k in enumerate(['gear','belt','rod','hook','paint']):
