@@ -52,6 +52,7 @@ with sync_playwright() as pw:
     gesture(page,(r['x']+r['width']*.10,r['y']+r['height']*.91),
              (r['x']+r['width']*.63,r['y']+r['height']*.91),steps=12)
    assert page.locator('.mf-painted-lizard').count()==2,"Lizards are not visibly painted in the garden"
+   print("COPPER GESTURE DETAIL",page.evaluate("window.TRACE_V1.puzzle.extra.rubs.map(p=>p.length)"),page.evaluate("window.TRACE_V1.puzzle.extra.sweep"),flush=True)
    assert page.evaluate("window.TRACE_V1.puzzle.extra.rubs.some(p=>p.length>2)"),"Copper brush did not record local polish strokes"
    for n in range(5):
     page.locator('[data-mf="find"][data-v="'+str(n)+'"]').click()
