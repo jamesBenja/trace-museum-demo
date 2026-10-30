@@ -12,7 +12,8 @@ with sync_playwright() as p:
  page.wait_for_function("window.TRACE_ROUTING && window.TRACE_DISPLAY && !window.TRACE_DISPLAY.loading",timeout=45000)
  page.locator('[data-tab="map"]').click()
  assert page.locator(".tn-connectivity").count()==1
- assert "Map research" in page.locator(".tn-connectivity").inner_text()
+ page.locator(".tn-source-links summary").click()
+ assert "Map research" in page.locator(".tn-source-links").inner_text()
  assert "SUGGESTED GALLERY ORDER" in page.locator("#view").inner_text()
  assert page.evaluate("TRACE_DISPLAY.connections('mmfa').every(e=>e.status==='research')")
  # Move to MoMA via the standard museum switcher.
@@ -22,6 +23,7 @@ with sync_playwright() as p:
  assert page.evaluate("TRACE_DISPLAY.rooms('moma').some(x=>x.id==='moma-407')")
  assert page.evaluate("TRACE_ROUTING.path('moma-405','moma-412')===null")
  assert page.evaluate("TRACE_ROUTING.path('moma-405','moma-412',true).join(',')")==  "moma-405,moma-407,moma-408,moma-410,moma-412"
+ page.locator('[data-tn-mode="all"]').click()
  page.locator("[data-tn-start]").select_option("moma-405")
  page.locator('[data-tn-focus="moma-warhol"]').first.click()
  assert "published maps" in page.locator(".tn-connectivity").inner_text()
