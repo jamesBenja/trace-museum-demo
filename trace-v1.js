@@ -4,7 +4,7 @@
 (function(){
 'use strict';
 const K='trace-v1-play';
-let prefs={mode:'family',age:'8-12',familyPoints:{mmfa:0,pamm:0,moma:0},symbols:{}};
+let prefs={mode:'family',age:'8-12',familyPoints:{mmfa:0,pamm:0,moma:0},symbols:{},detailRevealed:{}};
 try{const stored=JSON.parse(localStorage.getItem(K)||'{}');if(stored&&typeof stored==='object')prefs={...prefs,...stored}}catch(e){}
 const L={
  mmfa:{
@@ -83,17 +83,40 @@ function roleMessage(){
  return window.TRACE_COOP?.render(A[state.current]) || '<div class="t1-role">Look together, then scan the artwork.</div>';
 }
 
+// Editorial crop locations mark which part of each work the optional close-up shows.
+// Keep the source image concealed until the visitor explicitly requests this DETAIL.
+const DETAIL_FOCUS={
+ 'mmfa-marrel':'60% 52%','mmfa-witte':'59% 51%','mmfa-fortin':'46% 30%',
+ 'mmfa-eye':'50% 48%','mmfa-frink':'50% 50%','mmfa-riopelle':'50% 50%',
+ 'mmfa-rodin':'50% 45%','mmfa-cragg':'50% 50%',
+ 'pamm-masks':'51% 24%','pamm-delano':'51% 66%','pamm-grid':'52% 45%',
+ 'pamm-chaos':'50% 48%','pamm-fonseca':'50% 50%','pamm-yanko':'50% 50%',
+ 'pamm-christo':'50% 45%','pamm-chromati':'50% 50%',
+ 'moma-starry':'62% 28%','moma-dance':'72% 43%','moma-lilies':'46% 52%',
+ 'moma-warhol':'48% 53%','moma-oppenheim':'50% 43%',
+ 'moma-tinguely':'43% 55%','moma-brancusi':'55% 35%','moma-lamelas':'42% 61%'
+};
+const DETAIL_LANG={
+ en:{first:'STEP 1 · MICA’S WORD CLUE',firstText:'Use your imagination and search the gallery. You can try finding it using only the words.',second:'STEP 2 · OPTIONAL VISUAL HINT',reveal:'✦ Ask Mica to reveal a zoomed-in detail',explain:'Mica will show only a small part of the artwork, not the complete image.',mica:'Mica reveals a clue!',close:'ZOOMED-IN DETAIL · NOT THE WHOLE ARTWORK',after:'Look for this detail in the museum. The complete artwork stays a mystery until you photograph your guess.',hide:'Hide the close-up again',simple:'Look for the detail described below. Need help? Reveal a little picture.'},
+ fr:{first:'ÉTAPE 1 · L’INDICE ÉCRIT DE MICA',firstText:'Imagine ce détail et cherche dans la galerie. Tu peux essayer de trouver l’œuvre avec les mots seulement.',second:'ÉTAPE 2 · INDICE VISUEL FACULTATIF',reveal:'✦ Demande à Mica de révéler un détail agrandi',explain:'Mica montre seulement une petite partie de l’œuvre, pas l’image complète.',mica:'Mica révèle un indice !',close:'DÉTAIL AGRANDI · PAS L’ŒUVRE ENTIÈRE',after:'Retrouve ce détail dans le musée. L’œuvre complète reste secrète jusqu’à la photo.',hide:'Masquer le détail de nouveau',simple:'Cherche le détail décrit ci-dessous. Besoin d’aide ? Révèle une petite image.'},
+ es:{first:'PASO 1 · LA PISTA ESCRITA DE MICA',firstText:'Imagina el detalle y búscalo en la galería. Puedes intentar encontrarlo solo con las palabras.',second:'PASO 2 · PISTA VISUAL OPCIONAL',reveal:'✦ Pide a Mica que revele un detalle ampliado',explain:'Mica muestra solo una pequeña parte de la obra, no la imagen completa.',mica:'¡Mica revela una pista!',close:'DETALLE AMPLIADO · NO ES LA OBRA COMPLETA',after:'Busca este detalle en el museo. La obra completa sigue oculta hasta que fotografíes tu elección.',hide:'Ocultar el detalle otra vez',simple:'Busca el detalle descrito abajo. ¿Necesitas ayuda? Revela una imagen pequeña.'}
+};
 function clue(){
  const a=A[state.current];if(!a||!activeArts().some(x=>x.id===a.id))return hub();
- const node=L[state.venue].nodes[state.current],focus=a.id==='mmfa-marrel'?'18% 14%':a.focus;
- if(!a)return hub();
+ const node=L[state.venue].nodes[state.current],t=DETAIL_LANG[state.lang]||DETAIL_LANG.en;
  if(C.id!==a.id){C.id=a.id;C.points=[];C.teamCount=0;}
- let txt=prefs.age==='5-7'?'Look carefully at the little picture. Can you find its matching artwork?':prefs.age==='teen'?'Investigate the subject, composition and detail, then locate the matching work.':'Search for the artwork containing this unusual detail. Look at the real artwork before the phone.';
+ const revealed=!!prefs.detailRevealed?.[a.id],focus=DETAIL_FOCUS[a.id]||a.focus||'50% 50%';
+ const description=esc(v7field(a,'clue'));
+ let txt=prefs.age==='5-7'?t.simple:prefs.age==='teen'?'Investigate the details and find the real artwork before you photograph it.':t.firstText;
+ const detail= revealed?
+  '<div class="t1-detail-expanded" id="t1-detail-panel" tabindex="-1"><div class="t1-detail-mica" aria-hidden="true"><div class="t1-detail-mica-body"><span class="t1-detail-mica-face">•ᴗ•</span></div><span class="t1-detail-wand">✦</span></div><div class="t1-detail-stars" aria-hidden="true"><span>✧</span><span>✦</span><span>✧</span><span>✧</span></div><div class="t1-detail-frame"><img src="'+esc(img(a))+'" style="object-position:'+esc(focus)+';transform-origin:'+esc(focus)+'" alt="Zoomed-in detail only. The full artwork is not shown." loading="eager"><div class="t1-detail-shutter" aria-hidden="true"></div><div class="t1-detail-frame-label">'+esc(t.close)+'</div></div><div class="t1-detail-annotation"><span>'+esc(t.mica)+'</span><p>'+description+'</p><small>'+esc(t.after)+'</small></div></div>'+
+  '<button class="t1-detail-hide" type="button" data-t1-detail-hide aria-expanded="true" aria-controls="t1-detail-panel">'+esc(t.hide)+'</button>':
+  '<button class="t1-detail-trigger" type="button" data-t1-detail-reveal aria-expanded="false" aria-controls="t1-detail-panel"><span class="t1-detail-trigger-icon" aria-hidden="true"><span class="t1-detail-preview-spark">✧</span><span class="t1-detail-mini-mica">✦</span></span><span class="t1-detail-trigger-copy"><strong>'+esc(t.reveal)+'</strong><small>'+esc(t.explain)+'</small></span><span aria-hidden="true" class="t1-detail-chevron">›</span></button>';
  return '<div class="t1-screen"><div class="t1-overline">MYSTERY '+(state.current+1)+' OF '+A.length+' · '+esc(node.subtitle)+'</div><h2 class="t1-h1">'+esc(node.name)+'</h2>'+paintProgress()+
  mascot(node.friend)+
- '<div class="t1-task">'+txt+'</div>'+
- '<div class="v7-fragment t1-hidden-reference" role="img" aria-label="Artwork still hidden. Follow Mica’s clue to find it."><div class="t1-hidden-symbol" aria-hidden="true">✦</div><p>THE ARTWORK IS STILL A SECRET</p><div class="v7-cover">FIND THE HIDDEN ARTWORK</div></div>'+
- '<div class="t1-team"><div class="t1-overline">YOUR CLUE</div><h3>'+esc(a.chapter)+'</h3><p class="t1-small">'+esc(v7field(a,'clue'))+'</p></div>'+roleMessage()+
+ '<div class="t1-team t1-word-clue"><div class="t1-overline">'+esc(t.first)+'</div><h3>'+esc(a.chapter)+'</h3><p class="t1-small">'+description+'</p></div>'+
+ '<p class="t1-small">'+esc(txt)+'</p>'+
+ '<section class="t1-detail-section" aria-label="'+esc(t.second)+'"><div class="t1-overline">'+esc(t.second)+'</div>'+detail+'</section>'+roleMessage()+
  (a.previewOnly?'<div class="te-notice"><strong>Photo-first discovery</strong><p>Photograph your best guess before seeing the museum reference. Automatic recognition is not yet calibrated for this work, so the final comparison will be yours to confirm. The artwork might not be on display.</p></div>': '')+
  (a.reference?btn('⌾ Scan artwork with camera','scan'):btn('⌾ Photograph my guess','photo-quest'))+
  btn('⌖ Help me find the gallery','map','outline')+
@@ -102,7 +125,7 @@ function clue(){
  btn('← Back to adventure map','t1-hub','ghost')+
  (a.previewOnly?'':'<details class="v7-cms"><summary style="font-size:12px;cursor:pointer;font-weight:800">Demo testing tools</summary><p class="t1-small">This artwork might not be on display. Test with the published collection image on a second screen, or use the simulated image test below.</p>'+
  btn('Test matching with a reference','sample:'+a.id,'outline')+'</details>')+
- '<p class="tiny">Image rights remain with the museum and rights holders. The official collection image is deliberately hidden until after a photo or an explicit visual-comparison fallback.</p></div>';
+ '<p class="tiny">Only the optional close-up is shown before your photo. The full museum reference remains hidden until the scan result or your chosen comparison fallback.</p></div>';
 }
 function puzzleIntro(a){return '<div class="t1-overline">CREATE, EXPERIMENT, DISCOVER · '+esc(a.artist)+'</div><h2 class="t1-h1">'+esc(a.chapter)+'</h2>'+
  mascot('Great detective work! Now try something the artist might have tried. This is a hands-on challenge, not a memory quiz.')+
@@ -213,8 +236,18 @@ function moveXY(x,y){
  }
 }
 function event(e){
- const click=e.target.closest('[data-t1-replay],[data-t1-mode],[data-t1-age],[data-t1-open],[data-t1-start],[data-t1-hub],[data-t1-move],[data-t1-symbol],[data-t1-photo-choice],[data-t1-place],[data-t1-cell],[data-t1-finish],[data-t1-assist]');
+ const click=e.target.closest('[data-t1-detail-reveal],[data-t1-detail-hide],[data-t1-replay],[data-t1-mode],[data-t1-age],[data-t1-open],[data-t1-start],[data-t1-hub],[data-t1-move],[data-t1-symbol],[data-t1-photo-choice],[data-t1-place],[data-t1-cell],[data-t1-finish],[data-t1-assist]');
  if(click){e.stopImmediatePropagation();e.preventDefault();const d=click.dataset;
+  if(d.t1DetailReveal!==undefined||d.t1DetailHide!==undefined){
+   const art=A[state.current];if(!art||state.stage!=='clue')return;
+   prefs.detailRevealed=prefs.detailRevealed||{};
+   if(d.t1DetailReveal!==undefined)prefs.detailRevealed[art.id]=true;
+   else delete prefs.detailRevealed[art.id];
+   persist();
+   const panel=document.getElementById('view'),y=panel?.scrollTop||0;
+   render();if(panel)panel.scrollTop=y;
+   return;
+  }
   if(d.t1Replay!==undefined){window.TRACE_WELCOME?.enter();return}
   if(d.t1Mode){settingMode(d.t1Mode);return}
   if(d.t1Age){settingAge(d.t1Age);return}
