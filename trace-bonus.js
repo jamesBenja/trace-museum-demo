@@ -2,8 +2,8 @@
 (function(){
 'use strict';
 const KEY='trace-art-bridges-v1';
-let saved={mmfa:{},pamm:{}};
-try{const r=JSON.parse(localStorage.getItem(KEY)||'{}');for(const museum of ['mmfa','pamm'])if(r[museum]&&typeof r[museum]==='object')saved[museum]=r[museum];}catch(e){}
+let saved={mmfa:{},pamm:{},moma:{}};
+try{const r=JSON.parse(localStorage.getItem(KEY)||'{}');for(const museum of ['mmfa','pamm','moma'])if(r[museum]&&typeof r[museum]==='object')saved[museum]=r[museum];}catch(e){}
 const LENSES=[
  {id:'shapes',label:'Shapes & lines',glyph:'⌗'},
  {id:'light',label:'Light & colour',glyph:'☼'},
@@ -18,7 +18,7 @@ const DETAILS={
  'pamm-grid':{shapes:['Stacked rectangular sections','Small symbols drawn inside a grid'],light:['Dark graphite lines','Light blank space around marks'],stories:['Signs that feel like an alphabet','A drawing that suggests a map']}
 };
 /* New sculpture chapters use grounded, medium-specific comparison prompts. */
-for(const art of [...mmfa,...pamm]){
+for(const art of [...mmfa,...pamm,...moma]){
  if(DETAILS[art.id])continue;
  DETAILS[art.id]={
   shapes:[art.kind==='sculpture'?'The three-dimensional outline of the object':'How different materials are arranged','The shapes and space around this work'],
@@ -28,6 +28,7 @@ for(const art of [...mmfa,...pamm]){
 }
 
 const STORIES={
+ moma:{},
  mmfa:{
  '0-1':{shapes:'Marrel fills a vase with curving natural forms. De Witte makes a room feel deep through repeated doorways and floor lines.',light:'Marrel uses tiny bright highlights on flowers. De Witte uses interior light and shadows to make an imagined room feel real.',stories:'A still-life painting invites you to discover hidden creatures; a room painting invites you to imagine the life happening just outside its doors.'},
  '0-2':{shapes:'Marrel celebrates tiny natural forms, while Fortin uses the larger silhouettes of a city beneath an enormous sky.',light:'Both artists make highlights stand out against shadow, but Fortin works on the scale of an entire stormy city.',stories:'One artist captures a small, imagined world of nature. Another records the atmosphere of a changing Montréal landscape.'},
