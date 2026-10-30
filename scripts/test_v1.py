@@ -145,7 +145,10 @@ with sync_playwright() as p:
                 assert page.evaluate("state.stage")==current_stage
                 assert page.locator('[data-t1-open="2"]').is_enabled()
 
-        assert page.locator('[data-t1-open]').count()==8
+        # Eight curated entries exist, but only three previously verified demo targets
+        # are activated by the published administrator configuration.
+        assert page.evaluate('A.length')==8
+        assert page.locator('[data-t1-open]').count()==3
         assert 'A MAGICAL QUEST MAP' in page.locator('#view').inner_text()
         page.locator('[data-action="album"]').first.click()
         assert page.evaluate('state.found.length')==3
