@@ -145,7 +145,8 @@ with sync_playwright() as p:
                 assert page.evaluate("state.stage")==current_stage
                 assert page.locator('[data-t1-open="2"]').is_enabled()
 
-        assert 'Your creative lens is restored' in page.locator('#view').inner_text()
+        assert page.locator('[data-t1-open]').count()==8
+        assert 'A MAGICAL QUEST MAP' in page.locator('#view').inner_text()
         page.locator('[data-action="album"]').first.click()
         assert page.evaluate('state.found.length')==3
         page.locator('[data-review-work="'+arts[1]+'"]').first.click()
