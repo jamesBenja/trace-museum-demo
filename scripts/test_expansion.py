@@ -1,4 +1,4 @@
-"""TRACE v1.8: verify ten distinct, stateful art-making labs, not placeholder taps."""
+"""TRACE v1.9.1: verify ten real art labs and one-photo-or-no-photo comparison."""
 from playwright.sync_api import sync_playwright
 import os,json
 from pathlib import Path
@@ -139,23 +139,22 @@ with sync_playwright() as p:
   for idx,ident in enumerate(ids,start=3):
    page.locator('[data-t1-open="'+str(idx)+'"]').click()
    assert page.evaluate('A[state.current].id')==ident
-   assert 'Automatic multi-angle recognition is not validated' in page.locator('#view').inner_text()
-   if ident in ('mmfa-eye','pamm-chaos'):
-    page.locator('[data-action="multi-view"]').click()
-    assert 'not automatic 3D scanning or recognition' in page.locator('#view').inner_text()
-    assert page.locator('[data-view-shot]').count()==3
-    assert page.locator('.tv-taken').inner_text().startswith('0 / 3')
-    # Real image upload flow: two distinct viewpoint slots must show previews.
+   assert 'Automatic recognition is not yet validated' in page.locator('#view').inner_text()
+   assert page.locator('[data-action="multi-view"]').count()==0, "Old three-view flow must be removed"
+   page.locator('[data-action="manual-review"]').click()
+   assert page.locator('[data-compare-photo]').count()==1
+   assert page.locator('.tv-compare-pair figure').count()==2
+   assert page.locator('.tv-no-photo').count()==1, "Visitors may confirm without taking a photo"
+   if ident in ('mmfa-eye','pamm-chaos','pamm-chromati'):
+    # Optional single photo for sculpture and mixed-media, with visible comparison.
     import base64
     png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAJ/q7UcAAAAASUVORK5CYII=')
-    for n in (0,1):
-     page.locator('[data-view-shot="'+str(n)+'"]').set_input_files({'name':'view-'+str(n)+'.png','mimeType':'image/png','buffer':png})
-     page.wait_for_function("(count)=>document.querySelectorAll('.tv-shot.captured').length===count",arg=n+1)
-    assert page.locator('.tv-compare-images').count()==0
-    page.locator('[data-action="manual-review"]').first.click()
-    assert page.locator('.tv-compare-images img').count()==2
+    page.locator('[data-compare-photo]').set_input_files({'name':'artwork.png','mimeType':'image/png','buffer':png})
+    page.wait_for_function("state.scanImage?.startsWith('data:image/jpeg;')")
+    assert page.locator('.tv-compare-pair img').count()==2, "Only one visitor photo alongside reference"
+    assert page.locator('.tv-no-photo').count()==0
    else:
-    page.locator('[data-action="manual-review"]').click()
+    assert page.locator('.tv-compare-pair img').count()==1, "Museum reference still visible without a photo"
    assert 'NOT AUTOMATICALLY VERIFIED' in page.locator('#view').inner_text()
    page.locator('[data-action="manual-accept"]').click()
    page.locator('[data-action="v7-story"]').click()
