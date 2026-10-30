@@ -60,7 +60,7 @@ with sync_playwright() as p:
         page.set_default_timeout(12000)
         isolate_manifest(page)
         r=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
-        assert r.status==200 and 'v2.3' in page.title(),page.title()
+        assert r.status==200 and 'v2.4' in page.title(),page.title()
         page.wait_for_timeout(1800)
         print('BROWSER DIAG',page.evaluate("({title:document.title,status:document.querySelector('#status')?.textContent,script:typeof window.TRACE_V1,scripts:Array.from(document.scripts).map(x=>x.src)})"),'JS ERRORS',errs,flush=True)
         page.wait_for_function("window.TRACE_V1 && document.querySelector('#status')?.textContent.includes('SCAN READY')",timeout=12000)
