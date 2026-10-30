@@ -441,7 +441,7 @@ function v7Narrate(){
 function v7meta(a){return V7_ART[a.id]||{symbol:"✦",question:a.quiz,options:a.opts.map((x,i)=>["✦",x]),right:a.correct,lesson:a.story}}
 function v7field(a,key){const m=v7meta(a),lang=m[state.lang];return lang&&lang[key]||a[key]||m[key]}
 function v7PowerStrip(){return '<div class="v7-power">'+A.map((a,i)=>'<span class="'+(state.found.includes(a.id)?'earned':'')+'">'+(state.found.includes(a.id)?v7meta(a).symbol:'○')+' '+(i+1)+'</span>').join('')+'</div>'}
-function v7StampRow(){return '<div class="v7-stamps">'+A.map(a=>'<div class="v7-stamp '+(state.found.includes(a.id)?'':'ghost')+'"><b>'+v7meta(a).symbol+'</b><small>'+escapeHTML(a.power)+'</small></div>').join('')+'</div>'}
+function v7StampRow(){return '<div class="v7-stamps" style="flex-wrap:wrap">'+A.map(a=>'<div class="v7-stamp '+(state.found.includes(a.id)?'':'ghost')+'"><b>'+v7meta(a).symbol+'</b><small>'+escapeHTML(a.power)+'</small></div>').join('')+'</div>'}
 function v7button(label,act,variant){return button(label,act,variant)}
 
 /* Map data is collection-area context only: never claim any object is on view. */
@@ -463,7 +463,7 @@ function mapScreen(){
  '<div><b>2</b><span>Collection section<small>Awaiting confirmation from PAMM</small></span></div>')+
  '<div><b>3</b><span>Gallery / room<small>'+(room?'Example assignment: '+escapeHTML(room):'Room not confirmed')+'</small><em>'+(room?'Demonstration data entered locally, not a verified museum location.':'TRACE cannot yet tell you the exact room for this painting.')+'</em></span></div></div></div>'+
  '<div class="trace-map-illustration"><div>ENTRANCE</div><div>GALLERY WING</div><div>COLLECTION AREA</div><div>'+(room?'DEMO '+escapeHTML(room):'ROOM PENDING')+'</div></div>'+
- '<p class="tiny">Schematic is illustrative, not the museum floor plan. These six collection works have not been confirmed on display.</p>'+
+ '<p class="tiny">Schematic is illustrative, not the museum floor plan. Collection works shown here have not been individually confirmed on display.</p>'+
  '<a class="button outline" target="_blank" rel="noopener noreferrer" href="'+m.url+'">Open '+escapeHTML(m.title)+' ↗</a>'+
  '<div class="v7-notice" style="margin:14px 0">The pitch-ready version can show exact gallery rooms after a curator confirms them in an artwork-to-room database, along with artwork display status and route changes.</div>'+(state.reviewId&&state.found.includes(state.reviewId)?v7button('← Return to saved discovery','review-return-map','outline'):'')+v7button('Back to my clue','quest','ghost')+'</div>';
 }
@@ -525,7 +525,7 @@ function v7Render(v){
  if(state.tab==='museum'){
  const available=A.filter(a=>state.museumConfig[a.id]!==false).length;
  v.innerHTML='<div class="v7-panel"><div class="eyebrow">TRACE / INSTITUTIONAL PARTNERSHIP DEMO</div><h2 class="sectiontitle">Your collection.<br>Your adventures.</h2><p class="sub">Museum operator preview for '+escapeHTML(themes[state.venue].tag)+'. Everything below is illustrative: no production CMS, accounts or visitor analytics are connected.</p>'+
- '<div class="v7-kpis"><div><b>'+available+' / '+A.length+'</b><small>Works enabled in demo route</small></div><div><b>3</b><small>Adaptable story chapters</small></div></div>'+
+ '<div class="v7-kpis"><div><b>'+available+' / '+A.length+'</b><small>Works enabled in demo route</small></div><div><b>'+A.length+'</b><small>Curated discoveries, including sculpture and mixed media</small></div></div>'+
  '<div class="v7-cms"><div class="v7-tag">CURATOR WORKSPACE · INTERACTIVE MOCKUP</div><h3>Build your adventure</h3><p>Preview which works could be included in a route. These controls change only this mockup, not the visitor adventure. In production, curators would confirm actual gallery locations, display dates and reproduction permissions.</p>'+
  A.map(a=>'<div class="v7-cms-row"><span><strong>'+escapeHTML(a.artist)+'</strong><small>'+escapeHTML(a.chapter)+'</small></span><button class="'+(state.museumConfig[a.id]===false?'off':'')+'" data-museum-toggle="'+a.id+'">'+(state.museumConfig[a.id]===false?'Excluded':'Included')+'</button></div>').join('')+'</div>'+
  '<div class="v7-cms"><div class="v7-tag">GALLERY ASSIGNMENTS · LOCAL DEMO ONLY</div><h3>Specify room locations</h3><p>Example room labels are saved only in this browser; they are not verified gallery locations and do not affect the live visitor adventure.</p>'+A.map(a=>'<label class="trace-map-input"><b>'+escapeHTML(a.artist)+'</b><input data-map-room="'+a.id+'" placeholder="Example: Gallery A / Room 5" value="'+escapeHTML(mapRoom(a.id))+'" /></label>').join('')+'<p class="tiny">Enter a label, then open MAP to see how a curator-supplied room would appear.</p></div>'+
@@ -620,7 +620,7 @@ function render(){updateMuseumSwitcher();const v=el('view');if(!v)return;
  if(state.stage==='processing'){v.innerHTML=`<div class="loading"><div class="spinner"></div><h2>Looking at the details…</h2><p>Matching your photo against published artworks from both collections, on this device.</p></div>`;return}
  if(state.stage==='manualreview'){
  const a=A[state.current];
- v.innerHTML=`<div class="scanResult"><span class="resultStamp">VISUAL CHECK · NOT AUTOMATICALLY VERIFIED</span><h2>Do these match?</h2><p>Compare your photographed artwork with the museum reference below. If they are the same work, you can continue with a visitor-confirmed discovery.</p>${state.scanImage?`<img class="resultPreview" src="${state.scanImage}" alt="Your photo">`:''}<p><strong>Museum reference:</strong> ${escapeHTML(a.artist)} · ${escapeHTML(a.name)}</p><img class="photoTile" style="object-fit:contain;height:245px;background:#eee" src="${img(a)}" alt="Reference artwork"><p><strong>Only select yes if these depict the same artwork.</strong> This records a self-confirmed find, not an AI-verified scan.</p>${button('Yes, I found this artwork','manual-accept')}${button('Try scanning again','scan','outline')}${button('Back to clue','close','ghost')}</div>`;return;
+ v.innerHTML=`<div class="scanResult"><span class="resultStamp">VISUAL CHECK · NOT AUTOMATICALLY VERIFIED</span><h2>Do these match?</h2><p>Compare what you see with the museum’s published collection record. Sculptures can look very different from different angles. This is a visitor-confirmed discovery, never automatic verification.</p>${state.scanImage?`<img class="resultPreview" src="${state.scanImage}" alt="Your photo">`:''}<p><strong>Museum reference:</strong> ${escapeHTML(a.artist)} · ${escapeHTML(a.name)}</p><img class="photoTile" style="object-fit:contain;height:245px;background:#eee" src="${img(a)}" alt="Reference artwork"><p><a href="${a.url}" target="_blank" rel="noopener noreferrer">Open the official museum collection record ↗</a></p><p><strong>Only select yes if these depict the same artwork.</strong> This records a self-confirmed find, not an AI-verified scan.</p>${button('Yes, I found this artwork','manual-accept')}${button('Try scanning again','scan','outline')}${button('Back to clue','close','ghost')}</div>`;return;
  }
  if(state.stage==='scanresult'){
  const r=state.result||{},correct=!!(r.recognized&&r.id===A[state.current]?.id);
@@ -658,6 +658,7 @@ document.addEventListener('click',e=>{const review=e.target.closest('[data-revie
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&el('venuePicker')&&!el('venuePicker').hidden)showMuseumPicker(false)});
 document.addEventListener('change',e=>{if(e.target.id==='scanUpload')upload(e.target.files?.[0],image=>scan(image));else if(e.target.dataset.refupload)importReference(e.target.dataset.refupload,e.target.files?.[0]);else if(e.target.dataset.mapRoom){state.rooms[e.target.dataset.mapRoom]=e.target.value.trim().slice(0,60);save()}});
 async function loadReference(a){
+  if(a.previewOnly){a.asset=a.source;return false}
   // References stored in this GitHub Pages repo are same-origin; canvas pixel access cannot be blocked by CORS.
   // Explicitly fallback to external original sources while licensing is reviewed; some may fail.
   const local=LOCAL_ART[a.id];
