@@ -106,8 +106,17 @@ with sync_playwright() as p:
         for n,index in enumerate([1,0,2]):
             art=arts[index]
             page.locator('[data-t1-open="'+str(index)+'"]').click()
-            assert 'FIND THE HIDDEN ARTWORK' in page.locator('#view').inner_text()
-            assert page.locator('.v7-fragment img').count()==0, 'Mystery image must be hidden before scanning'
+            assert 'STEP 1 · MICA’S WORD CLUE' in page.locator('#view').inner_text()
+            assert page.locator('.t1-word-clue p').inner_text(), 'Text clue is missing'
+            assert page.locator('[data-t1-detail-reveal]').count()==1, 'Optional close-up reveal is missing'
+            assert page.locator('.t1-detail-frame img').count()==0, 'Mystery image must be hidden until reveal'
+            if n==0:
+                page.locator('[data-t1-detail-reveal]').click()
+                assert page.locator('.t1-detail-frame img').count()==1, 'Mica did not reveal zoom detail'
+                assert page.locator('.t1-detail-mica').count()==1
+                assert page.locator('.t1-detail-annotation p').inner_text()==page.locator('.t1-word-clue p').inner_text()
+                page.locator('[data-t1-detail-hide]').click()
+                assert page.locator('.t1-detail-frame img').count()==0
             assert 'MICA’S FAMILY DISCOVERY' in page.locator('#view').inner_text()
             # Calibrated painting/photo scans must NEVER show the reference before a successful match.
             if n==0:
