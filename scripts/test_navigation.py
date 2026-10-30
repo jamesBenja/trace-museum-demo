@@ -115,9 +115,8 @@ with sync_playwright() as p:
  assert page.evaluate("window.TRACE_DISPLAY.isActive('pamm-chaos')")
  assert page.evaluate("window.TRACE_DISPLAY.rec('pamm-chaos').room")=="pamm-18"
  page.locator("[data-tab='museum']").click()
- page.locator("[data-td-reset]").click()
  page.once("dialog",lambda dialog:dialog.accept())
- # Playwright dialog handler after click will be attached before next action for reliability.
+ page.locator("[data-td-reset]").click()
  assert page.evaluate("window.TRACE_DISPLAY.draft===null")
  assert page.evaluate("window.TRACE_DISPLAY.isActive('pamm-chaos')")==False
  assert page.evaluate("window.TRACE_DISPLAY.count('mmfa')")==3
