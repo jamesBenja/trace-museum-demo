@@ -1,6 +1,6 @@
-# TRACE v2.7: Three-museum art adventures, including MoMA New York
+# TRACE v2.8: Three-museum art adventures, including MoMA New York
 
-**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=27
+**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=28
 
 **Official MMFA map:** https://www.mbam.qc.ca/en/mmfa-museum-map/
 
@@ -16,7 +16,22 @@ For paintings and photographs with calibrated image references, the camera scan 
 
 On the visual comparison screen, visitors can **take or select one photo (optional)** and compare it alongside the museum's collection image. They may also visually confirm without taking a photo, including when museum photography is not permitted. Only explicit visitor confirmation advances the story. This is a visitor-assisted comparison, **not automatic recognition or a 3D scan**. Uploaded photos stay on the device and may be saved in the visitor's local discovery album once confirmed. A future multi-angle recognition feature would require curated reference photography and validation, not extra photo steps for visitors.
 
-## v2.7: MoMA browser-based camera matching and PAMM interactive lab overhaul
+## v2.8: All eight Montréal Museum of Fine Arts games upgraded
+
+All eight MMFA artworks have rebuilt, individual educational activities with art-specific Mica conclusions in English, French and Spanish. Every game maintains mystery-first discovery, optional detail reveal, photographic matching where available, administrator-set on-display status and the visitor's room route.
+
+- **Jacob Marrel:** rub a copper-toned painted garden and find five tiny creatures hidden among flower petals.
+- **Emanuel de Witte:** drag a vanishing point through three successive doorways while the floor's perspective lines respond.
+- **Marc-Aurèle Fortin:** paint three luminous cloud strokes and position the storm's sky light above dark Montréal buildings.
+- **The Eye:** scale a giant illustrated eye against a city and explore two different viewpoints.
+- **Elisabeth Frink:** place two guardians around a courtyard and turn them toward one another, revealing their spatial connection.
+- **Jean-Paul Riopelle:** make an assemblage from a wooden foundation and three different found materials, then choose an anchor.
+- **Auguste Rodin:** shape an expressive seated pose in three distinct steps, exploring how a figure communicates thought.
+- **Tony Cragg:** rotate a sculptural silhouette to find three possible hidden facial profiles.
+
+Each game features custom animated SVG scenery, meaningful creative milestones, a new art-historical Mica educational conclusion both inside the activity and on the discovery-complete screen, localized EN/FR/ES copy, and accessible non-drag controls. A new end-to-end browser suite performs gesture-based gameplay and checks all eight conclusions and language switching.
+
+## v2.8: MoMA browser-based camera matching and PAMM interactive lab overhaul
 
 All eight MoMA works now enter the real reference-loading workflow instead of being universally excluded as uncalibrated. The matching library can only activate the camera scan for an artwork if its collection reference image loads, can be decoded and can be read in a canvas. The chapter-specific geometric / colour matcher still requires confidence and never substitutes a guessed match. There is a strict browser test that verifies all eight reference images against their own source and a different artwork before an all-eight-scannable release can be claimed. Image matching is still an experimental prototype and should be tested on visitors' physical camera photographs and gallery lighting before museum use. No visitor photo leaves the device.
 
