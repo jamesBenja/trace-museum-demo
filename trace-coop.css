@@ -65,3 +65,7 @@
 .tf-mission.c2-won .tf-status{background:#dbefd2;color:#245c44!important;animation:tf-reveal .35s ease-out}
 .tf-mission.c2-won .tf-brow:after{content:'✦';color:#d2a350}
 @media(prefers-reduced-motion:reduce){.c2-spot,.c2-storm:before{transition:none}}
+
+/* Visitor mysteries never show collection reference images before a scan. */
+.c2-abstract-road,.c2-abstract-road svg{display:block;width:100%;height:100%}
+.c2-abstract-road svg{object-fit:cover}
