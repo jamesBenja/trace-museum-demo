@@ -43,7 +43,7 @@ function clean(input){
    if(!known.has(from)||!known.has(to)||from===to)continue;
    const key=[from,to].sort().join('~');
    if(unique.has(key))continue;
-   unique.add(key);connections[museum].push({from,to});
+   unique.add(key);connections[museum].push({from,to,type:['corridor','elevator','stairs','outdoor'].includes(x.type)?x.type:'corridor'});
   }
  }
  return {schemaVersion:1,rooms,connections,mode:'independent-pitch-demo',updatedAt:String(input?.updatedAt||'')||new Date().toISOString(),description:'Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.',works:rows};
@@ -113,7 +113,7 @@ function alterRooms(venue,operation,data){
  if(operation==='connect'){
   const from=String(data?.from||''),to=String(data?.to||'');
   if(from===to||!x.rooms[venue].some(v=>v.id===from)||!x.rooms[venue].some(v=>v.id===to))return false;
-  if(!x.connections[venue].some(v=>v.from===from&&v.to===to||v.from===to&&v.to===from))x.connections[venue].push({from,to});
+  if(!x.connections[venue].some(v=>v.from===from&&v.to===to||v.from===to&&v.to===from))x.connections[venue].push({from,to,type:['corridor','elevator','stairs','outdoor'].includes(data?.type)?data.type:'corridor'});
  }
  if(operation==='disconnect'){
   const from=String(data?.from||''),to=String(data?.to||'');
