@@ -21,6 +21,8 @@ with sync_playwright() as p:
  assert "web_map_2025.pdf" in page.evaluate("window.TRACE_ROUTING.MAPS.pamm.url")
  page.locator("[data-tab='quest']").click()
  page.locator("[data-t1-start]").click()
+ assert page.locator('.tw-screen').is_visible()
+ page.locator('[data-tw-skip]').click()
  assert page.locator("[data-t1-open]").count()==3
  assert page.locator("[data-t1-open='3']").count()==0
  page.locator("[data-tab='map']").click()
