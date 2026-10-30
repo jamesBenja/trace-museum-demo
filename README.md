@@ -16,6 +16,14 @@ For paintings and photographs with calibrated image references, the camera scan 
 
 On the visual comparison screen, visitors can **take or select one photo (optional)** and compare it alongside the museum's collection image. They may also visually confirm without taking a photo, including when museum photography is not permitted. Only explicit visitor confirmation advances the story. This is a visitor-assisted comparison, **not automatic recognition or a 3D scan**. Uploaded photos stay on the device and may be saved in the visitor's local discovery album once confirmed. A future multi-angle recognition feature would require curated reference photography and validation, not extra photo steps for visitors.
 
+## v2.3 mystery-first photograph flow
+
+TRACE now keeps the artwork image **hidden during the discovery clue and the photograph screen**, preserving the fun of finding the artwork from Mica's hints without seeing the solution. Optional family games also use original illustration rather than revealing a reference photograph. The discovery passport displays a concealed mystery tile until the work has been found.
+
+- **Calibrated works:** the visitor photographs or uploads their own image. Local matching runs against the enabled collection without displaying its reference. A confident match unlocks the artwork. If matching fails or the camera cannot be used, a clearly labeled visual-comparison fallback reveals the museum image only when the visitor deliberately chooses it.
+- **Uncalibrated sculpture, mixed media and newer MoMA works:** the primary route is "Photograph my guess." The first screen shows only the visitor's own picture (if provided). Once a picture exists, a **separate "Reveal match to check my photo"** action displays the museum reference alongside the visitor picture for honest self-confirmation. If photography is unavailable or prohibited, a prominent fallback **"Camera not working? Compare without a photo"** permits visual-only comparison. Automatic recognition is never falsely claimed for these works.
+- All screens remain switchable between English, French and Spanish; photo data stays local to the visitor's device. An official artwork record can still be opened by an intentional action in the fallback and demo test tools. Reproduction permissions and onsite exhibition verification remain separate institutional requirements.
+
 ## MoMA NYC third museum prototype
 
 MoMA New York now joins the Montréal Museum of Fine Arts and Pérez Art Museum Miami as a separately administered institution. Visitors select the museum from the persistent header switcher, and each museum retains independent progress, hints, photos, routes and comparative-art connections.
