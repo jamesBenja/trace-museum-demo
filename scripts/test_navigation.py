@@ -58,7 +58,7 @@ with sync_playwright() as p:
  assert page.locator("[data-tn-mode='custom']").is_visible()
  assert "Golden Age in Holland and Flanders" in page.locator("#view").inner_text()
  assert "ROOM ROUTE FROM CURATOR-CONFIGURED CONNECTIONS" in page.locator("#view").inner_text()
- assert "Curator-configured room sequence" in page.locator("#view").inner_text()
+ assert "Staff-entered route" in page.locator("#view").inner_text()
  page.locator("[data-tn-mode='all']").click()
  assert page.evaluate("window.TRACE_ROUTING.routeWorks().length")==4
  assert page.locator("[data-tn-select]").count()==0
@@ -87,7 +87,7 @@ with sync_playwright() as p:
  assert exported["works"]["mmfa-marrel"]["room"]=="mmfa-peace-3"
  assert len(exported["rooms"]["mmfa"])>=15
  assert len(exported["rooms"]["pamm"])>=20
- assert exported["connections"]["mmfa"][0]=={"from":"mmfa-entrance","to":"mmfa-peace-3"}
+ assert exported["connections"]["mmfa"][0]=={"from":"mmfa-entrance","to":"mmfa-peace-3","type":"corridor"}
  with page.expect_download() as download_info:
   page.locator("[data-td-export]").click()
  assert download_info.value.suggested_filename=="display-status.json"
