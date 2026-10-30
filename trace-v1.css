@@ -70,3 +70,23 @@
 .t1-choose{display:flex;gap:9px;margin:13px 0}.t1-choose button{flex:1;background:#f0f4ed;color:#27584e;padding:10px;border-radius:10px;border:1px solid #c5d8c8;font-size:11px;font-weight:800}
 .t1-choose button.active{background:#2b6e59;color:white}
 @media(prefers-reduced-motion:reduce){.t1-mica-body,.t1-mica-sparkle{animation:none}}
+
+
+/* TRACE v1.9: accessible visual comparison and multi-view observation */
+.tv-shot-grid{display:grid;gap:12px;margin:15px 0}
+.tv-shot{position:relative;display:grid;grid-template-columns:78px 1fr;grid-template-rows:auto auto auto;gap:4px 11px;align-items:center;min-height:116px;background:#fffdf7;border:2px dashed #a7c5b6;border-radius:15px;padding:12px;color:#254f45;cursor:pointer}
+.tv-shot.captured{background:#edf5e9;border-color:#5c9d7d;border-style:solid}
+.tv-shot strong{font-size:11px;font-weight:900;letter-spacing:.7px;grid-column:2;grid-row:1}
+.tv-shot img,.tv-photo-icon{grid-column:1;grid-row:1/4;width:78px;height:82px;border-radius:10px;object-fit:cover;background:#e5ece4;display:grid;place-items:center;font-size:31px;color:#638c7b}
+.tv-shot>span:not(.tv-photo-icon){grid-column:2;font-size:11px;line-height:1.45;grid-row:2;color:#577467}
+.tv-shot>b{grid-column:2;grid-row:3;color:#256b52;font-size:12px}
+.tv-shot input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.tv-shot:focus-within{outline:3px solid #dca65e;outline-offset:2px}
+.tv-taken{background:#e7f0e7;color:#245645;font-weight:800;font-size:11px;border-radius:10px;padding:11px;margin-bottom:14px}
+.tv-compare-images{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:7px;background:#e7efe5;border-radius:12px;margin:14px 0}
+.tv-compare-images img{width:100%;height:92px;object-fit:cover;border-radius:8px}
+.tv-check-guide{background:#e6f0e6;border:1px solid #cbdccb;padding:13px;border-radius:11px;text-align:left;color:#315b4c;font-size:12px;line-height:1.55}
+.tv-check-guide p{margin:5px 0 0}
+.tv-compare .photoTile{width:100%;max-width:100%}
+.scanner .scanBottom .button{min-height:44px;font-size:12px;margin-top:9px}
+@media(min-width:470px){.tv-shot-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.tv-shot{grid-template-columns:1fr;text-align:center}.tv-shot strong,.tv-shot>span:not(.tv-photo-icon),.tv-shot>b,.tv-shot img,.tv-photo-icon{grid-column:1;grid-row:auto}.tv-shot img,.tv-photo-icon{margin:auto}}
