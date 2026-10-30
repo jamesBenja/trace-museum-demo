@@ -1,4 +1,4 @@
-"""TRACE v1.7 end-to-end test: admin sign-in, GitHub-backed publication and two visitors.
+"""TRACE v1.8 end-to-end test: admin sign-in, GitHub-backed publication and two visitors.
 The GitHub REST transport is mocked so no real museum exhibition records are changed.
 Every UI, credential gate, draft, PUT payload, shared visitor refresh and role restriction is executed in Chromium.
 """
@@ -6,10 +6,10 @@ import os,json,base64
 from urllib.parse import urlsplit
 from playwright.sync_api import sync_playwright
 
-BASE=os.getenv("TRACE_TEST_URL","http://127.0.0.1:8765/?v=17")
+BASE=os.getenv("TRACE_TEST_URL","http://127.0.0.1:8765/?v=18")
 parts=urlsplit(BASE)
 ROOT=parts.scheme+"://"+parts.netloc+parts.path.rsplit("/",1)[0]+"/"
-def url(page):return ROOT+page+"?v=17"
+def url(page):return ROOT+page+"?v=18"
 with sync_playwright() as p:
  browser=p.chromium.launch(headless=True,args=["--no-sandbox"])
  seed_ctx=browser.new_context()
@@ -105,6 +105,34 @@ with sync_playwright() as p:
  admin.locator("[data-td-active='mmfa-eye']").check()
  admin.locator("[data-td-room='mmfa-eye']").select_option("mmfa-garden")
  admin.locator("[data-td-verified='mmfa-eye']").check()
+ # The administrator can manage either museum without leaving the protected editor.
+ assert admin.locator(".td-venue-option").count()==2
+ assert admin.locator('.td-venue-option[data-venue="mmfa"]').get_attribute("aria-pressed")=="true"
+ admin.locator('.td-venue-option[data-venue="pamm"]').click()
+ assert admin.evaluate("state.venue")=="pamm"
+ assert admin.evaluate("state.tab")=="museum", "Museum switch must preserve admin workspace"
+ assert admin.locator('[data-td-active="pamm-chaos"]').count()==1
+ assert admin.locator('[data-td-active="mmfa-eye"]').count()==0, "Never mix museum artwork controls"
+ assert admin.locator('.td-venue-option[data-venue="pamm"]').get_attribute("aria-pressed")=="true"
+ assert admin.locator('#tn-link-from option[value="pamm-1"]').count()==1, "PAMM floor plan must load"
+ admin.locator('[data-td-active="pamm-chaos"]').check()
+ admin.locator('[data-td-room="pamm-chaos"]').select_option("pamm-3")
+ admin.locator('[data-td-verified="pamm-chaos"]').check()
+ assert admin.evaluate("window.TRACE_DISPLAY.rec('pamm-chaos').room")=="pamm-3"
+ # The original header switcher must also preserve the editor.
+ admin.locator("#venueSwitcher").click()
+ assert admin.locator("#venuePicker").is_visible()
+ admin.locator('#venuePicker [data-venue="mmfa"]').click()
+ assert admin.evaluate("state.venue")=="mmfa"
+ assert admin.evaluate("state.tab")=="museum"
+ assert admin.locator('[data-td-active="mmfa-eye"]').is_checked()
+ assert admin.locator('[data-td-active="pamm-chaos"]').count()==0
+ admin.locator('.td-venue-option[data-venue="pamm"]').click()
+ assert admin.locator('[data-td-active="pamm-chaos"]').is_checked(), "PAMM draft lost while switching"
+ assert admin.locator('[data-td-room="pamm-chaos"]').input_value()=="pamm-3"
+ admin.locator('.td-venue-option[data-venue="mmfa"]').click()
+ assert admin.evaluate("state.tab")=="museum"
+ print("ADMIN SWITCH PASS: both museums, distinct catalogues and rooms, draft preserved in both directions",flush=True)
  # Draft is visible to admin but not to either visitor before publishing.
  assert admin.evaluate("window.TRACE_DISPLAY.isActive('mmfa-eye')")
  assert admin.evaluate("window.TRACE_DISPLAY.rec('mmfa-eye').room")=="mmfa-garden"
@@ -124,6 +152,9 @@ with sync_playwright() as p:
  assert shared["writes"]==1
  assert shared["content"]["works"]["mmfa-eye"]["active"]==True
  assert shared["content"]["works"]["mmfa-eye"]["room"]=="mmfa-garden"
+ assert shared["content"]["works"]["pamm-chaos"]["active"]==True
+ assert shared["content"]["works"]["pamm-chaos"]["room"]=="pamm-3"
+ assert shared["content"]["works"]["pamm-chaos"]["onViewVerified"]==True
  assert "Published" in admin.locator("#view").inner_text()
  for visitor in [v1,v2]:
   visitor.evaluate("window.TRACE_DISPLAY.load()")
@@ -133,7 +164,18 @@ with sync_playwright() as p:
   visitor.locator("[data-tn-mode='all']").click()
   assert "Sculpture Garden" in visitor.locator("#view").inner_text()
   assert visitor.evaluate("window.TRACE_ROUTING.routeWorks().length")==4
- print("SHARED PUBLISH PASS: admin activation + room + route published to two visitor sessions",flush=True)
+ # The combined publish must update PAMM for both visitors without changing their MMFA settings.
+ for visitor in [v1,v2]:
+  visitor.locator("#venueSwitcher").click()
+  visitor.locator('#venuePicker [data-venue="pamm"]').click()
+  assert visitor.evaluate("state.venue")=="pamm"
+  assert visitor.evaluate("state.tab")=="quest"
+  assert visitor.evaluate("window.TRACE_DISPLAY.count('pamm')")==4
+  assert visitor.evaluate("window.TRACE_DISPLAY.rec('pamm-chaos').room")=="pamm-3"
+  visitor.locator("#venueSwitcher").click()
+  visitor.locator('#venuePicker [data-venue="mmfa"]').click()
+  assert visitor.evaluate("state.venue")=="mmfa"
+ print("SHARED PUBLISH PASS: both museums' artwork states and rooms on two visitor sessions",flush=True)
  # Going off display removes the work without deleting the visitor's earlier completed artwork.
  v1.evaluate("""()=>{state.found.push('mmfa-eye');save()}""")
  admin.locator("[data-td-active='mmfa-eye']").uncheck()
