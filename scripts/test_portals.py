@@ -25,7 +25,7 @@ with sync_playwright() as p:
   row["room"]=""
   row["startDate"]=""
   row["endDate"]=""
- baseline["connections"]={"mmfa":[],"pamm":[]}
+ baseline["connections"]={"mmfa":[],"pamm":[],"moma":[]}
  shared={"content":baseline,"sha":"mock-sha-0","version":0,"writes":0}
  failures=[]
  def network(route):
@@ -117,7 +117,7 @@ with sync_playwright() as p:
  admin.locator("[data-td-room='mmfa-eye']").select_option("mmfa-garden")
  admin.locator("[data-td-verified='mmfa-eye']").check()
  # The administrator can manage either museum without leaving the protected editor.
- assert admin.locator(".td-venue-option").count()==2
+ assert admin.locator(".td-venue-option").count()==3
  assert admin.locator('.td-venue-option[data-venue="mmfa"]').get_attribute("aria-pressed")=="true"
  admin.locator('.td-venue-option[data-venue="pamm"]').click()
  assert admin.evaluate("state.venue")=="pamm"
@@ -143,7 +143,20 @@ with sync_playwright() as p:
  assert admin.locator('[data-td-room="pamm-chaos"]').input_value()=="pamm-3"
  admin.locator('.td-venue-option[data-venue="mmfa"]').click()
  assert admin.evaluate("state.tab")=="museum"
- print("ADMIN SWITCH PASS: both museums, distinct catalogues and rooms, draft preserved in both directions",flush=True)
+ # Third museum has its own editable collection and sourced room labels.
+ admin.locator('.td-venue-option[data-venue="moma"]').click()
+ assert admin.evaluate("state.venue")=="moma"
+ assert admin.evaluate("state.tab")=="museum"
+ assert admin.locator('[data-td-active="moma-starry"]').count()==1
+ assert admin.locator('[data-td-active="pamm-chaos"]').count()==0
+ assert admin.locator('#tn-link-from option[value="moma-501"]').count()==1
+ admin.locator('[data-td-active="moma-starry"]').check()
+ admin.locator('[data-td-room="moma-starry"]').select_option("moma-501")
+ assert admin.evaluate("window.TRACE_DISPLAY.rec('moma-starry').room")=="moma-501"
+ admin.locator('.td-venue-option[data-venue="mmfa"]').click()
+ assert admin.locator('[data-td-active="mmfa-eye"]').is_checked()
+ assert admin.evaluate("window.TRACE_DISPLAY.rec('moma-starry').room")=="moma-501"
+ print("ADMIN SWITCH PASS: three museums, distinct catalogues and rooms, drafts preserved",flush=True)
  # Draft is visible to admin but not to either visitor before publishing.
  assert admin.evaluate("window.TRACE_DISPLAY.isActive('mmfa-eye')")
  assert admin.evaluate("window.TRACE_DISPLAY.rec('mmfa-eye').room")=="mmfa-garden"
