@@ -9,7 +9,7 @@ SETS={
 }
 def solve_puzzle(page,art):
     page.locator('[data-action="v7-puzzle"]').click()
-    assert page.locator('#t1-finish').is_disabled(), 'Puzzle should not be pre-solved '+art
+    assert page.locator('[data-t1-finish]').is_disabled(), 'Puzzle should not be pre-solved '+art
     if art=='mmfa-marrel':
         b=page.locator('#t1-copper').bounding_box()
         assert b, 'Copper canvas unavailable'
@@ -25,17 +25,19 @@ def solve_puzzle(page,art):
     elif art=='mmfa-fortin':
         page.locator('#t1-light').evaluate("(el)=>{el.value='85';el.dispatchEvent(new Event('input',{bubbles:true}))}")
     elif art=='pamm-masks':
-        for x in ['🎭','🐟','▦']:
-            page.locator('[data-t1-symbol="'+x+'"]').click()
+        for i in range(4):
+            page.locator('[data-pg="symbol"]').nth(i).click()
+            page.locator('[data-pg="seal"]').nth(i).click()
     elif art=='pamm-delano':
-        for key in ['left','up','right','down']:
-            page.locator('[data-t1-move="'+key+'"]').click()
-        page.locator('[data-t1-photo-choice="0"]').click()
+        for i in range(3):
+            page.locator('[data-pg="view"]').nth(i).click()
+        page.locator('[data-pg="mood"][data-v="gold"]').click()
     elif art=='pamm-grid':
-        for x in ['⌂','☼','◎']:
-            page.locator('[data-t1-place="'+x+'"]').click()
-    assert page.locator('#t1-finish').is_enabled(), 'Puzzle not completed '+art
-    page.locator('#t1-finish').click()
+        for i in range(5):
+            page.locator('[data-pg="choose-glyph"]').nth(i%3).click()
+            page.locator('[data-pg="glyph"]').nth(i).click()
+    assert page.locator('[data-t1-finish]').is_enabled(), 'Puzzle not completed '+art
+    page.locator('[data-t1-finish]').click()
     assert 'POWER UNLOCKED' in page.locator('#view').inner_text()
 def isolate_manifest(page):
     fixture=json.loads((Path(__file__).resolve().parents[1]/"display-status.json").read_text(encoding="utf-8"))
