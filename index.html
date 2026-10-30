@@ -116,6 +116,17 @@
 .venueCardArrow{font-size:29px;color:#53806d}
 .venueNote{background:#f5e9d1;border-radius:11px;padding:10px}
 @media(max-width:375px){.top{padding-left:10px;padding-right:8px;gap:4px}.top .logo{font-size:21px}.top .status{max-width:100px;font-size:7px}.venueSwitcher{padding:6px 8px;font-size:11px}}
+/* The mystery image remains hidden until a photo or intentional comparison fallback. */
+.t1-hidden-reference{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;background:radial-gradient(circle at 50% 35%,#e9e8ca,#d9e9df 65%,#bcd4c9);border:2px dashed #8bab9b;text-align:center}
+.t1-hidden-reference .t1-hidden-symbol{font-size:85px;line-height:1;color:#497e70;filter:drop-shadow(0 8px 10px #40645744)}
+.t1-hidden-reference p{font-size:11px;letter-spacing:1.5px;color:#2c6757;font-weight:900;margin:0 10px 27px}
+.tq-photo-first .tq-capture-zone{position:relative;min-height:215px;display:grid;place-items:center;background:#eef3e9;border:2px dashed #99bca9;border-radius:16px;margin:15px 0;overflow:hidden}
+.tq-capture-zone>img{width:100%;max-height:340px;object-fit:contain}
+.tq-capture-zone>span{position:absolute;bottom:0;left:0;right:0;background:#183d35dd;color:white;text-align:center;font-size:10px;letter-spacing:1px;padding:8px}
+.tq-placeholder{display:flex;flex-direction:column;gap:8px;align-items:center;color:#52776a}
+.tq-placeholder b{font-size:58px}.tq-placeholder strong{font-size:12px;letter-spacing:.9px}.tq-placeholder small{font-size:11px}
+.tq-photo-button{margin:14px 0 12px}
+@media(prefers-reduced-motion:reduce){.t1-hidden-reference .t1-hidden-symbol{animation:none}}
 /* Always-on language picker visible in every visitor and curator screen */
 .trace-language-bar{display:flex;align-items:center;justify-content:flex-end;gap:6px;background:#f1f5ed;border-bottom:1px solid #dce7dc;padding:6px 14px;min-height:43px}
 .trace-language-bar>span{font-size:10px;letter-spacing:.9px;font-weight:850;color:#477467;margin-right:auto}
@@ -569,7 +580,7 @@ function v7Render(v){
  if(state.stage==='clue'){
  const focus=a.id==='mmfa-marrel'?'18% 14%':a.focus;
  v.innerHTML='<div class="v7-panel">'+progress()+'<div class="v7-tag">'+v7t('quest')+' · '+(state.current+1)+' / '+A.length+'</div><h2 class="sectiontitle">'+escapeHTML(a.chapter)+'</h2><p class="sub">'+v7t('hunt')+'</p>'+v7PowerStrip()+
- v9PreviousStrip()+'<div class="v7-fragment"><img src="'+img(a)+'" style="object-position:'+focus+'" alt="Cropped clue from collection artwork"><div class="v7-cover">'+v7t('fragment')+' · ?</div></div>'+
+ v9PreviousStrip()+'<div class="v7-fragment t1-hidden-reference" role="img" aria-label="The artwork image is still hidden"><div class="t1-hidden-symbol" aria-hidden="true">✦</div><p>THE ARTWORK IS STILL A SECRET</p><div class="v7-cover">FIND THE HIDDEN ARTWORK</div></div>'+
  '<div class="v7-quest"><span class="v7-tag">THE HIDDEN CLUE</span><p>'+escapeHTML(v7field(a,'clue'))+'</p></div>'+
  (state.hints.includes(a.id)?'<div class="hint">'+escapeHTML(a.hint)+'</div>':'')+
  v7button('⌾ '+v7t('scan'),'scan')+v7button('⌖ Find on museum map','map','outline')+v7button('✧ '+v7t('hint'),'hint','ghost')+
@@ -632,6 +643,24 @@ function render(){if(state.tab==='museum'&&!window.TRACE_AUTH?.isAdmin())state.t
  if(state.tab==='targets'){v.innerHTML=`<div class="padding"><div class="eyebrow">ARTWORK TEST TARGETS</div><h2 class="sectiontitle">Your reference gallery.</h2><p class="sub">Display this screen on another device, and use the scanner on your phone to photograph each real artwork. You can also press “Test matching” to run the same recognition algorithm on the reference image. Works may not currently be on view at the museum.</p>${A.filter(a=>!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(a.id)).map((a,i)=>`<div class="sourceCard"><img src="${img(a)}" alt="${escapeHTML(a.name)}"><div><strong>${i+1}. ${escapeHTML(a.name)}</strong><p>${escapeHTML(a.artist)} · ${a.year}</p><a href="${a.url}" target="_blank" rel="noopener">Official museum record ↗</a>${button('Test matching','sample:'+a.id,'outline')}</div></div>`).join('')}${button('Return to quest','quest')}</div>`;return}
  if(state.stage==='scan'){v.innerHTML=`<div class="scanner"><div class="scanTop"><h3>Scan the artwork</h3><button class="xBtn" data-action="close">✕</button></div><div class="scanViewport"><video id="cameraVideo" muted autoplay playsinline></video><div class="reticle"></div></div><div class="scanBottom"><button class="shutter" id="shutter" disabled data-action="shutter"></button><span class="scannerNote" id="cameraAlert">Checking camera permissions…</span>${photoInput(true)}<button class="button outline" data-action="manual-review" type="button">Camera unavailable? Compare with museum image</button></div></div>`;return}
  if(state.stage==='processing'){v.innerHTML=`<div class="loading"><div class="spinner"></div><h2>Looking at the details…</h2><p>Matching your photo against published artworks from the selected collections, on this device.</p></div>`;return}
+ if(state.stage==='photoquest'){
+ const a=A[state.current],photo=state.scanImage;
+ v.innerHTML='<div class="scanResult tq-photo-first">'+
+ '<span class="resultStamp">MYSTERY PHOTO · REFERENCE HIDDEN</span>'+
+ '<h2>Photograph your best guess</h2>'+
+ '<p>Find the artwork from Mica’s clues, then photograph the work you think is right. The museum image stays a secret until you choose to check your photo.</p>'+
+ '<div class="tq-capture-zone">'+
+ (photo?'<img src="'+escapeHTML(photo)+'" alt="Your own photo, without the museum reference"><span>YOUR PHOTO · READY TO CHECK</span>':'<div class="tq-placeholder"><b aria-hidden="true">⌾</b><strong>YOUR PHOTO GOES HERE</strong><small>No museum artwork preview yet</small></div>')+
+ '</div>'+
+ '<label class="tv-one-photo tq-photo-button"><span>⌾ '+(photo?'Retake or replace your photo':'Take or choose a photo')+'</span>'+
+ '<input type="file" accept="image/*" capture="environment" data-guess-photo aria-label="Photograph the artwork you think matches the clue"></label>'+
+ (photo?button('Reveal match to check my photo','photo-compare'):'<p class="t1-small">Take a picture first to unlock the side-by-side visual check. This work does not yet have calibrated automatic recognition.</p>')+
+ '<p class="t1-small">No photography permitted? Camera unavailable? You can use the optional visual-only fallback instead.</p>'+
+ button('Camera not working? Compare without a photo','manual-review','outline')+
+ button('Back to clue','close','ghost')+
+ '<p class="tiny">Use your eyes, keep your distance, and always follow museum photography rules. Your photo stays on this device.</p></div>';
+ return;
+ }
  if(state.stage==='manualreview'){
  const a=A[state.current],photo=state.scanImage;
  v.innerHTML='<div class="scanResult tv-compare">'+
@@ -657,7 +686,7 @@ function render(){if(state.tab==='museum'&&!window.TRACE_AUTH?.isAdmin())state.t
  const r=state.result||{},correct=!!(r.recognized&&r.id===A[state.current]?.id);
  v.innerHTML='<div class="scanResult"><span class="resultStamp">'+(correct?'ARTWORK VERIFIED':'NO CONFIDENT MATCH')+'</span><h2>'+(correct?'You found it!':'Keep looking. You may have found the right work.')+'</h2>'+
  (state.scanImage?'<img class="resultPreview" src="'+state.scanImage+'" alt="Your scan photo">':'')+
- '<p>'+(correct?'The camera image matches the artwork for this chapter. Unlock its story and collect your find.':r.error?'Unable to read this photo: '+escapeHTML(r.error):'The scanner could not verify this exact artwork confidently. A photograph of a framed painting, glare, or low light can interfere. Try a closer crop or compare your photo with the reference below.')+'</p>'+
+ '<p>'+(correct?'The camera image matches the artwork for this chapter. Unlock its story and collect your find.':r.error?'Unable to read this photo: '+escapeHTML(r.error):'The scanner could not verify this exact artwork confidently. A photograph of a framed painting, glare, or low light can interfere. Try another photo or choose the visual-comparison fallback.')+'</p>'+
  '<span class="quality">'+(correct?'AUTOMATICALLY VERIFIED':'NOT AUTOMATICALLY VERIFIED')+' · Chapter-specific image matching</span>'+
  (correct?button('Discover its story →','accept'):button('Try another scan','scan'))+
  (!correct?button('Compare visually with museum reference','manual-review','outline'):'')+
@@ -674,7 +703,7 @@ function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=
 async function startCamera(){
  const a=A[state.current];
  if(!a||!window.TRACE_DISPLAY?.isActive(a.id))return;
- if(!ready||!a.reference){stopCamera();state.stage='manualreview';render();return}
+ if(!ready||!a.reference){stopCamera();state.stage='photoquest';render();return}
  stopCamera();state.stage='scan';render();
  const video=el('cameraVideo');
  if(!navigator.mediaDevices?.getUserMedia){
@@ -699,10 +728,10 @@ async function upload(file,cb){if(!file||!file.type.startsWith('image/'))return;
 async function importReference(id,file){const a=ALL.find(a=>a.id===id);if(!a)return;await upload(file,async image=>{const c=document.createElement('canvas');const scale=Math.min(950/Math.max(image.width,image.height),1),w=Math.round(image.width*scale),h=Math.round(image.height*scale);c.width=w;c.height=h;c.getContext('2d').drawImage(image,0,0,w,h);const ref=new Image();ref.src=c.toDataURL('image/jpeg',.9);await ref.decode();a.reference=ref;a.asset=ref.src;await rebuild();render()})}
 async function sample(id){const a=ALL.find(a=>a.id===id);if(!a)return;if(!a.reference){tab('guide');el('status').textContent='REFERENCE MISSING · IMPORT PHOTO';return;}if(!ready){el('status').textContent='SCANNER PREPARING';return;}await scan(a.reference)}
 function share(){const t='I completed a TRACE art-discovery adventure!';if(navigator.share)navigator.share({title:'TRACE: Art becomes an adventure',text:t}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>alert('Achievement copied.'));else alert(t)}
-function action(key){if(key.startsWith('sample:')){if(window.TRACE_DISPLAY&&!window.TRACE_DISPLAY.isActive(key.slice(7)))return;return sample(key.slice(7))}switch(key){case 'venue-picker':showMuseumPicker(true);break;case 'venue-close':showMuseumPicker(false);break;case 'start':stage('clue');break;case 'review-resume':v9CloseReview('quest');break;case 'review-back':v9CloseReview('album');break;case 'review-prev':v9ChangeReview(-1);break;case 'review-next':v9ChangeReview(1);break;case 'review-map':if(state.reviewId){state.mapFocusId=state.reviewId;state.tab='map';document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('selected',b.dataset.tab==='map'));render()}break;case 'review-return-map':if(state.reviewId){state.tab='album';document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('selected',b.dataset.tab==='album'));render()}break;case 'v7-story':stage('found');break;case 'v7-puzzle':state.quizError=false;stage('puzzle');break;case 'v7-save':v7SavePassport();break;case 'v7-narrate':v7Narrate();break;case 'scan':startCamera();break;case 'shutter':capture();break;case 'close':stopCamera();stage('clue');break;case 'accept':accept();break;case 'manual-review':stopCamera();state.stage='manualreview';render();break;case 'manual-accept':manualAccept();break;case 'hint':if(!state.hints.includes(A[state.current].id))state.hints.push(A[state.current].id);save();render();break;case 'next':next();break;case 'reset':reset();break;case 'share':share();break;case 'album':case 'guide':case 'quest':case 'targets':case 'museum':case 'map':tab(key);break}}
+function action(key){if(key.startsWith('sample:')){if(window.TRACE_DISPLAY&&!window.TRACE_DISPLAY.isActive(key.slice(7)))return;return sample(key.slice(7))}switch(key){case 'venue-picker':showMuseumPicker(true);break;case 'venue-close':showMuseumPicker(false);break;case 'start':stage('clue');break;case 'review-resume':v9CloseReview('quest');break;case 'review-back':v9CloseReview('album');break;case 'review-prev':v9ChangeReview(-1);break;case 'review-next':v9ChangeReview(1);break;case 'review-map':if(state.reviewId){state.mapFocusId=state.reviewId;state.tab='map';document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('selected',b.dataset.tab==='map'));render()}break;case 'review-return-map':if(state.reviewId){state.tab='album';document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('selected',b.dataset.tab==='album'));render()}break;case 'v7-story':stage('found');break;case 'v7-puzzle':state.quizError=false;stage('puzzle');break;case 'v7-save':v7SavePassport();break;case 'v7-narrate':v7Narrate();break;case 'scan':startCamera();break;case 'photo-quest':stopCamera();state.stage='photoquest';render();break;case 'photo-compare':if(state.stage==='photoquest'&&state.scanImage){state.stage='manualreview';render()}break;case 'shutter':capture();break;case 'close':stopCamera();stage('clue');break;case 'accept':accept();break;case 'manual-review':stopCamera();state.stage='manualreview';render();break;case 'manual-accept':manualAccept();break;case 'hint':if(!state.hints.includes(A[state.current].id))state.hints.push(A[state.current].id);save();render();break;case 'next':next();break;case 'reset':reset();break;case 'share':share();break;case 'album':case 'guide':case 'quest':case 'targets':case 'museum':case 'map':tab(key);break}}
 document.addEventListener('click',e=>{const review=e.target.closest('[data-review-work]'),reviewAnswer=e.target.closest('[data-review-answer]');if(review){v9OpenReview(review.dataset.reviewWork);return}if(reviewAnswer){v9ReviewAnswer(Number(reviewAnswer.dataset.reviewAnswer));return}const map=e.target.closest('[data-map-choice]');if(map){state.mapFocusId=map.dataset.mapChoice;render();return}const p=e.target.closest('[data-v7puzzle]'),lang=e.target.closest('[data-lang]'),toggle=e.target.closest('[data-museum-toggle]');if(p){v7SelectPuzzle(Number(p.dataset.v7puzzle));return}if(lang){if(window.TRACE_I18N)window.TRACE_I18N.setLanguage(lang.dataset.lang);else{state.lang=lang.dataset.lang;save();render()}return}if(toggle){const id=toggle.dataset.museumToggle;state.museumConfig[id]=state.museumConfig[id]===false?true:false;save();render();return}const v=e.target.closest('[data-venue]'),s=e.target.closest('[data-sample]'),a=e.target.closest('[data-answer]'),t=e.target.closest('[data-tab]'),b=e.target.closest('[data-action]');if(v)setVenue(v.dataset.venue);else if(s)sample(s.dataset.sample);else if(a)answer(Number(a.dataset.answer));else if(t)tab(t.dataset.tab);else if(b)action(b.dataset.action)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&el('venuePicker')&&!el('venuePicker').hidden)showMuseumPicker(false)});
-document.addEventListener('change',e=>{if(e.target.id==='scanUpload')upload(e.target.files?.[0],image=>scan(image));else if(e.target.hasAttribute('data-compare-photo')){const artwork=A[state.current]?.id;if(state.stage==='manualreview'&&window.TRACE_DISPLAY?.isActive(artwork))upload(e.target.files?.[0],image=>{if(state.stage!=='manualreview'||A[state.current]?.id!==artwork)return;state.scanImage=thumb(image);render()})}else if(e.target.dataset.refupload)importReference(e.target.dataset.refupload,e.target.files?.[0]);else if(e.target.dataset.mapRoom){state.rooms[e.target.dataset.mapRoom]=e.target.value.trim().slice(0,60);save()}});
+document.addEventListener('change',e=>{if(e.target.id==='scanUpload')upload(e.target.files?.[0],image=>scan(image));else if(e.target.hasAttribute('data-guess-photo')){const artwork=A[state.current]?.id;if(state.stage==='photoquest'&&window.TRACE_DISPLAY?.isActive(artwork))upload(e.target.files?.[0],image=>{if(state.stage!=='photoquest'||A[state.current]?.id!==artwork)return;state.scanImage=thumb(image);render()})}else if(e.target.hasAttribute('data-compare-photo')){const artwork=A[state.current]?.id;if(state.stage==='manualreview'&&window.TRACE_DISPLAY?.isActive(artwork))upload(e.target.files?.[0],image=>{if(state.stage!=='manualreview'||A[state.current]?.id!==artwork)return;state.scanImage=thumb(image);render()})}else if(e.target.dataset.refupload)importReference(e.target.dataset.refupload,e.target.files?.[0]);else if(e.target.dataset.mapRoom){state.rooms[e.target.dataset.mapRoom]=e.target.value.trim().slice(0,60);save()}});
 async function loadReference(a){
   if(a.previewOnly){a.asset=a.source;return false}
   // References stored in this GitHub Pages repo are same-origin; canvas pixel access cannot be blocked by CORS.
