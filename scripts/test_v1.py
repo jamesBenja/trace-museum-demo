@@ -97,6 +97,15 @@ with sync_playwright() as p:
                 assert page.locator('[data-action="manual-review"]').count()==1
                 page.locator('[data-action="manual-review"]').click()
                 assert 'NOT AUTOMATICALLY VERIFIED' in page.locator('#view').inner_text()
+                assert page.locator('[data-compare-photo]').count()==1, 'Single optional photo missing on painting'
+                assert page.locator('.tv-no-photo').count()==1
+                assert page.locator('[data-action="manual-accept"]').count()==1
+                # Test a single uploaded photo without treating the upload as automatic recognition.
+                import base64
+                png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAJ/q7UcAAAAASUVORK5CYII=')
+                page.locator('[data-compare-photo]').set_input_files({'name':'one-artwork-photo.png','mimeType':'image/png','buffer':png})
+                page.wait_for_function("state.scanImage?.startsWith('data:image/jpeg;')")
+                assert page.locator('.tv-compare-pair img').count()==2
                 assert page.locator('[data-action="manual-accept"]').count()==1
                 page.locator('[data-action="close"]').click()
                 assert page.evaluate("state.stage")=="clue"
