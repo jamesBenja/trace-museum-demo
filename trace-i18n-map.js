@@ -129,5 +129,137 @@ const rows=[
 ["Your draft is preserved; visitor data was not changed.","Votre brouillon est conservé ; les données visiteurs restent intactes.","Se conservó el borrador; los datos de visitantes no cambiaron."],
 ["Gallery","Galerie","Galería"],["Sculpture garden","Jardin de sculptures","Jardín de esculturas"]
 ];
+rows.push(...[
+ [
+  "TRACE · GALLERY WAYFINDER",
+  "TRACE · GUIDE DES SALLES",
+  "TRACE · GUÍA DE SALAS"
+ ],
+ [
+  "Mica’s room finder:",
+  "Mica vous guide vers :",
+  "Mica te guía a:"
+ ],
+ [
+  "Choose an artwork with an assigned gallery to preview its location.",
+  "Choisissez une œuvre dont la salle est indiquée pour voir son emplacement.",
+  "Elige una obra con sala asignada para ver su ubicación."
+ ],
+ [
+  "Choose a starting gallery to plan the visit.",
+  "Choisissez une salle de départ pour préparer la visite.",
+  "Elige una sala de partida para planificar la visita."
+ ],
+ [
+  "A curator-approved connection is available for this route. Follow the directions below and check museum signage.",
+  "Un passage approuvé par le musée est disponible. Suivez les indications et vérifiez la signalisation.",
+  "Hay un paso aprobado por el museo. Sigue las indicaciones y comprueba las señales."
+ ],
+ [
+  "These gallery links come from published maps, but staff have not approved them as directions. Use the official floor plan to verify the route.",
+  "Ces passages figurent sur les plans publiés, mais le musée ne les a pas approuvés comme itinéraire. Vérifiez le plan officiel.",
+  "Estos pasos aparecen en planos publicados, pero el museo no los ha aprobado como ruta. Verifica el plano oficial."
+ ],
+ [
+  "There is not yet a complete verified connection between these rooms.",
+  "Il n’y a pas encore de parcours entièrement vérifié entre ces salles.",
+  "Todavía no hay una ruta completamente verificada entre estas salas."
+ ],
+ [
+  "Check the official floor map or ask museum staff.",
+  "Consultez le plan officiel ou demandez au personnel du musée.",
+  "Consulta el plano oficial o pregunta al personal del museo."
+ ],
+ [
+  "Accessible sculpture-garden transport may require contacting PAMM Visitor Services in advance.",
+  "Pour accéder au jardin de sculptures sans marches, contactez à l’avance l’accueil du PAMM pour le transport adapté.",
+  "Para acceder sin escalones al jardín de esculturas, consulta previamente con PAMM sobre transporte accesible."
+ ],
+ [
+  "Explore",
+  "Explorer",
+  "Explorar"
+ ],
+ [
+  "mapped links",
+  "passages cartographiés",
+  "conexiones cartografiadas"
+ ],
+ [
+  "awaiting museum approval",
+  "en attente d’approbation du musée",
+  "pendientes de aprobación del museo"
+ ],
+ [
+  "Map research · verify onsite",
+  "Recherche cartographique · à vérifier sur place",
+  "Investigación cartográfica · verificar en el museo"
+ ],
+ [
+  "Curator approved",
+  "Approuvé par le musée",
+  "Aprobado por el museo"
+ ],
+ [
+  "Between floors / areas",
+  "Entre les étages / espaces",
+  "Entre plantas / zonas"
+ ],
+ [
+  "Schematic network only; not to scale. Artwork installations and gallery access may change. Exact paths require museum verification.",
+  "Réseau schématique, non à l’échelle. Les œuvres et les accès peuvent changer. Un parcours précis doit être validé par le musée.",
+  "Red esquemática, no a escala. Las obras y los accesos pueden cambiar. El museo debe validar las rutas precisas."
+ ],
+ [
+  "Connection review & closures",
+  "Vérification des passages et fermetures",
+  "Revisión de conexiones y cierres"
+ ],
+ [
+  "Approve link",
+  "Approuver le passage",
+  "Aprobar conexión"
+ ],
+ [
+  "Mark for review",
+  "Marquer à vérifier",
+  "Marcar para revisión"
+ ],
+ [
+  "Reopen",
+  "Rouvrir",
+  "Reabrir"
+ ],
+ [
+  "Close",
+  "Fermer",
+  "Cerrar"
+ ],
+ [
+  "Map evidence",
+  "Source cartographique",
+  "Fuente cartográfica"
+ ],
+ [
+  "Map research · NOT approved",
+  "Recherche cartographique · NON approuvée",
+  "Investigación cartográfica · NO aprobada"
+ ],
+ [
+  "Museum-approved route:",
+  "Parcours approuvé par le musée :",
+  "Ruta aprobada por el museo:"
+ ],
+ [
+  "A route using research-only links is a preview, not verified directions.",
+  "Un parcours issu de sources non vérifiées n’est qu’un aperçu.",
+  "Una ruta basada en conexiones de investigación es solo una vista previa."
+ ],
+ [
+  "Staff-entered route:",
+  "Parcours établi par le musée :",
+  "Ruta configurada por el museo:"
+ ]
+]);
 window.TRACE_I18N?.addMany(rows);
 })();
