@@ -48,7 +48,7 @@ function eye(s){
  '<div class="te-label-pair"><span>Everyday size</span><span>Monumental size</span></div>';
 }
 function guardianShape(isRight,facing){
- const flip=(isRight?(!facing):facing)?'scale(-1,1) translate(-60,0)':'';
+ const flip=(isRight?facing:!facing)?'scale(-1,1) translate(-60,0)':'';
  return '<svg viewBox="0 0 60 96" aria-hidden="true"><g transform="'+flip+'"><path d="M22 10 Q40 5 42 25 L37 36 41 41 34 44 30 39 22 39 Q14 30 16 20Z" fill="#9e977f" stroke="#4c5c57" stroke-width="2"/><path d="M18 43 Q31 36 44 46 L52 87 Q30 98 8 87 L12 55Z" fill="#7d8b82" stroke="#4c5c57" stroke-width="2"/><path d="M25 13 Q34 15 36 28" fill="none" stroke="#465b59" stroke-width="2"/></g></svg>';
 }
 function frink(s){
