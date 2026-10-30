@@ -106,7 +106,8 @@ with sync_playwright() as p:
         for n,index in enumerate([1,0,2]):
             art=arts[index]
             page.locator('[data-t1-open="'+str(index)+'"]').click()
-            assert 'FIND THIS DETAIL' in page.locator('#view').inner_text()
+            assert 'FIND THE HIDDEN ARTWORK' in page.locator('#view').inner_text()
+            assert page.locator('.v7-fragment img').count()==0, 'Mystery image must be hidden before scanning'
             assert 'MICA’S FAMILY DISCOVERY' in page.locator('#view').inner_text()
             # Every painting and photograph offers self-confirmation after requesting a hint.
             if n==0:
