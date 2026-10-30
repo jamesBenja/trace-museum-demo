@@ -8,7 +8,7 @@ const ACTIVITIES={
  'mmfa-riopelle':['The found-object laboratory','Choose a wooden base, then combine at least two different found objects. Tap any object on the board to remove it.','Mixed-media sculpture creates new meaning by joining unlike materials.'],
  'mmfa-rodin':['The language of a pose','Change the illustrated figure, one gesture at a time. You can copy the finished pose with your body if you wish.','A seated body, bent arm and lowered head can express deep thought without words.'],
  'mmfa-cragg':['Reveal the many faces','Tap the three dotted circles on this imagined sculptural form. Each reveals a different profile within its curves.','A single sculptural shape can suggest several figures when we look from different angles.'],
- 'pamm-chaos':['Balance impossible cubes','Stack three open cubes, then tilt at least two of them. Watch the outline of the tower change.','Unexpected angles make a rigid steel structure appear to move.'],
+ 'pamm-chaos':['Balance impossible cubes','Rearrange this three-cube sculpture. Shift at least two cubes sideways, then rotate one. Can you make it look dramatic without making it topple?','Moving the open steel forms creates a surprising balance between weight and empty space.'],
  'pamm-fonseca':['Make a miniature marble world','Tap a stone panel to carve an opening. Choose a shape and tap a carved opening to fill it. Fill two niches.','Carved openings can make a solid block feel like a tiny inhabited world.'],
  'pamm-yanko':['Transform industrial materials','Select a material, then tap one of the three positions on the sculpture. Place metal, a hose and paint skin.','Industrial materials can be rearranged into an expressive organic sculpture.'],
  'pamm-christo':['Wrap the islands in colour','Move the fabric slider to surround the green islands with pink. Compare the landscape before and after.','A temporary installation can change how we see a familiar landscape.'],
@@ -19,7 +19,7 @@ const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const btn=(label,attr,value,selected)=>'<button type="button" '+attr+'="'+e(value)+'" class="te-control'+(selected?' is-selected':'')+'">'+label+'</button>';
 const progress=(n,total)=>'<span class="te-counter" aria-live="polite">'+n+' / '+total+' discoveries</span>';
 function getState(C,id){
- if(!C.extra||C.extra.id!==id){C.extra={id,eye:15,guardian:[-1,-1],facing:false,base:'',objects:[],pose:0,faces:[],cubeCount:0,angles:[0,0,0],niches:['closed','closed','closed'],shape:'triangle',material:'metal',materials:['','',''],fabric:0,tool:'acrylic',cells:Array.from({length:9},()=>[])};C.done=false;C.points=[];}
+ if(!C.extra||C.extra.id!==id){C.extra={id,eye:15,guardian:[-1,-1],facing:false,base:'',objects:[],pose:0,faces:[],cubeCount:3,angles:[0,0,0],offsets:[0,0,0],changed:[false,false,false],selectedCube:1,niches:['closed','closed','closed'],shape:'triangle',material:'metal',materials:['','',''],fabric:0,tool:'acrylic',cells:Array.from({length:9},()=>[])};C.done=false;C.points=[];}
  return C.extra;
 }
 function isComplete(s){
@@ -29,7 +29,7 @@ function isComplete(s){
  case 'mmfa-riopelle':return !!s.base&&new Set(s.objects).size>=2;
  case 'mmfa-rodin':return s.pose===3;
  case 'mmfa-cragg':return s.faces.length===3;
- case 'pamm-chaos':return s.cubeCount===3&&s.angles.filter(x=>x!==0).length>=2;
+ case 'pamm-chaos':return s.cubeCount===3&&s.changed.filter(Boolean).length>=2&&s.angles.some(x=>Math.abs(x)>=10)&&towerBalance(s)<75;
  case 'pamm-fonseca':return s.niches.filter(x=>x!=='closed'&&x!=='open').length>=2;
  case 'pamm-yanko':return ['metal','hose','skin'].every(x=>s.materials.includes(x));
  case 'pamm-christo':return s.fabric>=90;
@@ -103,15 +103,29 @@ function cragg(s){
  return '<div class="te-workspace te-faces-stage">'+faceSvg(s)+positions.map((p,i)=>'<button type="button" class="te-face-spot'+(s.faces.includes(i)?' found':'')+'" style="left:'+p[0]+'%;top:'+p[1]+'%" data-te-find="'+i+'" aria-label="Reveal profile '+(i+1)+'">'+(s.faces.includes(i)?'✓':'?')+'</button>').join('')+'</div>'+
  '<p class="te-instruction" aria-live="polite">Tap the dotted question marks. We highlight one possible face each time. Then look for your own interpretations in the real sculpture.</p>'+progress(s.faces.length,3);
 }
-function cube(i,angle){
- return '<div class="te-cube te-cube-'+i+'" style="--tilt:'+angle+'deg"><svg viewBox="0 0 110 110" aria-hidden="true"><path d="M17 36 L60 10 101 34 58 60Z M17 36 V79 L58 105 V60 M101 34 V78 L58 105 M17 79 L60 54 101 78 M60 10 V54" fill="none" stroke="#677d82" stroke-width="7" stroke-linejoin="round"/></svg></div>';
+function towerBalance(s){
+ return Math.min(100,Math.round((Math.abs(s.offsets[1])+Math.abs(s.offsets[2]-s.offsets[1])*.85+Math.abs(s.angles[1])*.43+Math.abs(s.angles[2])*.43)*1.05));
+}
+const CUBE_WORDS={
+ en:{instruction:'Drag the middle and top cubes left or right, then turn one. A dramatic tower can still keep its balance.',angle:'Turn selected cube',balance:'Wobble meter',stable:'Balanced',wobbly:'Too wobbly! Bring the cubes closer to the center.',choose:'Select cube',left:'← Move left',right:'Move right →',restart:'↺ Reset sculpture',tip:'Adjust at least two different cubes and turn one. Keep the wobble meter below 75.',base:'Base',middle:'Middle',top:'Top'},
+ fr:{instruction:'Déplace les cubes du milieu et du haut vers la gauche ou la droite, puis fais-en tourner un. Crée une tour spectaculaire sans la faire tomber.',angle:'Tourner le cube choisi',balance:'Indice de déséquilibre',stable:'En équilibre',wobbly:'Trop instable ! Rapproche les cubes du centre.',choose:'Choisir le cube',left:'← Vers la gauche',right:'Vers la droite →',restart:'↺ Recommencer',tip:'Modifie au moins deux cubes et fais-en tourner un. Garde l’indice sous 75.',base:'Base',middle:'Milieu',top:'Sommet'},
+ es:{instruction:'Desliza los cubos del medio y de arriba a la izquierda o derecha y gira uno. Crea una torre atrevida sin que se caiga.',angle:'Girar el cubo elegido',balance:'Medidor de inestabilidad',stable:'Equilibrada',wobbly:'¡Demasiado inestable! Acerca los cubos al centro.',choose:'Elegir cubo',left:'← Mover a la izquierda',right:'Mover a la derecha →',restart:'↺ Reiniciar',tip:'Modifica al menos dos cubos y gira uno. Mantén el indicador por debajo de 75.',base:'Base',middle:'Medio',top:'Arriba'}
+};
+function cube(i,s,w){
+ const angle=s.angles[i],offset=s.offsets[i];
+ return '<button type="button" class="te-cube te-cube-'+i+(s.selectedCube===i?' is-selected':'')+'" data-te-cube-select="'+i+'" aria-label="'+w.choose+' '+(i+1)+'" aria-pressed="'+(s.selectedCube===i)+'" style="--tilt:'+angle+'deg;--shift:'+offset+'px"><svg viewBox="0 0 110 110" aria-hidden="true"><path d="M17 36 L60 10 101 34 58 60Z M17 36 V79 L58 105 V60 M101 34 V78 L58 105 M17 79 L60 54 101 78 M60 10 V54" fill="none" stroke="'+(i===0?'#5a8584':i===1?'#a2765f':'#37576a')+'" stroke-width="7" stroke-linejoin="round"/></svg><span class="te-cube-tag">'+(i+1)+'</span></button>';
 }
 function chaos(s){
- return '<div class="te-workspace te-tower">'+Array.from({length:s.cubeCount},(_,i)=>cube(i,s.angles[i])).join('')+'<div class="te-tower-ground"></div></div>'+
- '<p class="te-instruction" aria-live="polite">'+(s.cubeCount<3?'Add open steel cubes to the tower, one by one.':'The tower is built. Tilt two cubes to create an unstable-looking composition.')+'</p>'+
- '<div class="te-toolbar">'+btn('＋ Add cube '+(s.cubeCount+1),'data-te-cube','add',false)+'</div>'+
- (s.cubeCount?'<div class="te-toolbar">'+Array.from({length:s.cubeCount},(_,i)=>btn('↻ Tilt cube '+(i+1),'data-te-tilt',i,s.angles[i]!==0)).join('')+'</div>':'')+
- '<p class="te-hint">Tilts made: '+s.angles.filter(x=>x!==0).length+' / 2. '+(s.cubeCount===3?'Try different angles.':'')+'</p>'+btn('↺ Rebuild tower','data-te-reset','yes',false);
+ const w=CUBE_WORDS[state.lang]||CUBE_WORDS.en,balance=towerBalance(s);
+ return '<div class="te-workspace te-tower '+(balance>=75?'is-wobbly':'')+'">'+[0,1,2].map(i=>cube(i,s,w)).join('')+'<div class="te-tower-ground"></div><div class="te-tower-warning">'+(balance>=75?'⚠ '+w.wobbly:'')+'</div></div>'+
+ '<p class="te-instruction">'+w.instruction+'</p>'+
+ '<div class="te-toolbar te-tower-choose">'+[0,1,2].map(i=>btn((i+1)+' · '+[w.base,w.middle,w.top][i],'data-te-cube-select',i,s.selectedCube===i)).join('')+'</div>'+
+ '<div class="te-toolbar">'+btn(w.left,'data-te-nudge','-12',false)+btn(w.right,'data-te-nudge','12',false)+'</div>'+
+ '<label class="te-slider-label" for="te-cube-rotation">'+w.angle+' '+(s.selectedCube+1)+' <b id="te-readout">'+s.angles[s.selectedCube]+'°</b></label>'+
+ '<input type="range" id="te-cube-rotation" data-te-slider="cubeAngle" min="-40" max="40" step="5" value="'+s.angles[s.selectedCube]+'" aria-label="'+w.angle+' '+(s.selectedCube+1)+'">'+
+ '<div class="te-balance-label"><span>'+w.balance+'</span><b>'+balance+' / 100</b></div><div class="te-balance-track"><span style="width:'+balance+'%" class="'+(balance>=75?'danger':'')+'"></span></div>'+
+ '<p class="te-hint" aria-live="polite">'+w.tip+' '+s.changed.filter(Boolean).length+' / 2. '+(balance<75?w.stable:'')+'</p>'+
+ btn(w.restart,'data-te-reset','yes',false);
 }
 function fonseca(s){
  const symbols={triangle:'▲',sphere:'●',arch:'⌒'};
@@ -186,8 +200,8 @@ function mutate(s,act,value){
  case 'remove':s.objects.splice(Number(value),1);break;
  case 'pose':if(Number(value)===s.pose+1)s.pose++;break;
  case 'find':{const n=Number(value);if(!s.faces.includes(n))s.faces.push(n);break}
- case 'cube':if(s.cubeCount<3)s.cubeCount++;break;
- case 'tilt':if(Number(value)<s.cubeCount)s.angles[Number(value)]=(s.angles[Number(value)]+15)%60;break;
+ case 'cube-select':{const i=Number(value);if(i>=0&&i<3)s.selectedCube=i;break}
+ case 'nudge':{const i=s.selectedCube;if(i>0){const last=s.offsets[i];s.offsets[i]=clamp(last+Number(value),-55,55);if(s.offsets[i]!==last)s.changed[i]=true;}break}
  case 'shape':s.shape=value;break;
  case 'niche':{const n=Number(value);if(s.niches[n]==='closed')s.niches[n]='open';else s.niches[n]=s.shape;break}
  case 'material':s.material=value;break;
@@ -196,7 +210,7 @@ function mutate(s,act,value){
  case 'paint':{const c=s.cells[Number(value)];if(c&&!c.includes(s.tool))c.push(s.tool);break}
  }
 }
-const clickActions={'teSpot':'spot','teFaceGuardians':'face-guardians','teBase':'base','teObject':'object','teRemove':'remove','tePose':'pose','teFind':'find','teCube':'cube','teTilt':'tilt','teShape':'shape','teNiche':'niche','teMaterial':'material','tePlace':'place','teTool':'tool','tePaint':'paint'};
+const clickActions={'teSpot':'spot','teFaceGuardians':'face-guardians','teBase':'base','teObject':'object','teRemove':'remove','tePose':'pose','teFind':'find','teCubeSelect':'cube-select','teNudge':'nudge','teShape':'shape','teNiche':'niche','teMaterial':'material','tePlace':'place','teTool':'tool','tePaint':'paint'};
 document.addEventListener('click',ev=>{
  const target=ev.target.closest('button');
  if(!target||state.stage!=='puzzle'||state.tab!=='quest')return;
@@ -218,14 +232,48 @@ document.addEventListener('input',ev=>{
  const s=getState(C,a.id),n=clamp(Number(ev.target.value),0,100);
  if(ev.target.dataset.teSlider==='eye'){
   s.eye=n;const city=document.querySelector('.te-city');if(city)city.style.setProperty('--eye-scale',(.28+n/44).toFixed(2));
+ }else if(ev.target.dataset.teSlider==='cubeAngle'){
+  const i=s.selectedCube;if(i>0){s.angles[i]=clamp(Number(ev.target.value),-40,40);if(s.angles[i]!==0)s.changed[i]=true;}
+  const cubeEl=document.querySelector('.te-cube-'+i);if(cubeEl)cubeEl.style.setProperty('--tilt',s.angles[i]+'deg');
+  const balance=towerBalance(s),meter=document.querySelector('.te-balance-track span'),label=document.querySelector('.te-balance-label b');
+  if(meter){meter.style.width=balance+'%';meter.classList.toggle('danger',balance>=75)}
+  if(label)label.textContent=balance+' / 100';
  }else if(ev.target.dataset.teSlider==='fabric'){
   s.fabric=n;document.querySelectorAll('.te-bay svg g[stroke="#f795ad"] path').forEach(x=>x.setAttribute('stroke-dasharray',Math.round(n*4.4)+' 500'));
  }
- const out=document.querySelector('#te-readout');if(out)out.textContent=n+'%';
+ const out=document.querySelector('#te-readout');if(out)out.textContent=ev.target.dataset.teSlider==='cubeAngle'?s.angles[s.selectedCube]+'°':n+'%';
  C.done=isComplete(s);const finish=document.querySelector('[data-t1-finish]');if(finish){finish.disabled=!C.done;finish.textContent=C.done?'Collect your discovery ✦':'Complete the experiment first';}
 },true);
 document.addEventListener('change',ev=>{
  if(ev.target.matches('[data-te-slider]')&&state.stage==='puzzle'&&ACTIVITIES[A[state.current]?.id])window.__traceAppRender?.();
 },true);
+// Horizontal touch/mouse repositioning is the main gesture. The accessible buttons
+// above perform the same action when dragging is inconvenient.
+let dragging=null;
+document.addEventListener('pointerdown',ev=>{
+ const el=ev.target.closest('[data-te-cube-select]');
+ if(!el||state.stage!=='puzzle'||A[state.current]?.id!=='pamm-chaos')return;
+ const index=Number(el.dataset.teCubeSelect);if(index===0)return;
+ const C=window.TRACE_V1?.puzzle;if(!C)return;
+ const s=getState(C,'pamm-chaos');s.selectedCube=index;
+ dragging={id:ev.pointerId,index,x:ev.clientX,start:s.offsets[index],moved:false};
+ try{el.setPointerCapture(ev.pointerId)}catch(err){}
+});
+document.addEventListener('pointermove',ev=>{
+ if(!dragging||ev.pointerId!==dragging.id||state.stage!=='puzzle')return;
+ const C=window.TRACE_V1?.puzzle;if(!C)return;
+ const s=getState(C,'pamm-chaos'),offset=clamp(Math.round(dragging.start+ev.clientX-dragging.x),-55,55);
+ if(Math.abs(ev.clientX-dragging.x)>4)dragging.moved=true;
+ s.offsets[dragging.index]=offset;
+ const cubeEl=document.querySelector('.te-cube-'+dragging.index);
+ if(cubeEl)cubeEl.style.setProperty('--shift',offset+'px');
+});
+document.addEventListener('pointerup',ev=>{
+ if(!dragging||ev.pointerId!==dragging.id)return;
+ const C=window.TRACE_V1?.puzzle,s=C&&getState(C,'pamm-chaos');
+ if(s&&dragging.moved){s.changed[dragging.index]=true;C.done=isComplete(s)}
+ dragging=null;window.__traceAppRender?.();
+});
+document.addEventListener('pointercancel',()=>{dragging=null});
 window.TRACE_EXTRA={steps:ACTIVITIES,game,has:id=>!!ACTIVITIES[id],isComplete};
 })();
