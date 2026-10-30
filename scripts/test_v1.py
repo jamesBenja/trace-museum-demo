@@ -1,6 +1,7 @@
 """TRACE v1.0 live end-to-end tests, real artwork matching plus six tactile activities."""
 from playwright.sync_api import sync_playwright
-import os
+import os,json
+from pathlib import Path
 URL=os.getenv('TRACE_TEST_URL','https://jamesbenja.github.io/trace-museum-demo/?v=10')
 SETS={
  'mmfa':['mmfa-marrel','mmfa-witte','mmfa-fortin'],
@@ -36,6 +37,20 @@ def solve_puzzle(page,art):
     assert page.locator('#t1-finish').is_enabled(), 'Puzzle not completed '+art
     page.locator('#t1-finish').click()
     assert 'POWER UNLOCKED' in page.locator('#view').inner_text()
+def isolate_manifest(page):
+    fixture=json.loads((Path(__file__).resolve().parents[1]/"display-status.json").read_text(encoding="utf-8"))
+    initial=set(sum(SETS.values(),[]))
+    for ident,row in fixture["works"].items():
+        row["active"]=ident in initial
+    body=json.dumps(fixture)
+    def intercept(route):
+        if "display-status.json" in route.request.url:
+            route.fulfill(status=200,content_type="application/json",
+                          headers={"Access-Control-Allow-Origin":"*"},body=body)
+        else:
+            route.continue_()
+    page.route("https://raw.githubusercontent.com/**",intercept)
+
 with sync_playwright() as p:
     browser=p.chromium.launch(headless=True,args=['--no-sandbox'])
     for museum,arts in SETS.items():
@@ -43,6 +58,7 @@ with sync_playwright() as p:
         errs=[]
         page.on('pageerror',lambda e: errs.append(str(e)))
         page.set_default_timeout(12000)
+        isolate_manifest(page)
         r=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
         assert r.status==200 and 'v1.8' in page.title(),page.title()
         page.wait_for_timeout(1800)
