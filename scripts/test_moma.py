@@ -29,6 +29,8 @@ def play(p,name):
   for i in range(5):
    source=p.locator('.mg-hand-handle[data-i="'+str(i)+'"]')
    dest=p.locator('.mg-hand-target[data-mg-target="'+str(i)+'"]').bounding_box()
+   rect=source.bounding_box()
+   print('DANCE ELEMENT AT START',i,p.evaluate("([x,y])=>({hit:document.elementFromPoint(x,y)?.outerHTML.slice(0,240),tag:document.elementFromPoint(x,y)?.tagName})",[rect['x']+rect['width']/2,rect['y']+rect['height']/2]),flush=True)
    move(p,source,(dest['x']+dest['width']/2,dest['y']+dest['height']/2))
    print('DANCE POINTER DIAG',i,p.evaluate('window.__mgPointerDebug'),p.evaluate('window.TRACE_V1.puzzle.extra.links'),flush=True)
    assert p.evaluate('window.TRACE_V1.puzzle.extra.links.length')==i+1
