@@ -10,6 +10,7 @@ on:
       - "trace-moma-i18n.js"
       - "trace-photo-i18n.js"
       - "scripts/test_moma.py"
+      - "scripts/test_oppenheim_materials.py"
       - "trace-i18n.js"
       - "trace-i18n-art.js"
       - "trace-i18n-content.js"
@@ -89,6 +90,7 @@ jobs:
           python -m http.server 8765 --bind 127.0.0.1 >/tmp/trace-local-http.log 2>&1 &
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=25 python scripts/test_detail_reveal.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=25 python scripts/test_moma.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=25 python scripts/test_oppenheim_materials.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=25 python scripts/test_locale.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=25 python scripts/test_welcome.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=25 python scripts/test_v1.py
