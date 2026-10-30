@@ -90,7 +90,7 @@ function dance(s,t){
   if(!linked){content+='<circle class="mg-hand-target" data-mg-target="'+i+'" cx="'+tx+'" cy="'+ty+'" r="16" fill="#fff7dc22" stroke="#ffdfaa" stroke-dasharray="4 4" stroke-width="2"/><circle class="mg-hand-handle" data-mg-drag="hand" data-i="'+i+'" cx="'+sx+'" cy="'+sy+'" r="12" fill="#ffe3b2" stroke="#da8658" stroke-width="2" role="button" aria-label="'+h(t.hint)+' '+(i+1)+'" tabindex="0"/>'}
  }
  content+='</g><path id="mg-dance-ghost" fill="none" stroke="#ffe8ae" stroke-width="8" stroke-linecap="round"/>';
- return '<div class="mg-scene mg-dance-scene">'+svgWrap(content)+'</div><div class="mg-meter">'+h(t.count)+' <b>'+s.links.length+'/5</b></div><div class="mg-nudges">'+Array.from({length:5},(_,i)=>action((s.links.includes(i)?'✓ ':icon('✋ '))+(i+1),'connect',i,s.links.includes(i)?'is-active':'')).join('')+'</div>';
+ return '<div class="mg-scene mg-dance-scene">'+svgWrap(content)+'</div><div class="mg-meter">'+h(t.count)+' <b>'+s.links.length+'/5</b></div><div class="mg-nudges">'+Array.from({length:5},(_,i)=>action((s.links.includes(i)?'✓ ':'✋ ')+(i+1),'connect',i,s.links.includes(i)?'is-active':'')).join('')+'</div>';
 }
 const PADPOS=[[52,57],[107,118],[171,76],[240,109],[298,61],[82,199],[196,183],[281,203]];
 function lilies(s,t){
@@ -226,7 +226,7 @@ function actionClick(ev){
 }
 document.addEventListener('click',actionClick,true);
 function coord(el,x,y){
- const svg=el.closest('svg'),box=svg?.getBoundingClientRect();
+ const svg=el.closest('svg')||el.querySelector('svg'),box=svg?.getBoundingClientRect();
  if(!svg||!box||!box.width||!box.height)return{x:170,y:135};
  return{x:(x-box.left)/box.width*340,y:(y-box.top)/box.height*270};
 }
