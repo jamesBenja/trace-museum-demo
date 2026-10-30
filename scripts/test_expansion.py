@@ -157,22 +157,30 @@ with sync_playwright() as p:
   for idx,ident in enumerate(ids,start=3):
    page.locator('[data-t1-open="'+str(idx)+'"]').click()
    assert page.evaluate('A[state.current].id')==ident
-   assert 'Automatic recognition is not yet validated' in page.locator('#view').inner_text()
+   assert 'Automatic recognition is not yet calibrated' in page.locator('#view').inner_text()
+   assert page.locator('.v7-fragment img').count()==0, "Clue revealed full or cropped museum artwork"
    assert page.locator('[data-action="multi-view"]').count()==0, "Old three-view flow must be removed"
-   page.locator('[data-action="manual-review"]').click()
-   assert page.locator('[data-compare-photo]').count()==1
-   assert page.locator('.tv-compare-pair figure').count()==2
-   assert page.locator('.tv-no-photo').count()==1, "Visitors may confirm without taking a photo"
+   page.locator('[data-action="photo-quest"]').click()
+   assert page.evaluate("state.stage")=="photoquest"
+   assert page.locator('.tv-compare-pair img').count()==0, "Reference revealed before photo or fallback"
+   assert page.locator('[data-action="photo-compare"]').count()==0, "Comparison must be locked until a photo exists"
    if ident in ('mmfa-eye','pamm-chaos','pamm-chromati'):
-    # Optional single photo for sculpture and mixed-media, with visible comparison.
+    # Photograph first. Only the visitor photo appears until they choose to reveal the museum reference.
     import base64
     png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAJ/q7UcAAAAASUVORK5CYII=')
-    page.locator('[data-compare-photo]').set_input_files({'name':'artwork.png','mimeType':'image/png','buffer':png})
+    page.locator('[data-guess-photo]').set_input_files({'name':'artwork.png','mimeType':'image/png','buffer':png})
     page.wait_for_function("state.scanImage?.startsWith('data:image/jpeg;')")
-    assert page.locator('.tv-compare-pair img').count()==2, "Only one visitor photo alongside reference"
-    assert page.locator('.tv-no-photo').count()==0
+    assert page.locator('.tq-capture-zone img').count()==1, "Only visitor photo may appear before comparison"
+    assert page.locator('.tv-compare-pair img').count()==0
+    page.locator('[data-action="photo-compare"]').click()
+    assert page.locator('.tv-compare-pair img').count()==2, "One visitor photo alongside the revealed reference"
    else:
-    assert page.locator('.tv-compare-pair img').count()==1, "Museum reference still visible without a photo"
+    # Camera-unavailable fallback deliberately opens the reference, even with no photo.
+    page.locator('[data-action="manual-review"]').click()
+    assert page.locator('.tv-compare-pair img').count()==1, "Reference visible only after explicit fallback"
+    assert page.locator('.tv-no-photo').count()==1
+   assert page.locator('[data-compare-photo]').count()==1
+   assert page.locator('.tv-compare-pair figure').count()==2
    assert 'NOT AUTOMATICALLY VERIFIED' in page.locator('#view').inner_text()
    page.locator('[data-action="manual-accept"]').click()
    page.locator('[data-action="v7-story"]').click()
