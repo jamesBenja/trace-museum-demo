@@ -58,7 +58,7 @@ with sync_playwright() as p:
    expected={'fr':'L’Œil' if museum=='mmfa' else 'Chaos SAS','es':'El ojo' if museum=='mmfa' else 'Chaos SAS','en':'The Eye' if museum=='mmfa' else 'Chaos SAS'}[lang]
    assert expected in page.locator('#view').inner_text()
    page.locator('[data-action="v7-puzzle"]').click()
-   expected_lab=({'fr':'Construis une tour en équilibre','es':'Construye una torre equilibrada','en':'Build a balancing tower'} if museum=='pamm' else {'fr':'ATELIER CRÉATIF TRACE','es':'TALLER CREATIVO TRACE','en':'TRACE ART-MAKING LAB'})[lang]
+   expected_lab=({'fr':'Construis une tour en équilibre','es':'Construye una torre equilibrada','en':'Build a balancing tower'} if museum=='pamm' else {'fr':'Un œil monumental','es':'Haz monumental un ojo','en':'Make an eye monumental'})[lang]
    page.wait_for_function('(needle)=>document.querySelector("#view")?.textContent.includes(needle)',arg=expected_lab)
    # Recover hub without marking discovery, leaving the test independent of puzzle changes.
    page.evaluate("state.stage='hub';render()")
