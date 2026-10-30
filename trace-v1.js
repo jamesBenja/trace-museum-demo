@@ -27,11 +27,12 @@ for(const [venue,items] of [['mmfa',mmfa],['pamm',pamm]]){
 const esc=s=>escapeHTML(String(s??''));
 const C={id:null,progress:0,points:[],done:false,chosen:null,xy:{x:78,y:77},teamCount:0,assisted:false,lastPuzzleId:null};
 function persist(){try{localStorage.setItem(K,JSON.stringify(prefs))}catch(e){}}
-function t1Found(){return A.filter(a=>state.found.includes(a.id))}
-function allDone(){return A.every(a=>state.found.includes(a.id))}
+function activeArts(){return window.TRACE_DISPLAY?window.TRACE_DISPLAY.activeWorks(state.venue):A}
+function t1Found(){return activeArts().filter(a=>state.found.includes(a.id))}
+function allDone(){const aa=activeArts();return aa.length>0&&aa.every(a=>state.found.includes(a.id))}
 function settingMode(mode){if(['solo','family'].includes(mode)){prefs.mode=mode;persist();render()}}
 function settingAge(age){if(['5-7','8-12','teen'].includes(age)){prefs.age=age;persist();render()}}
-function paintProgress(){return '<div class="t1-progress"><span style="width:'+(state.found.length/A.length*100)+'%"></span></div>'}
+function paintProgress(){return '<div class="t1-progress"><span style="width:'+(t1Found().length/Math.max(1,activeArts().length)*100)+'%"></span></div>'}
 function mascot(message){return '<div class="t1-companion"><div class="t1-mica" aria-hidden="true"><div class="t1-mica-body"><div class="t1-mica-mouth"></div></div><span class="t1-mica-sparkle">✦</span></div><div><div class="t1-mica-label">MICA · YOUR ART GUIDE</div><p class="t1-mica-line">'+esc(message)+'</p></div></div>'}
 function btn(label,act,variant){
  if(act==='t1-start'||act==='t1-hub')
@@ -50,28 +51,32 @@ function intro(){
  '<p class="tiny">The quest map is a fantasy game illustration, not a museum floor plan. Artworks may not be displayed; the separate MAP tab links to museum maps. No museum endorsement or commercial image permissions are implied.</p></div>';
 }
 function hub(){
- const world=L[state.venue],n=state.found.length,done=allDone();
- const nodes=world.nodes.map((node,i)=>{
- const a=A[i],isDone=state.found.includes(a.id),open=isDone||i<=n+1;
- return '<button class="t1-island '+(isDone?'solved':open?'unlocked':'locked')+'" data-t1-open="'+i+'" '+(!open?'disabled':'')+'><b>'+node.symbol+'</b><span class="t1-island-text"><strong>'+esc(node.name)+'</strong><small>'+esc(node.subtitle)+(isDone?' · DISCOVERED':'')+'</small></span><span class="t1-island-status">'+(isDone?'✓':open?'›':'🔒')+'</span></button>';
+ const world=L[state.venue],arts=activeArts(),n=t1Found().length,done=allDone(),found=new Set(t1Found().map(a=>a.id));
+ if(!arts.length)return '<div class="t1-screen"><h2 class="t1-h1">No artworks currently available</h2>'+mascot('The museum is updating this adventure. Check back after the administrator activates an artwork.')+'<p class="t1-task">No works are enabled in this museum’s visitor route. Earlier discoveries remain in My Finds.</p>'+btn('View my earlier discoveries','album','outline')+'</div>';
+ const nodes=arts.map((a,i)=>{
+  const index=A.findIndex(x=>x.id===a.id),node=world.nodes[index],isDone=found.has(a.id),open=isDone||i<=n+1;
+  return '<button class="t1-island '+(isDone?'solved':open?'unlocked':'locked')+'" data-t1-open="'+index+'" '+(!open?'disabled':'')+'><b>'+node.symbol+'</b><span class="t1-island-text"><strong>'+esc(node.name)+'</strong><small>'+esc(node.subtitle)+(isDone?' · DISCOVERED':'')+(a.kind?' · '+esc(a.kind):'')+'</small></span><span class="t1-island-status">'+(isDone?'✓':open?'›':'🔒')+'</span></button>';
  }).join('');
- const companion=done?'We did it! All eight powers are ours. You can revisit any discovery, or start a new mystery.':n===0?'Two mysteries are open. You choose where to begin! Find either one to unlock the last path.':n===1?'Your first discovery changed the map! The third mystery has opened.': 'Only '+(A.length-n)+' power'+(A.length-n===1?'':'s')+' left. I think we can do it!';
+ const companion=done?'You found every currently available artwork in this museum!':n===0?'Two mysteries are open. Find either to unlock the next.':n===1?'Your first discovery opened another path!':'Only '+(arts.length-n)+' currently available mysteries left!';
+ const maxPairs=Math.min(10,arts.length*(arts.length-1)/2);
  return '<div class="t1-screen"><div class="t1-overline">ADVENTURE MAP · '+esc(world.name)+'</div><h2 class="t1-h1">Where shall we explore?</h2>'+paintProgress()+
  mascot(companion)+
- '<div class="t1-map"><div class="t1-map-head"><div class="t1-overline">A MAGICAL QUEST MAP</div><h3>'+A.length+' secrets to find</h3></div><div class="t1-islands">'+nodes+'</div><p class="t1-legend">✦ Choose unlocked mysteries in any order. The map shows story chapters, not actual room positions.</p></div>'+
- (n>=2?'<div class="tb-bonus-card"><div class="t1-overline">✦ A SECRET CHALLENGE HAS OPENED</div><h3>Connect the Artworks</h3><p>Two artworks. A sliding comparison lens. A new connection only you can create. Find the links hidden between paintings, then collect an Art Connector badge.</p><p><strong>✧ '+(window.TRACE_BONUS?.links()?.length||0)+' of '+(n>=3?3:1)+' possible bridges found</strong></p><button class="button" type="button" data-bonus-open>✧ Play the comparison bonus →</button></div>':'')+
- (done?'<div class="t1-complete"><h2 class="t1-h2">Your creative lens is restored! ✦</h2><p class="t1-small">Mica’s missing powers are safe in your passport. Every work of art can become a new adventure.</p>'+btn('Open my discovery passport','album')+'</div>':'')+
- '<div class="t1-team"><h3>How will you play?</h3>'+picks()+'<p class="t1-small">You can switch modes without losing your discoveries.</p></div>'+
- '<div class="t1-task">⌖ Want the real museum floor plan? Open the <strong>MAP</strong> tab. We only show verified room assignments when a museum supplies them.</div>'+
- btn('View my passport','album','outline')+'</div>';
+ '<div class="t1-map"><div class="t1-map-head"><div class="t1-overline">MAGICAL QUEST MAP</div><h3>'+arts.length+' works currently playable</h3></div><div class="t1-islands">'+nodes+'</div><p class="t1-legend">✦ New works are activated by museum administrators. The map shows adventures, not the real floor plan.</p></div>'+
+ '<div class="t1-task">⌖ Plan a 3-stop visit or choose your own available artworks in the MAP tab. Room locations require staff confirmation.</div>'+
+ (n>=2?'<div class="tb-bonus-card"><div class="t1-overline">✦ A SECRET CHALLENGE HAS OPENED</div><h3>Connect the Artworks</h3><p>Explore two completed works together, compare them through a sliding lens and collect an Art Connector badge.</p><p><strong>✧ '+(window.TRACE_BONUS?.links()?.length||0)+' saved connections · up to '+maxPairs+' curated pairs per museum</strong></p><button class="button" type="button" data-bonus-open>✧ Play the comparison bonus →</button></div>':'')+
+ (done?'<div class="t1-complete"><h2 class="t1-h2">All available artworks discovered! ✦</h2><p class="t1-small">Come back when the museum activates more artworks. Your discoveries stay saved.</p>'+btn('Open my discovery passport','album')+'</div>':'')+
+ '<div class="t1-team"><h3>How will you play?</h3>'+picks()+'<p class="t1-small">Switch modes without losing progress.</p></div>'+
+ btn('⌖ Plan my museum route','map','outline')+btn('View my passport','album','outline')+'</div>';
 }
+
 function roleMessage(){
  if(prefs.mode!=='family')return '<div class="t1-role">🔎 Solo explorer: notice one tiny detail in the artwork before scanning. You can play at your own pace.</div>';
  return window.TRACE_COOP?.render(A[state.current]) || '<div class="t1-role">Look together, then scan the artwork.</div>';
 }
 
 function clue(){
- const a=A[state.current],node=L[state.venue].nodes[state.current],focus=a.id==='mmfa-marrel'?'18% 14%':a.focus;
+ const a=A[state.current];if(!a||!activeArts().some(x=>x.id===a.id))return hub();
+ const node=L[state.venue].nodes[state.current],focus=a.id==='mmfa-marrel'?'18% 14%':a.focus;
  if(!a)return hub();
  if(C.id!==a.id){C.id=a.id;C.points=[];C.teamCount=0;}
  let txt=prefs.age==='5-7'?'Look carefully at the little picture. Can you find its matching painting?':prefs.age==='teen'?'Investigate the subject, composition and detail, then locate the matching work.':'Search for the artwork containing this unusual fragment. Look at the art before you look at your phone.';
@@ -91,7 +96,7 @@ function puzzleIntro(a){return '<div class="t1-overline">CREATE, EXPERIMENT, DIS
  mascot('Great detective work! Now try something the artist might have tried. This is a hands-on challenge, not a memory quiz.')+
  '<div class="t1-task">👀 Look at the physical artwork first. Discuss one artistic choice with someone nearby, or think about it quietly.</div>'}
 function puzzle(){
- const a=A[state.current];if(!a)return hub();
+ const a=A[state.current];if(!a||!activeArts().some(x=>x.id===a.id))return hub();
  if(C.id!==a.id||C.lastPuzzleId!==a.id){C.id=a.id;C.lastPuzzleId=a.id;C.progress=0;C.points=[];C.done=false;C.chosen=null;C.xy={x:78,y:77};}
  if(window.TRACE_EXTRA?.has(a.id))return window.TRACE_EXTRA.game(a,C);
  let content='';
@@ -130,7 +135,7 @@ function success(){
  return '<div class="t1-screen"><div class="t1-complete">'+mascot(win?'We recovered every power! Now the museum is full of possibilities.':'You did it! Your eyes and imagination helped restore another piece of the lens.')+
  '<div class="t1-overline">POWER UNLOCKED ✦</div><h2 class="t1-h1">'+esc(a.power)+'</h2><p class="t1-small">'+esc(node.subtitle)+'</p>'+
  '<div class="t1-storyboard">'+t1Found().map(x=>'<span>'+v7meta(x).symbol+' '+esc(x.power)+'</span>').join('')+'</div>'+
- (win?'<h3 class="t1-h2">The lost lens is restored!</h3><p class="t1-small">All three discoveries are safely collected in your passport.</p>':'<p class="t1-small">There are '+(A.length-state.found.length)+' mysteries left to explore. The map may have changed!</p>')+'</div>'+
+ (win?'<h3 class="t1-h2">Current adventure complete!</h3><p class="t1-small">You found all available works. New ones may appear when the museum updates the route.</p>':'<p class="t1-small">There are '+(activeArts().length-t1Found().length)+' available mysteries left. The map may have changed!</p>')+'</div>'+
  btn(win?'View the completed adventure map':'Choose my next mystery','t1-hub')+
  btn('See my discoveries','album','outline')+
  '<p class="tiny">Your creativity and discoveries stay on this device.</p></div>';
@@ -147,11 +152,12 @@ function renderGame(v){
  return false;
 }
 function openWork(i){
- if(!(i>=0&&i<A.length)||!(i<=state.found.length+1||state.found.includes(A[i].id)))return;
+ const art=A[i],active=activeArts(),position=active.findIndex(a=>a.id===art?.id),n=t1Found().length;
+ if(!art||position<0||!(position<=n+1||state.found.includes(art.id)))return;
  stopCamera();state.current=i;state.quizError=false;state.reviewId=null;C.id=null;C.lastPuzzleId=null;C.done=false;C.progress=0;C.points=[];C.xy={x:78,y:77};stage(state.found.includes(A[i].id)?'clue':'clue');
 }
 function finishPuzzle(assisted){
- if(state.stage!=='puzzle'||!A[state.current])return;
+ if(state.stage!=='puzzle'||!activeArts().some(a=>a.id===A[state.current]?.id))return;
  if(!assisted&&!C.done)return;
  const a=A[state.current];
  if(!state.found.includes(a.id))state.found.push(a.id);
