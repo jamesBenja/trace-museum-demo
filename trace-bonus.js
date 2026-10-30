@@ -142,4 +142,5 @@ document.addEventListener('click',ev=>{
 },true);
 document.addEventListener('input',ev=>{if(ev.target.id==='tb-slider')moveSlider(ev.target.value)});
 window.TRACE_BONUS={render,launch,links,clearVenue,pairKey,get saved(){return saved},get state(){return S}};
+if(state.stage==='bonus')appRender();
 })();
