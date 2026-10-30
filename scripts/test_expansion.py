@@ -21,6 +21,11 @@ with sync_playwright() as p:
    page.locator('#venueSwitcher').click()
    page.locator('#venuePicker [data-venue="pamm"]').click()
   assert page.evaluate('A.length')==8
+  page.wait_for_function("window.TRACE_DISPLAY && !window.TRACE_DISPLAY.loading",timeout=12000)
+  assert page.evaluate("window.TRACE_DISPLAY.activeWorks(state.venue).length")==3
+  # Curator explicitly includes the five additional candidates for local testing.
+  page.evaluate("""(items)=>{for(const id of items)window.TRACE_DISPLAY.setField(id,'active',true)}""",ids)
+  assert page.evaluate("window.TRACE_DISPLAY.activeWorks(state.venue).length")==8
   assert page.evaluate("ALL.length")==16
   assert page.evaluate("A.filter(x=>x.kind==='sculpture'||x.kind==='mixed-media sculpture').length")>=3
   print('EXPANDED CATALOG',museum,'8 artworks',flush=True)
