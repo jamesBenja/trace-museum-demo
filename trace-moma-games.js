@@ -243,7 +243,7 @@ document.addEventListener('pointerdown',ev=>{
  if(type==='sky'||type==='hand'||type==='sun'||type==='wheel'||type==='sculpt'){ev.preventDefault()}
 },true);
 document.addEventListener('pointermove',ev=>{
- const a=active;if(!a||a.el!==ev.target&&!a.el.contains(ev.target))return;const {type,ctx,el}=a;
+ const a=active;if(!a)return;const {type,ctx,el}=a;
  a.changed=a.changed||Math.hypot(ev.clientX-a.downX,ev.clientY-a.downY)>9;
  if(type==='sky'){
   const p=coord(el,ev.clientX,ev.clientY);a.point=p;
@@ -278,18 +278,21 @@ document.addEventListener('pointermove',ev=>{
  }
 },true);
 function pointerEnd(ev){
- const a=active;if(!a||a.el!==ev.target&&!a.el.contains(ev.target))return;active=null;
+ const a=active;if(!a)return;active=null;
  const {ctx,type}=a,s=ctx.s;
  if(type==='sky'&&a.changed){const p=a.point||a.origin;const x=clamp(p.x,57,282),y=clamp(p.y,46,174);s.swirls.push({x,y,r:45+Math.min(26,Math.hypot(p.x-a.origin.x,p.y-a.origin.y)*.2),dir:p.x>a.origin.x?1:-1});}
  if(type==='hand'){
-  const next=dancerCoords((a.index+1)%5),target={x:next.x-20,y:next.y-11},p=a.point;
-  if(a.changed&&Math.hypot(p.x-target.x,p.y-target.y)<37)pushUnique(s.links,a.index);
+  const targetEl=document.querySelector('.mg-hand-target[data-mg-target="'+a.index+'"]');
+  const rect=targetEl?.getBoundingClientRect();
+  const near=rect&&Math.hypot(ev.clientX-(rect.left+rect.width/2),ev.clientY-(rect.top+rect.height/2))<48;
+  const distance=Math.hypot(ev.clientX-a.downX,ev.clientY-a.downY);
+  if((a.changed||distance>15)&&near)pushUnique(s.links,a.index);
  }
  if(type==='texture'&&a.changed){const point=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('[data-mg-drop]');if(point){s.chosenTexture=a.material;s.textures[point.dataset.mgDrop]=a.material}}
  if(type==='part'&&a.changed){const point=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('[data-mg-drop]');if(point){const i=Number(point.dataset.mgDrop);if(PART[i]===a.part){s.selectedPart=a.part;pushUnique(s.installed,a.part)}}}
  if(type==='wheel'&&s.installed.length===5&&Math.abs(a.total)>=220){s.fired=true;shortTone(425,.30)}
  if(type==='sculpt'&&a.changed)pushUnique(s.sculptMoves,a.key);
- if(a.changed||type==='sun'||type==='wheel')redraw(ctx);
+ if(a.changed||type==='hand'||type==='sun'||type==='wheel')redraw(ctx);
 }
 document.addEventListener('pointerup',pointerEnd,true);
 document.addEventListener('pointercancel',pointerEnd,true);
