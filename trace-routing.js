@@ -109,7 +109,7 @@ function stopCard(a,i,prevId){
  const corridor=r?route(previous,r.id):null;
  const instructions= !r?'No room assigned yet. Ask museum staff or view the official plan.':
   !verified?'Room is a local/demo assignment; not confirmed as current exhibition placement.':
-  corridor?(corridor.rooms.length===1?'You are already at this room.':'Staff-entered route: '+corridor.rooms.slice(1).map((id,i)=>{const edge=corridor.edges[i];const mode=edge?.type==='stairs'?'Take the stairs':edge?.type==='elevator'?'Use the elevator':edge?.type==='outdoor'?'Take the outdoor passage':'Continue';return mode+' to '+(room(id)?.label||id)}).join(' → ')):
+  corridor?(corridor.rooms.length===1?'You are already at this room.':'Museum-approved route: '+corridor.rooms.slice(1).map((id,i)=>{const edge=corridor.edges[i];const mode=edge?.type==='stairs'?'Take the stairs':edge?.type==='elevator'?'Use the elevator':edge?.type==='outdoor'?'Take the outdoor passage':'Continue';return mode+' to '+(room(id)?.label||id)}).join(' → ')):
   'Room known, but no approved corridor connection is configured. See the official floor plan.';
  return '<article class="tn-stop '+(found(a)?'tn-solved':'')+'"><div class="tn-stop-num">'+(i+1)+'</div><div class="tn-stop-detail"><div class="tn-title-line"><strong>'+esc(a.artist)+'</strong><small>'+(found(a)?'✓ Solved':'◉ To discover')+'</small></div><p>'+esc(a.name)+'</p>'+
  '<div class="tn-room-line">'+(r?'<b>'+esc(r.label)+'</b> · '+esc(r.wing)+' · '+esc(r.floor==='Outdoor'?'Outdoors':'Floor '+r.floor):'<b>Room not assigned</b>')+'</div>'+
@@ -142,6 +142,35 @@ function selector(){
  (S.mode==='custom'?'<div class="tn-choose-stops">'+all.map(a=>'<label><input type="checkbox" data-tn-select="'+a.id+'" '+(S.selected.includes(a.id)?'checked':'')+'><span>'+esc(a.artist)+'<small>'+esc(a.name)+'</small></span></label>').join('')+'</div>':'')+
  '<div class="tn-admin-grid tn-visitor-preferences"><label>Starting point<select data-tn-start="1">'+(display()?.rooms(state.venue)||[]).map(r=>'<option value="'+esc(r.id)+'" '+(S.start===r.id?'selected':'')+'>'+esc(r.label+' · '+r.floor)+'</option>').join('')+'</select></label><label>Access preference<select data-tn-access="1"><option value="stepfree" '+(S.stepFree?'selected':'')+'>Step-free (avoid stairs)</option><option value="all" '+(!S.stepFree?'selected':'')+'>Allow stairs</option></select></label></div><p class="tn-fine">Choose a starting point and accessibility setting. Corridor data is entered by museum administrators; no distances or travel times are invented.</p></div>';
 }
+function connectivity(){
+ const venue=state.venue,all=edges().filter(e=>!e.closed),known=display()?.rooms(venue)||[];
+ const chosen=routeWorks(),focus=chosen.find(a=>a.id===S.focus)||chosen[0];
+ const target=focus?artworkRoom(focus):null,from=room(S.start)||room(MAPS[venue].startRoom);
+ const approved=target&&from?route(from.id,target.id):null;
+ const preview=!approved&&target&&from?route(from.id,target.id,true):null;
+ const linkLabel=id=>esc(room(id)?.label||id);
+ const routeMarkup=(approved||preview)?'<div class="tn-path-line">'+(approved||preview).rooms.map((id,i)=>'<span class="tn-path-node">'+linkLabel(id)+'</span>'+(i<(approved||preview).edges.length?'<span aria-hidden="true" class="tn-path-arrow">'+((approved||preview).edges[i].type==='stairs'?'↥':(approved||preview).edges[i].type==='elevator'?'⇅':'→')+'</span>':'')).join('')+'</div>':'';
+ const heading=target?'Mica’s room finder: '+esc(target.label):'Mica’s room finder';
+ const reason= !target?'Choose an artwork with an assigned gallery to preview its location.':
+  !from?'Choose a starting gallery to plan the visit.':
+  approved?'A curator-approved connection is available for this route. Follow the directions below and check museum signage.':
+  preview?'These gallery links come from published maps, but staff have not approved them as directions. Use the official floor plan to verify the route.':
+  'There is not yet a complete verified connection between these rooms. '+esc(target.label)+' is listed on '+esc(target.wing)+' · '+esc(target.floor==='Outdoor'?'outside':'Level '+target.floor)+'. Check the official floor map or ask museum staff.';
+ const candidates=all.filter(e=>e.status==='research').length;
+ const groups=new Map();
+ for(const link of all){
+  const a=room(link.from),b=room(link.to),key=a?.floor===b?.floor?(a?.floor==='Outdoor'?'Outside':'Floor '+a?.floor):'Between floors / areas';
+  if(!groups.has(key))groups.set(key,[]);
+  groups.get(key).push(link);
+ }
+ return '<section class="tn-connectivity" aria-label="Museum room connections">'+
+ '<div class="tn-connectivity-title"><span class="tn-connectivity-mica" aria-hidden="true">✦</span><div><small>TRACE · GALLERY WAYFINDER</small><h3>'+heading+'</h3></div></div>'+
+ '<p>'+reason+'</p>'+routeMarkup+
+ (venue==='pamm'&&target?.id==='pamm-18'&&S.stepFree?'<p class="tn-access-note">Accessible sculpture-garden transport may require contacting PAMM Visitor Services in advance.</p>':'')+
+ '<details class="tn-source-links"><summary>Explore '+all.length+' mapped links ('+candidates+' awaiting museum approval)</summary>'+
+ (groups.size?[...groups].map(([label,links])=>'<div class="tn-link-group"><b>'+esc(label)+'</b>'+links.map(l=>'<div class="tn-link-line '+(l.status==='research'?'tn-unverified':'')+'"><span>'+linkLabel(l.from)+' ↔ '+linkLabel(l.to)+'</span><small>'+(l.status==='research'?'Map research · verify onsite':'Curator approved')+' · '+esc(l.type)+'</small></div>').join('')+'</div>').join(''):'<p>No room connections have been mapped yet.</p>')+
+ '</details><p class="tn-map-caution">Schematic network only; not to scale. Artwork installations and gallery access may change. Exact paths require museum verification.</p></section>';
+}
 function map(){
  touch();const m=MAPS[state.venue],plan=plannedOrder(),arr=plan.ordered;
  let prev=S.start||m.startRoom;
@@ -156,6 +185,7 @@ function map(){
  selector()+
  '<div class="tn-route-status"><b>'+(reachable?'ROOM ROUTE FROM CURATOR-CONFIGURED CONNECTIONS':'SUGGESTED GALLERY ORDER · NOT STEP-BY-STEP DIRECTIONS')+'</b><p>'+(reachable?'The room route uses a connection network supplied in the administrator workspace. Verify it with onsite signage and staff.':'Museum floor plans confirm room labels, but not each artwork’s current placement or all room-to-room passages. We will not invent turns or travel times.')+'</p></div>'+
  miniMap()+
+ connectivity()+
  (focus?'<div class="tn-focused"><b>⌖ Selected room</b><p>'+esc(focus.artist)+' · '+esc(focus.name)+'</p><strong>'+(artworkRoom(focus)?esc(artworkRoom(focus).label):'Room needs curator assignment')+'</strong></div>':'')+
  '<div class="tn-route-head"><h3>Your discovery route</h3><small>'+arr.length+' stops · '+configured+' with museum-marked display confirmation</small></div>'+
  (arr.length?'<div class="tn-route-stops">'+steps+'</div>':'<div class="tn-empty">No playable works selected. Turn on artworks in the museum workspace or choose a different route.</div>')+
@@ -166,17 +196,23 @@ function adminUI(venue){
  const rooms=display()?.rooms(venue)||[],links=display()?.connections(venue)||[],current=display()?.count(venue)||0;
  const option=rooms.map(r=>'<option value="'+esc(r.id)+'">'+esc(r.label)+' · '+esc(r.wing)+' '+esc(r.floor)+'</option>').join('');
  return '<section class="tn-admin"><div class="t1-overline">MUSEUM FLOOR PLAN & ROUTE NETWORK</div><h3>Assign rooms and connect the route</h3>'+
- '<p>TRACE uses official museum room and gallery labels, but not an imported, metrically accurate indoor navigation system. Administrators choose where artworks are displayed, then specify which rooms visitors can walk between. Only configured connections are used for room-to-room directions.</p>'+
+ '<p>TRACE uses official museum room and gallery labels, but not an imported, metrically accurate indoor navigation system. Administrators choose artworks and review map-researched connections. Only approved, open links can produce directions. Research links show labelled previews, never authoritative navigation.</p>'+
  '<div class="tn-admin-official"><a href="'+MAPS[venue].url+'" target="_blank" rel="noopener noreferrer">Open official '+(venue==='mmfa'?'MMFA':venue==='pamm'?'PAMM':'MoMA')+' museum floor plan ↗</a><small>'+rooms.length+' room labels loaded · '+links.length+' walkable connections configured</small></div>'+
  '<div class="tn-admin-section"><h4>Add a room or gallery</h4><div class="tn-admin-grid"><label>Room name<input id="tn-new-room-label" placeholder="Gallery A / Exhibit 12"></label><label>Floor<input id="tn-new-room-floor" placeholder="1, 2, S1…"></label><label>Wing or pavilion<input id="tn-new-room-wing" placeholder="Pavilion / area"></label></div><button class="button outline" data-tn-add-room type="button">＋ Add room</button></div>'+
  '<div class="tn-admin-section"><h4>Connect walkable rooms</h4><p>Only connect two rooms when you know visitors can directly travel between them. Connections are bidirectional.</p><div class="tn-admin-grid"><label>From<select id="tn-link-from"><option value="">Choose room</option>'+option+'</select></label><label>To<select id="tn-link-to"><option value="">Choose room</option>'+option+'</select></label><label>Connection type<select id="tn-link-type"><option value="corridor">Corridor / passage</option><option value="elevator">Elevator / step-free access</option><option value="stairs">Stairs</option><option value="outdoor">Outdoor route</option></select></label></div><button class="button outline" data-tn-connect type="button">↔ Connect rooms</button></div>'+
- (links.length?'<div class="tn-admin-section"><h4>Configured connections</h4>'+links.map(l=>'<div class="tn-connection"><span>'+esc(rooms.find(x=>x.id===l.from)?.label||l.from)+' ↔ '+esc(rooms.find(x=>x.id===l.to)?.label||l.to)+' · '+esc(l.type||'corridor')+'</span><button type="button" data-tn-unlink="'+esc(l.from)+':'+esc(l.to)+'">Remove</button></div>').join('')+'</div>':'<p class="tn-not-yet">No room links have been approved yet. Until then, visitors see room sequences and the official PDF instead of invented walking instructions.</p>')+
+ (links.length?'<div class="tn-admin-section"><h4>Connection review & closures</h4><p>Published map evidence is a starting point, not an onsite safety check. Only approve links physically confirmed as passable. Closing a link immediately excludes it from visitor routing after publication.</p>'+
+ links.map(l=>{
+  const key=esc(l.from+':'+l.to+':'+l.type),research=l.status==='research',closed=l.closed===true;
+  return '<div class="tn-review-link"><div><strong>'+esc(rooms.find(x=>x.id===l.from)?.label||l.from)+' ↔ '+esc(rooms.find(x=>x.id===l.to)?.label||l.to)+'</strong><small>'+esc(l.type)+' · '+(research?'Map research · NOT approved':'Curator approved')+(closed?' · CLOSED':'')+'</small>'+(l.source?'<a href="'+esc(l.source)+'" target="_blank" rel="noopener noreferrer">Map evidence ↗</a>':'')+'</div><div class="tn-review-actions">'+
+  (research?'<button type="button" data-tn-approve="'+key+'">Approve link</button>':'<button type="button" data-tn-propose="'+key+'">Mark for review</button>')+
+  '<button type="button" data-tn-closure="'+key+'">'+(closed?'Reopen':'Close')+'</button><button type="button" data-tn-unlink="'+key+'">Remove</button></div></div>';
+ }).join('')+'</div>':'<p class="tn-not-yet">No mapped links. Add a verified connection to enable room directions.</p>')+
  '<details class="tn-manage-rooms"><summary>Manage room catalogue ('+rooms.length+')</summary>'+rooms.map(r=>'<div class="tn-room-row"><span>'+esc(r.label)+' <small>('+esc(r.wing)+' · '+esc(r.floor)+')</small></span><button type="button" data-tn-remove-room="'+esc(r.id)+'">Remove</button></div>').join('')+'</details>'+
  '<p class="tn-fine">Any edits are local drafts until the curator publishes the exported JSON. This demo is not a secured institutional CMS. '+current+' works are currently included in the playable visitor route.</p></section>';
 }
 function reRender(){if(window.__traceAppRender)window.__traceAppRender()}
 document.addEventListener('click',ev=>{
- const b=ev.target.closest('[data-tn-mode],[data-tn-focus],[data-tn-open],[data-tn-add-room],[data-tn-connect],[data-tn-remove-room],[data-tn-unlink]');
+ const b=ev.target.closest('[data-tn-mode],[data-tn-focus],[data-tn-open],[data-tn-add-room],[data-tn-connect],[data-tn-remove-room],[data-tn-unlink],[data-tn-approve],[data-tn-propose],[data-tn-closure]');
  if(!b)return;
  ev.preventDefault();ev.stopImmediatePropagation();const d=b.dataset;
  if(d.tnMode!==undefined){S.mode=d.tnMode;touch();saveRoute();reRender();return}
@@ -196,7 +232,14 @@ document.addEventListener('click',ev=>{
   if(from&&to)display()?.alterRooms(state.venue,'connect',{from,to,type:document.getElementById('tn-link-type')?.value||'corridor'});return;
  }
  if(d.tnRemoveRoom!==undefined){if(confirm('Remove this room and all its route connections?'))display()?.alterRooms(state.venue,'remove',{id:d.tnRemoveRoom});return}
- if(d.tnUnlink!==undefined){const [from,to]=d.tnUnlink.split(':');display()?.alterRooms(state.venue,'disconnect',{from,to});return}
+ if(d.tnApprove!==undefined||d.tnPropose!==undefined||d.tnClosure!==undefined){
+  const key=d.tnApprove||d.tnPropose||d.tnClosure,[from,to,type]=key.split(':');
+  const current=edges().find(v=>v.from===from&&v.to===to&&v.type===type);
+  if(current)display()?.alterRooms(state.venue,'setConnection',{from,to,type,
+   ...(d.tnClosure!==undefined?{closed:!current.closed}:{status:d.tnApprove!==undefined?'approved':'research'})});
+  return;
+ }
+ if(d.tnUnlink!==undefined){const [from,to,type]=d.tnUnlink.split(':');display()?.alterRooms(state.venue,'disconnect',{from,to,type});return}
 },true);
 document.addEventListener('change',ev=>{
  const b=ev.target.closest('[data-tn-select],[data-tn-access],[data-tn-start]');if(!b)return;
