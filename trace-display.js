@@ -1,0 +1,165 @@
+/* TRACE artwork availability controller, public manifest + museum administrator LOCAL DRAFT.
+   A GitHub Pages static app cannot authenticate editors or publish to all browsers.
+   Published display-status.json is the shared source of truth. Draft toggles override
+   it on the CURRENT BROWSER only; curators export and deploy JSON to publish. */
+(function(){
+'use strict';
+const URL='display-status.json',STORE='trace-display-admin-draft-v1';
+const ORIGINAL=['mmfa-marrel','mmfa-witte','mmfa-fortin','pamm-masks','pamm-delano','pamm-grid'];
+let published={schemaVersion:1,mode:'independent-pitch-demo',updatedAt:'',works:{}};
+let draft=null,loading=true,error='';
+const h=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+const sourceWorks=()=>[...mmfa,...pamm];
+const validWork=id=>sourceWorks().some(a=>a.id===id);
+const defaultRec=id=>({active:ORIGINAL.includes(id),onViewVerified:false,room:'',startDate:'',endDate:'',note:''});
+function clean(input){
+ const rows={};
+ for(const a of sourceWorks()){
+  const r=input&&typeof input==='object'&&input.works?.[a.id]||{};
+  rows[a.id]={
+   active:typeof r.active==='boolean'?r.active:defaultRec(a.id).active,
+   onViewVerified:r.onViewVerified===true,
+   room:String(r.room||'').slice(0,100),
+   startDate:/^\d{4}-\d{2}-\d{2}$/.test(r.startDate||'')?r.startDate:'',
+   endDate:/^\d{4}-\d{2}-\d{2}$/.test(r.endDate||'')?r.endDate:'',
+   note:String(r.note||'').slice(0,500)
+  };
+ }
+ return {schemaVersion:1,mode:'independent-pitch-demo',updatedAt:String(input?.updatedAt||'')||new Date().toISOString(),description:'Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.',works:rows};
+}
+published=clean(published);
+try{const x=JSON.parse(localStorage.getItem(STORE)||'null');if(x&&x.schemaVersion===1)draft=clean(x)}catch(e){}
+function manifest(){return draft||published}
+function rec(id){return manifest().works[id]||defaultRec(id)}
+function today(venue){
+ const tz=venue==='pamm'?'America/New_York':'America/Toronto';
+ try{const parts=new Intl.DateTimeFormat('en-US',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+  const get=x=>parts.find(p=>p.type===x)?.value||'';
+  return [get('year'),get('month'),get('day')].join('-');
+ }catch(e){return new Date().toISOString().slice(0,10)}
+}
+function isActive(id){
+ if(!validWork(id))return false;
+ const r=rec(id),venue=id.startsWith('pamm-')?'pamm':'mmfa',date=today(venue);
+ return !!(r.active&&(!r.startDate||date>=r.startDate)&&(!r.endDate||date<=r.endDate));
+}
+function activeWorks(venue){return (venue==='pamm'?pamm:mmfa).filter(a=>isActive(a.id))}
+function isVerified(id){return rec(id).onViewVerified===true}
+function room(id){return isVerified(id)?rec(id).room:''}
+function isDraft(){return draft!==null}
+function renderApp(){if(typeof window.__traceAppRender==='function')window.__traceAppRender()}
+function afterUpdate(){
+ const a=A[state.current];
+ if(state.tab==='quest'&&a&&!isActive(a.id)&&!['intro','hub','bonus'].includes(state.stage)){
+  state.stage='hub';save();
+ }
+ if(state.tab==='quest'&&state.stage==='bonus'&&activeWorks(state.venue).filter(a=>state.found.includes(a.id)).length<2){
+  state.stage='hub';save();
+ }
+ renderApp();
+ if(typeof rebuild==='function')Promise.resolve().then(()=>rebuild()).catch(e=>console.error('Matcher refresh failed:',e));
+}
+function setDraft(){if(!draft)draft=clean(published);return draft}
+function setField(id,field,value){
+ if(!validWork(id)||!['active','onViewVerified','room','startDate','endDate'].includes(field))return;
+ const x=setDraft(),r=x.works[id];
+ if(field==='active'||field==='onViewVerified')r[field]=!!value;
+ else if(field==='room')r.room=String(value).slice(0,100);
+ else r[field]=/^\d{4}-\d{2}-\d{2}$/.test(value)?value:'';
+ // Do not permit an inverted window. A publishable file cannot have impossible dates.
+ if(r.startDate&&r.endDate&&r.startDate>r.endDate)r.endDate='';
+ x.updatedAt=new Date().toISOString();
+ try{localStorage.setItem(STORE,JSON.stringify(x))}catch(e){error='Browser storage unavailable. Export the configuration before closing.'}
+ afterUpdate();
+}
+function count(venue){return activeWorks(venue).length}
+function statusLabel(id){
+ const r=rec(id);
+ if(!r.active)return 'Off the route';
+ if(!isActive(id))return 'Scheduled / outside date window';
+ return r.onViewVerified?'In route · on-display staff confirmation entered':'In demo route · display unverified';
+}
+function adminUI(){
+ const venue=state.venue,arts=venue==='pamm'?pamm:mmfa;
+ const rows=arts.map(a=>{
+  const r=rec(a.id),enabled=isActive(a.id),verified=r.onViewVerified;
+  return '<article class="td-art '+(enabled?'td-active':'td-inactive')+'" data-td-row="'+a.id+'">'+
+  '<div class="td-art-head"><div><h3>'+h(a.artist)+'</h3><p>'+h(a.name)+'</p><small>'+h(a.medium)+' · '+h(a.kind||'painting / image')+'</small></div>'+
+  '<label class="td-switch-wrap"><input type="checkbox" role="switch" aria-label="Include '+h(a.name)+' in the visitor route" data-td-active="'+a.id+'" '+(r.active?'checked':'')+'><span>'+ (r.active?'IN ROUTE':'OFF ROUTE') +'</span></label></div>'+
+  '<div class="td-current-status">'+(enabled?'●':'○')+' '+h(statusLabel(a.id))+'</div>'+
+  '<label class="td-confirm"><input type="checkbox" data-td-verified="'+a.id+'" '+(verified?'checked':'')+'> Museum has confirmed this artwork is physically on display</label>'+
+  '<div class="td-fields"><label>Gallery / room (optional)<input type="text" data-td-room="'+a.id+'" maxlength="100" placeholder="Enter museum-confirmed location" value="'+h(r.room)+'"></label>'+
+  '<label>Show from<input type="date" data-td-start="'+a.id+'" value="'+h(r.startDate)+'"></label>'+
+  '<label>Show through<input type="date" data-td-end="'+a.id+'" value="'+h(r.endDate)+'"></label></div>'+
+  '<p class="td-origin">Collection record: <a href="'+h(a.url)+'" target="_blank" rel="noopener noreferrer">View source ↗</a> · '+(a.previewOnly?'New candidate':'Original demo work')+'</p></article>';
+ }).join('');
+ return '<div class="td-screen"><div class="t1-overline">TRACE · MUSEUM ADMINISTRATOR PREVIEW</div><h2>Manage works on display</h2>'+
+ '<p class="td-intro">Your live game can include up to eight collection works per museum. Turn individual works on or off, enter confirmed rooms, and schedule display windows. A work that is off the route disappears from playable quests and scan recognition, but earlier discoveries remain in the visitor passport.</p>'+
+ '<div class="td-kpis"><div><b>'+count(venue)+' / '+arts.length+'</b><span>Playable in this preview</span></div><div><b>'+arts.filter(a=>isActive(a.id)&&isVerified(a.id)).length+'</b><span>Marked display-confirmed</span></div></div>'+
+ '<div class="td-mode '+(draft?'td-draft':'')+'">'+(draft?'<strong>LOCAL ADMIN DRAFT</strong><p>Your edits are active in this browser only. Visitors on other devices see the published catalogue until you deploy it.</p>':
+ '<strong>PUBLISHED DEMO CONFIGURATION</strong><p>You are viewing the current public artwork configuration. Changing a switch creates a local preview draft.</p>')+'</div>'+
+ '<div class="td-caution">IMPORTANT: Display confirmation is supplied by the museum, not automatically verified by TRACE. Original demo works are playable without any claim that they are currently installed. Newly added works start off the route until reviewed. This GitHub Pages demonstration has no secure editor login or shared writing API.</div>'+
+ '<div class="td-work-head"><h3>'+h(venue==='mmfa'?'MMFA · Montréal':'PAMM · Miami')+' artworks</h3><p>Toggle immediately to preview what visitors would see on this device.</p></div>'+
+ '<div class="td-work-list">'+rows+'</div>'+
+ '<div class="td-publish"><h3>Publish these changes to every visitor</h3><p>Because this is a static site, the switches above do not publish globally. Export the full configuration, then commit it as <code>display-status.json</code> to the GitHub repository. GitHub Pages will publish it, and the site loads it on each visit.</p>'+
+ '<div class="td-publish-actions"><button class="button" type="button" data-td-export>↓ Download configuration JSON</button>'+
+ '<button class="button outline" type="button" data-td-copy>Copy configuration JSON</button>'+
+ '<a class="button outline" href="https://github.com/jamesBenja/trace-museum-demo/edit/main/display-status.json" rel="noopener noreferrer" target="_blank">Open GitHub publisher ↗</a>'+
+ '<button class="button ghost" type="button" data-td-reset>Discard local draft / use published version</button></div>'+
+ '<p class="td-small">'+h(error||'Published configuration last updated: '+published.updatedAt+'. Production museum use will require authenticated staff accounts and a server-side publication service.')+'</p></div>'+
+ '<button class="button ghost" data-action="quest">← Back to visitor adventure</button></div>';
+}
+function visitorNotice(id){
+ const r=rec(id);
+ if(isActive(id)&&!r.onViewVerified)return '<div class="td-visitor-notice">DEMO WORK: Museum staff have not yet confirmed that this artwork is on public display. Use collection images to test recognition; do not rely on this as an onsite route.</div>';
+ if(isActive(id))return '<div class="td-visitor-confirmed">Museum-curated route: '+h(r.room?'Confirmed room: '+r.room:'Room confirmation pending')+'.</div>';
+ return '<div class="td-visitor-notice">This artwork is not currently available in the visitor adventure.</div>';
+}
+async function load(){
+ try{
+  const response=await fetch(URL+'?v=1',{cache:'no-store'});
+  if(!response.ok)throw Error('HTTP '+response.status);
+  published=clean(await response.json());
+ }catch(e){error='Could not load published configuration. Defaulting to the original six demo works.';console.warn(error,e)}
+ finally{loading=false;afterUpdate()}
+}
+function exportJSON(){
+ const out={...clean(manifest()),updatedAt:new Date().toISOString()};
+ return JSON.stringify(out,null,2)+'\n';
+}
+function download(){
+ const blob=new Blob([exportJSON()],{type:'application/json;charset=utf-8'});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');a.download='display-status.json';a.href=url;
+ document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500);
+}
+document.addEventListener('change',ev=>{
+ const el=ev.target,ids=['td-active','td-verified','td-room','td-start','td-end'];
+ for(const f of ids)if(el.dataset[f]!==undefined){
+  const field={'td-active':'active','td-verified':'onViewVerified','td-room':'room','td-start':'startDate','td-end':'endDate'}[f];
+  const view=document.getElementById('view'),previous=view?.scrollTop||0;
+  setField(el.dataset[f],field,f==='td-active'||f==='td-verified'?el.checked:el.value);
+  if(view)view.scrollTop=previous;
+  return;
+ }
+});
+document.addEventListener('click',ev=>{
+ const button=ev.target.closest('[data-td-export],[data-td-copy],[data-td-reset]');
+ if(!button)return;
+ ev.stopImmediatePropagation();ev.preventDefault();
+ if(button.dataset.tdExport!==undefined){download();return}
+ if(button.dataset.tdCopy!==undefined){
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(exportJSON()).then(()=>{button.textContent='✓ Copied JSON'}).catch(()=>{button.textContent='Use Download JSON instead'});
+  else button.textContent='Use Download JSON instead';
+  return;
+ }
+ if(button.dataset.tdReset!==undefined){
+  if(draft&&!confirm('Discard your local artwork availability draft? This does not alter published visitor settings.'))return;
+  draft=null;error='';
+  try{localStorage.removeItem(STORE)}catch(e){}
+  afterUpdate();
+ }
+},true);
+window.TRACE_DISPLAY={isActive,activeWorks,count,isVerified,room,rec,adminUI,visitorNotice,setField,statusLabel,load,exportJSON,get draft(){return draft},get published(){return published},get loading(){return loading},get error(){return error}};
+load();
+})();
