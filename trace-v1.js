@@ -85,10 +85,8 @@ function clue(){
  '<div class="t1-task">'+txt+'</div>'+
  '<div class="v7-fragment"><img src="'+img(a)+'" style="object-position:'+focus+'" alt="Mystery fragment from selected artwork"><div class="v7-cover">FIND THIS DETAIL</div></div>'+
  '<div class="t1-team"><div class="t1-overline">YOUR CLUE</div><h3>'+esc(a.chapter)+'</h3><p class="t1-small">'+esc(v7field(a,'clue'))+'</p></div>'+roleMessage()+
- (a.previewOnly?'<div class="te-notice"><strong>Visual identification preview</strong><p>Automatic multi-angle recognition is not validated for this work. Observe it in person and compare with the official collection record. The work may not be on display.</p><a href="'+a.url+'" target="_blank" rel="noopener noreferrer">Official museum artwork record ↗</a></div>': '')+
- (a.reference?btn('⌾ Scan artwork with camera','scan'):btn('👁 Compare with museum reference','manual-review'))+
- ((a.kind==='sculpture'||a.kind==='mixed-media sculpture'||a.id==='mmfa-riopelle')?
- btn('◉ Explore three viewpoints','multi-view','outline'):'')+
+ (a.previewOnly?'<div class="te-notice"><strong>Visual identification preview</strong><p>Automatic recognition is not yet validated for this work. Observe it in person and compare with the official collection record. The work may not be on display.</p><a href="'+a.url+'" target="_blank" rel="noopener noreferrer">Official museum artwork record ↗</a></div>': '')+
+ (a.reference?btn('⌾ Scan artwork with camera','scan'):btn('⌾ Take one photo or compare visually','manual-review'))+
  btn('⌖ Help me find the gallery','map','outline')+
  (state.hints.includes(a.id)?'<div class="t1-task">✧ '+esc(a.hint)+'</div>'+
  btn('👁 Camera not working? Compare visually','manual-review','outline'):btn('✧ Ask Mica for a hint','hint','ghost'))+
@@ -159,7 +157,7 @@ function renderGame(v){
 function openWork(i){
  const art=A[i],active=activeArts(),position=active.findIndex(a=>a.id===art?.id),n=t1Found().length;
  if(!art||position<0||!(position<=n+1||state.found.includes(art.id)))return;
- stopCamera();state.current=i;state.quizError=false;state.reviewId=null;state.viewPhotos=null;state.scanImage=null;state.result=null;C.id=null;C.lastPuzzleId=null;C.done=false;C.progress=0;C.points=[];C.xy={x:78,y:77};stage(state.found.includes(A[i].id)?'clue':'clue');
+ stopCamera();state.current=i;state.quizError=false;state.reviewId=null;state.scanImage=null;state.result=null;C.id=null;C.lastPuzzleId=null;C.done=false;C.progress=0;C.points=[];C.xy={x:78,y:77};stage(state.found.includes(A[i].id)?'clue':'clue');
 }
 function finishPuzzle(assisted){
  if(state.stage!=='puzzle'||!activeArts().some(a=>a.id===A[state.current]?.id))return;
