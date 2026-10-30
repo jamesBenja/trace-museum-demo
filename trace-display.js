@@ -42,9 +42,18 @@ function clean(input){
   for(const x of (Array.isArray(input?.connections?.[museum])?input.connections[museum]:[]).slice(0,250)){
    const from=String(x?.from||''),to=String(x?.to||'');
    if(!known.has(from)||!known.has(to)||from===to)continue;
-   const key=[from,to].sort().join('~');
+   const type=['corridor','elevator','stairs','outdoor'].includes(x.type)?x.type:'corridor';
+   const key=[from,to].sort().join('~')+'~'+type;
    if(unique.has(key))continue;
-   unique.add(key);connections[museum].push({from,to,type:['corridor','elevator','stairs','outdoor'].includes(x.type)?x.type:'corridor'});
+   unique.add(key);
+   connections[museum].push({from,to,type,
+    status:x.status==='research'?'research':'approved',
+    confidence:['high','moderate','low'].includes(x.confidence)?x.confidence:'',
+    source:/^https:\/\//.test(x.source||'')?String(x.source).slice(0,400):'',
+    closed:x.closed===true,
+    cost:Math.max(0.25,Math.min(100,Number(x.cost)|| (type==='elevator'?5:type==='stairs'?4:1))),
+    note:String(x.note||'').slice(0,300)});
+
   }
  }
  return {schemaVersion:1,rooms,connections,mode:'independent-pitch-demo',updatedAt:String(input?.updatedAt||'')||new Date().toISOString(),description:'Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.',works:rows};
@@ -113,12 +122,24 @@ function alterRooms(venue,operation,data){
  }
  if(operation==='connect'){
   const from=String(data?.from||''),to=String(data?.to||'');
+  const type=['corridor','elevator','stairs','outdoor'].includes(data?.type)?data.type:'corridor';
   if(from===to||!x.rooms[venue].some(v=>v.id===from)||!x.rooms[venue].some(v=>v.id===to))return false;
-  if(!x.connections[venue].some(v=>v.from===from&&v.to===to||v.from===to&&v.to===from))x.connections[venue].push({from,to,type:['corridor','elevator','stairs','outdoor'].includes(data?.type)?data.type:'corridor'});
+  const existing=x.connections[venue].find(v=>((v.from===from&&v.to===to)||(v.from===to&&v.to===from))&&v.type===type);
+  // A curator's explicit connect action approves the indicated connection type.
+  if(existing){existing.status='approved';existing.closed=false}
+  else x.connections[venue].push({from,to,type,status:'approved',closed:false,cost:type==='elevator'?5:type==='stairs'?4:1,source:'',confidence:'',note:''});
+ }
+ if(operation==='setConnection'){
+  const from=String(data?.from||''),to=String(data?.to||''),type=String(data?.type||'');
+  const target=x.connections[venue].find(v=>((v.from===from&&v.to===to)||(v.from===to&&v.to===from))&&v.type===type);
+  if(!target)return false;
+  if(typeof data.closed==='boolean')target.closed=data.closed;
+  if(['research','approved'].includes(data.status))target.status=data.status;
+  if(Number.isFinite(Number(data.cost))&&Number(data.cost)>0)target.cost=Math.min(100,Math.max(.25,Number(data.cost)));
  }
  if(operation==='disconnect'){
-  const from=String(data?.from||''),to=String(data?.to||'');
-  x.connections[venue]=x.connections[venue].filter(v=>!(v.from===from&&v.to===to||v.from===to&&v.to===from));
+  const from=String(data?.from||''),to=String(data?.to||''),type=String(data?.type||'');
+  x.connections[venue]=x.connections[venue].filter(v=>!(((v.from===from&&v.to===to)||(v.from===to&&v.to===from))&&(!type||type===v.type)));
  }
  x.updatedAt=new Date().toISOString();
  try{localStorage.setItem(STORE,JSON.stringify(x))}catch(e){}
