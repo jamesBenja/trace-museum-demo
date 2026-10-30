@@ -635,7 +635,7 @@ function render(){if(state.tab==='museum'&&!window.TRACE_AUTH?.isAdmin())state.t
  (photo?'<img src="'+photo+'" alt="Your photo of the artwork">':'<div class="tv-no-photo">You can compare by looking directly at the artwork. No photo required.</div>')+'</figure>'+
  '<figure><figcaption>MUSEUM REFERENCE</figcaption><img src="'+img(a)+'" alt="Museum collection reference artwork"></figure></div>'+
  '<label class="tv-one-photo"><span>⌾ '+(photo?'Retake or replace your photo':'Take or choose one photo (optional)')+'</span>'+
- '<input type="file" accept="image/*" capture="environment" data-compare-photo aria-label="Take or choose one photo of the artwork"></label>'+
+ '<input type="file" accept="image/*" data-compare-photo aria-label="Take or choose one photo of the artwork"></label>'+
  '<p class="t1-small">Only photograph artworks where museum rules permit it. Photos stay on your device, and can be stored in your private discovery album after confirmation.</p>'+
  '<p><a href="'+a.url+'" target="_blank" rel="noopener noreferrer">View official museum collection record ↗</a></p>'+
  '<div class="tv-check-guide"><strong>Check before confirming</strong><p>Does the artwork really match? A sculpture may look different from this angle. If you are unsure, return to the clue or look again.</p></div>'+
