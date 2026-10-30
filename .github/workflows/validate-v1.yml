@@ -8,6 +8,7 @@ on:
       - "trace-i18n-art.js"
       - "trace-i18n-content.js"
       - "trace-i18n-map.js"
+      - "trace-i18n-details.js"
       - "scripts/test_locale.py"
       - "trace-welcome.js"
       - "trace-welcome.css"
@@ -60,6 +61,7 @@ jobs:
           node --check trace-i18n-art.js
           node --check trace-i18n-content.js
           node --check trace-i18n-map.js
+          node --check trace-i18n-details.js
           node --check trace-welcome.js
           node --check trace-v1.js
           node --check trace-coop-v2.js
