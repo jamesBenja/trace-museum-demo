@@ -151,6 +151,6 @@ document.addEventListener('click',ev=>{
  if(d.bonusReplay!==undefined){resetComparison();S.stage='explore';appRender();return}
 },true);
 document.addEventListener('input',ev=>{if(ev.target.id==='tb-slider')moveSlider(ev.target.value)});
-window.TRACE_BONUS={render,launch,links,clearVenue,pairKey,get saved(){return saved},get state(){return S}};
+window.TRACE_BONUS={render,launch,links,clearVenue,pairKey,DETAILS,STORIES,get saved(){return saved},get state(){return S}};
 if(state.stage==='bonus')appRender();
 })();
