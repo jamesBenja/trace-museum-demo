@@ -180,3 +180,32 @@
 @keyframes mg-tv-flicker{50%{opacity:.2}}
 @media(max-width:375px){.mg-screen .t1-h1{font-size:27px}.mg-slot{padding:9px 6px}.mg-can{height:109px}.mg-can-upper{font-size:23px}.mg-can-banner{font-size:10px}.mg-can-flavour{font-size:8px}.mg-tea-shape{font-size:65px}.mg-tea-part{height:155px}.mg-texture-sample{width:33px;height:30px}.mg-piece small{font-size:8px}}
 @media(prefers-reduced-motion:reduce){.mg-screen *{animation:none!important;transition:none!important}.mg-reflection-layer{opacity:1}}
+
+/* Material transformation: actual illustrated cup/saucer/spoon silhouettes, not a tea emoji.
+   The procedural material fills the OBJECT silhouette rather than the whole background. */
+.mg-tea-part:before{display:none}
+.mg-tea-part{background:#fffaf04d}
+.mg-tea-part .mg-tea-shape{font-size:0;display:block;position:relative;z-index:2;flex-shrink:0;transform:none;filter:drop-shadow(3px 7px 3px #574d3c44);border:3px solid #827365;transition:transform .3s}
+.mg-tea-part:hover .mg-tea-shape{transform:translateY(-3px) rotate(-3deg)}
+.mg-tea-cup .mg-tea-shape{width:67px;height:72px;border-radius:11px 11px 28px 28px;border-top:10px solid #c1c3b9;box-shadow:inset -8px -8px 9px #30291d33,inset 4px 4px 6px #ffffffa8}
+.mg-tea-cup .mg-tea-shape:after{content:'';position:absolute;width:21px;height:32px;right:-23px;top:14px;border:7px solid #aaa39b;border-left:0;border-radius:0 70% 70% 0;box-shadow:4px 3px 4px #463d3544}
+.mg-tea-saucer .mg-tea-shape{width:98px;height:31px;transform:rotate(-12deg);border-radius:50%;border:5px solid #8e8c7d;box-shadow:inset 0 7px 9px #443b3336,3px 7px 7px #63564d44}
+.mg-tea-saucer:hover .mg-tea-shape{transform:rotate(-5deg)}
+.mg-tea-saucer .mg-tea-shape:after{content:'';position:absolute;inset:6px 23px;border:2px solid #ffffffb8;border-radius:50%}
+.mg-tea-spoon .mg-tea-shape{height:112px;width:18px;transform:rotate(31deg);border-radius:65% 65% 22% 22%;border:3px solid #9c978b;box-shadow:inset 4px 6px 4px #ffffffac,4px 6px 5px #5c4e4055}
+.mg-tea-spoon:hover .mg-tea-shape{transform:rotate(22deg)}
+.mg-tea-spoon .mg-tea-shape:after{content:'';position:absolute;top:4px;left:-9px;width:30px;height:37px;background:inherit;border:3px solid inherit;border-color:#827a70;border-radius:48%;box-shadow:inset 4px 4px 7px #fbfbf8a8}
+.mg-tea-object-shine{position:absolute;inset:3px;border-radius:inherit;background:linear-gradient(110deg,#ffffff78,transparent 45%,#ffffff22 71%,transparent);pointer-events:none}
+.mg-material-fur .mg-tea-shape{background:repeating-radial-gradient(circle at 34% 52%,#ecd9b1 0 2px,#b9957e 3px 5px,#715d49 6px 7px,transparent 8px 10px),repeating-linear-gradient(65deg,#d2bc98 0 3px,#846958 4px 5px);background-size:19px 24px,15px 13px;border-color:#907459}
+.mg-material-velvet .mg-tea-shape{background:radial-gradient(circle at 27% 20%,#c69fcb,#742d74 70%,#422249);border-color:#553259}
+.mg-material-ice .mg-tea-shape{background:repeating-linear-gradient(122deg,#a2d6ed 0 9px,#f2ffff 10px 14px,#78b5cc 16px 22px);border-color:#b2e5e7;box-shadow:inset 5px 7px 9px #f7ffffbc,0 0 14px #a7ebf1}
+.mg-material-spikes .mg-tea-shape{background:repeating-conic-gradient(from 23deg,#82745e 0 19deg,#e1c9a5 20deg 29deg,#564e48 30deg 42deg);background-size:18px 19px;border-color:#71675e}
+.mg-material-grass .mg-tea-shape{background:repeating-linear-gradient(102deg,#446d3a 0 3px,#bee585 4px 7px,#2f6d4c 8px 11px);border-color:#517045}
+.mg-material-metal .mg-tea-shape{background:repeating-linear-gradient(7deg,#99a0a5 0 5px,#eceeef 6px 12px,#707d84 13px 21px);border-color:#8e9a9b}
+.mg-material-feathers .mg-tea-shape{background:repeating-radial-gradient(ellipse at 3% 0,#f4ddc1 0 7px,#b19d8c 8px 9px,#fdf1d4 10px 19px);background-size:19px 28px;border-color:#c8b49b}
+.mg-material-ceramic .mg-tea-shape{background:radial-gradient(circle at 25% 24%,#fffefd,#d6e8e3 65%,#9fbab5 95%);border-color:#b1bab4}
+.mg-tea-touch-reaction{position:absolute;z-index:5;top:8%;right:4%;font-size:21px;color:#a6794a;text-shadow:0 2px 3px #fff;pointer-events:none;animation:mg-mica-jump .7s both}
+.mg-tea-part.mg-material-ceramic .mg-tea-touch-reaction{opacity:.2}
+.mg-tea-part.mg-material-ice .mg-tea-touch-reaction{color:#5bbdd3}
+.mg-tea-part.mg-material-fur .mg-tea-touch-reaction{color:#af785f}
+@media(max-width:375px){.mg-tea-cup .mg-tea-shape{width:54px;height:64px}.mg-tea-saucer .mg-tea-shape{width:76px}.mg-tea-spoon .mg-tea-shape{height:99px}}
