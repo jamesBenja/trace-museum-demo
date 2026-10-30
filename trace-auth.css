@@ -30,3 +30,18 @@ body.admin-locked .website{filter:blur(3px);pointer-events:none;user-select:none
 .td-publish-actions button:disabled{opacity:.55;cursor:not-allowed}
 .td-publish .td-small{background:#f1f4e9;border-radius:9px;padding:10px;white-space:normal;overflow-wrap:break-word}
 .ta-portal-note{margin:10px 0;background:#e8f3e7;border-radius:9px;padding:11px;font-size:11px;color:#426b56}
+
+/* v1.8 administrator museum selector, shown above all artworks and floor-plan controls */
+.td-venue-panel{background:#e8f0e9;border:1px solid #b9d5c0;border-radius:16px;padding:15px;margin:13px 0 18px}
+.td-venue-kicker{font-size:10px;font-weight:900;letter-spacing:1.2px;color:#476e5b;margin-bottom:10px}
+.td-venue-switcher{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.td-venue-option{min-height:102px;background:#fffdf8;border:2px solid #c8d7c7;border-radius:13px;color:#31584b;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;gap:3px;padding:13px;cursor:pointer}
+.td-venue-option strong{font:700 24px/1.12 'Fraunces',Georgia,serif}
+.td-venue-option span{font-size:13px;font-weight:750}
+.td-venue-option small{font-size:10px;opacity:.9;margin-top:3px}
+.td-venue-option.is-current{background:#285d4d;color:#fff;border-color:#174737;box-shadow:0 3px 12px #2353422a}
+.td-venue-option.is-current:before{content:"✓ SELECTED";font:900 9px/1 'DM Sans',sans-serif;letter-spacing:1px;margin-bottom:2px}
+.td-venue-option:focus-visible{outline:3px solid #d3a566;outline-offset:3px}
+.td-venue-help{margin:11px 0 0;font-size:11px;line-height:1.6;color:#446b59}
+body.admin-mode #venueSwitcher{background:#285d4d;color:#fff;border-color:#174737}
+@media(max-width:365px){.td-venue-panel{padding:11px}.td-venue-option{padding:10px}.td-venue-option strong{font-size:20px}}
