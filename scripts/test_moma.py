@@ -5,12 +5,19 @@ from playwright.sync_api import sync_playwright
 URL=os.getenv('TRACE_TEST_URL','http://127.0.0.1:8765/?v=22')
 GAMES=['starry','dance','lilies','warhol','oppenheim','tinguely','brancusi','lamelas']
 def move(p,element,destination,steps=12):
+ element.scroll_into_view_if_needed()
  a=element.bounding_box()
  assert a,a
+ if isinstance(destination,tuple):
+  end=destination
+ else:
+  dest=destination.bounding_box()
+  assert dest,destination
+  end=(dest['x']+dest['width']/2,dest['y']+dest['height']/2)
  x=a['x']+a['width']/2;y=a['y']+a['height']/2
  p.mouse.move(x,y)
  p.mouse.down()
- p.mouse.move(destination[0],destination[1],steps=steps)
+ p.mouse.move(end[0],end[1],steps=steps)
  p.mouse.up()
 
 def play(p,name):
@@ -28,17 +35,15 @@ def play(p,name):
  elif name=='dance':
   for i in range(5):
    source=p.locator('.mg-hand-handle[data-i="'+str(i)+'"]')
-   dest=p.locator('.mg-hand-target[data-mg-target="'+str(i)+'"]').bounding_box()
-   rect=source.bounding_box()
-   print('DANCE ELEMENT AT START',i,p.evaluate("([x,y])=>({hit:document.elementFromPoint(x,y)?.outerHTML.slice(0,240),tag:document.elementFromPoint(x,y)?.tagName})",[rect['x']+rect['width']/2,rect['y']+rect['height']/2]),flush=True)
-   move(p,source,(dest['x']+dest['width']/2,dest['y']+dest['height']/2))
-   print('DANCE POINTER DIAG',i,p.evaluate('window.__mgPointerDebug'),p.evaluate('window.TRACE_V1.puzzle.extra.links'),flush=True)
+   destination=p.locator('.mg-hand-target[data-mg-target="'+str(i)+'"]')
+   move(p,source,destination)
    assert p.evaluate('window.TRACE_V1.puzzle.extra.links.length')==i+1
   assert p.locator('.mg-dance-complete').count()==1
  elif name=='lilies':
   for i in range(4):p.locator('[data-mg="pad"][data-value="'+str(i)+'"]').click()
-  area=p.locator('.mg-pond-scene').bounding_box()
   sun=p.locator('.mg-sun')
+  sun.scroll_into_view_if_needed()
+  area=p.locator('.mg-pond-scene').bounding_box()
   move(p,sun,(area['x']+area['width']*.9,area['y']+28))
   assert p.evaluate('window.TRACE_V1.puzzle.extra.sun')>=.70
   assert float(p.locator('#mg-reflect').get_attribute('opacity'))>.7
@@ -66,8 +71,8 @@ def play(p,name):
  elif name=='tinguely':
   for i,k in enumerate(['gear','belt','rod','hook','paint']):
    piece=p.locator('[data-mg="part"][data-value="'+k+'"]')
-   dest=p.locator('[data-mg="socket"][data-value="'+str(i)+'"]').bounding_box()
-   move(p,piece,(dest['x']+dest['width']/2,dest['y']+dest['height']/2))
+   destination=p.locator('[data-mg="socket"][data-value="'+str(i)+'"]')
+   move(p,piece,destination)
    assert p.evaluate('window.TRACE_V1.puzzle.extra.installed.length')==i+1
   assert p.locator('.mg-wheel.can-spin').count()==1
   wheel=p.locator('.mg-wheel').bounding_box()
