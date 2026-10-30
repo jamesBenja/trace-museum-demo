@@ -46,7 +46,7 @@ function intro(){
  return '<div class="t1-screen"><div class="t1-head"><div class="t1-overline">TRACE 1.0 · ART BECOMES AN ADVENTURE</div><h2>'+esc(world.name)+'</h2><p>'+esc(world.description)+'</p><div class="venueSelect"><button data-venue="mmfa" class="'+(state.venue==='mmfa'?'chosen':'')+'">MONTRÉAL · MMFA</button><button data-venue="pamm" class="'+(state.venue==='pamm'?'chosen':'')+'">MIAMI · PAMM</button></div></div>'+
  mascot('Hello! I’m Mica. I’m a little spark of paint, and the museum has misplaced eight artistic powers. Will you help me find them?')+
  '<div class="t1-overline">CHOOSE YOUR ADVENTURE STYLE</div>'+picks()+'<div class="v7-language"><button data-lang="en">EN</button><button data-lang="fr">FR</button><button data-lang="es">ES</button></div><p class="tiny">The new game interface is currently in English; artist stories and original quiz translations remain available in the earlier discovery views. Full localization is pending review.</p>'+
- '<div class="t1-task">Explore the real art, spot a clue and scan it. Every discovery unlocks something you can make or try. Choose your own route through three mysteries.</div>'+
+ '<div class="t1-task">Explore the real art, spot a clue and scan it. Every discovery unlocks something you can make or try. Choose your own route through the museum’s currently available artworks.</div>'+
  btn('✧ Enter the adventure map','t1-start')+
  '<p class="tiny">The quest map is a fantasy game illustration, not a museum floor plan. Artworks may not be displayed; the separate MAP tab links to museum maps. No museum endorsement or commercial image permissions are implied.</p></div>';
 }
@@ -61,7 +61,7 @@ function hub(){
  const maxPairs=Math.min(10,arts.length*(arts.length-1)/2);
  return '<div class="t1-screen"><div class="t1-overline">ADVENTURE MAP · '+esc(world.name)+'</div><h2 class="t1-h1">Where shall we explore?</h2>'+paintProgress()+
  mascot(companion)+
- '<div class="t1-map"><div class="t1-map-head"><div class="t1-overline">MAGICAL QUEST MAP</div><h3>'+arts.length+' works currently playable</h3></div><div class="t1-islands">'+nodes+'</div><p class="t1-legend">✦ New works are activated by museum administrators. The map shows adventures, not the real floor plan.</p></div>'+
+ '<div class="t1-map"><div class="t1-map-head"><div class="t1-overline">A MAGICAL QUEST MAP</div><h3>'+arts.length+' works currently playable</h3></div><div class="t1-islands">'+nodes+'</div><p class="t1-legend">✦ New works are activated by museum administrators. The map shows adventures, not the real floor plan.</p></div>'+
  '<div class="t1-task">⌖ Plan a 3-stop visit or choose your own available artworks in the MAP tab. Room locations require staff confirmation.</div>'+
  (n>=2?'<div class="tb-bonus-card"><div class="t1-overline">✦ A SECRET CHALLENGE HAS OPENED</div><h3>Connect the Artworks</h3><p>Explore two completed works together, compare them through a sliding lens and collect an Art Connector badge.</p><p><strong>✧ '+(window.TRACE_BONUS?.links()?.length||0)+' saved connections · up to '+maxPairs+' curated pairs per museum</strong></p><button class="button" type="button" data-bonus-open>✧ Play the comparison bonus →</button></div>':'')+
  (done?'<div class="t1-complete"><h2 class="t1-h2">All available artworks discovered! ✦</h2><p class="t1-small">Come back when the museum activates more artworks. Your discoveries stay saved.</p>'+btn('Open my discovery passport','album')+'</div>':'')+
@@ -79,7 +79,7 @@ function clue(){
  const node=L[state.venue].nodes[state.current],focus=a.id==='mmfa-marrel'?'18% 14%':a.focus;
  if(!a)return hub();
  if(C.id!==a.id){C.id=a.id;C.points=[];C.teamCount=0;}
- let txt=prefs.age==='5-7'?'Look carefully at the little picture. Can you find its matching painting?':prefs.age==='teen'?'Investigate the subject, composition and detail, then locate the matching work.':'Search for the artwork containing this unusual fragment. Look at the art before you look at your phone.';
+ let txt=prefs.age==='5-7'?'Look carefully at the little picture. Can you find its matching artwork?':prefs.age==='teen'?'Investigate the subject, composition and detail, then locate the matching work.':'Search for the artwork containing this unusual detail. Look at the real artwork before the phone.';
  return '<div class="t1-screen"><div class="t1-overline">MYSTERY '+(state.current+1)+' OF '+A.length+' · '+esc(node.subtitle)+'</div><h2 class="t1-h1">'+esc(node.name)+'</h2>'+paintProgress()+
  mascot(node.friend)+
  '<div class="t1-task">'+txt+'</div>'+
