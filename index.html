@@ -758,7 +758,7 @@ async function loadReference(a){
 }
 async function rebuild(){const refs=ALL.filter(a=>a.reference&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(a.id)));if(!refs.length){ready=false;el('status').textContent='IMPORT ARTWORK IMAGES';return}try{await prepareLibrary(refs);loaded=refs;ready=true;el('status').textContent=`SCAN READY · ${refs.length} IMAGE REFERENCES · ${ALL.length} WORKS`;el('status').classList.add('ready')}catch(e){ready=false;el('status').textContent='MATCHER ERROR';console.error(e)}}
 async function ensureActiveReferences(){const wanted=ALL.filter(a=>window.TRACE_DISPLAY?.isActive(a.id)&&!a.reference);await Promise.all(wanted.map(loadReference));await rebuild();render()}
-async function boot(){render();el('status').textContent='LOADING ARTWORK REFERENCES…';await Promise.all(ALL.filter(a=>!a.previewOnly||a.museum==='moma').map(loadReference));await rebuild();render()}
+async function boot(){render();el('status').textContent='LOADING ARTWORK REFERENCES…';await Promise.all(ALL.filter(a=>!a.previewOnly||a.museum==='moma').map(loadReference));await rebuild();window.__traceRefsFinished=true;render()}
 window.TRACE_LOAD_ACTIVE=ensureActiveReferences;
 window.__traceAppRender=render;
 boot();
