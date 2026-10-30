@@ -75,7 +75,7 @@ function clue(){
  if(!a)return hub();
  if(C.id!==a.id){C.id=a.id;C.points=[];C.teamCount=0;}
  let txt=prefs.age==='5-7'?'Look carefully at the little picture. Can you find its matching painting?':prefs.age==='teen'?'Investigate the subject, composition and detail, then locate the matching work.':'Search for the artwork containing this unusual fragment. Look at the art before you look at your phone.';
- return '<div class="t1-screen"><div class="t1-overline">MYSTERY '+(state.current+1)+' OF '+A.length · '+esc(node.subtitle)+'</div><h2 class="t1-h1">'+esc(node.name)+'</h2>'+paintProgress()+
+ return '<div class="t1-screen"><div class="t1-overline">MYSTERY '+(state.current+1)+' OF '+A.length+' · '+esc(node.subtitle)+'</div><h2 class="t1-h1">'+esc(node.name)+'</h2>'+paintProgress()+
  mascot(node.friend)+
  '<div class="t1-task">'+txt+'</div>'+
  '<div class="v7-fragment"><img src="'+img(a)+'" style="object-position:'+focus+'" alt="Mystery fragment from selected artwork"><div class="v7-cover">FIND THIS DETAIL</div></div>'+
