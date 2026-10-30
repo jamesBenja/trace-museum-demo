@@ -1,6 +1,6 @@
-# TRACE v2.1: Complete trilingual experience, Mica welcomes and museum routing
+# TRACE v2.2: Three-museum art adventures, including MoMA New York
 
-**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=21
+**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=22
 
 **Official MMFA map:** https://www.mbam.qc.ca/en/mmfa-museum-map/
 
@@ -15,6 +15,16 @@ TRACE is an independent pilot concept with **eight real collection artworks from
 For paintings and photographs with calibrated image references, the camera scan remains the primary matching method. After requesting a hint, **Compare visually with museum reference** becomes available for every artwork. The same option appears if an automatic scan fails or the camera is unavailable. Sculptures and newer works without validated reference images use **visitor self-confirmation** from the beginning. This is always labelled clearly and never presented as automatic verification.
 
 On the visual comparison screen, visitors can **take or select one photo (optional)** and compare it alongside the museum's collection image. They may also visually confirm without taking a photo, including when museum photography is not permitted. Only explicit visitor confirmation advances the story. This is a visitor-assisted comparison, **not automatic recognition or a 3D scan**. Uploaded photos stay on the device and may be saved in the visitor's local discovery album once confirmed. A future multi-angle recognition feature would require curated reference photography and validation, not extra photo steps for visitors.
+
+## MoMA NYC third museum prototype
+
+MoMA New York now joins the Montréal Museum of Fine Arts and Pérez Art Museum Miami as a separately administered institution. Visitors select the museum from the persistent header switcher, and each museum retains independent progress, hints, photos, routes and comparative-art connections.
+
+**Eight MoMA artworks**: Van Gogh's *The Starry Night*, Matisse's *Dance (I)*, Monet's *Water Lilies*, Warhol's *Campbell's Soup Cans*, Meret Oppenheim's fur-covered *Object*, Tinguely's *Fragment from Homage to New York*, Brancusi's *The Cock*, and David Lamelas's *Analysis of the Elements by which the Massive Consumption of Information Takes Place*. Each has an original age-appropriate clue, art-history narrative, reference, quiz and unique interactive lab. The eight labs explore swirling brushwork, movement, reflections, repetition, tactile imagination, kinetic sculpture, abstract form and the language of mass media. All interpretive text, game controls and the complete five-scene Mica museum introduction are translated into English, French and Spanish.
+
+The museum navigator links to the **official MoMA visitor guide and floor map**: https://www.moma.org/visit/guide/map . Gallery labels are staff-editable and derived from MoMA's published online collection at the prototype research date. **Every MoMA display confirmation is initially false**: collection-website "On view" descriptions are not museum staff confirmation. Room-to-room walking edges are unset until a museum administrator approves them; therefore no step-by-step directions are fabricated. An authenticated administrator can modify on-view state, room, availability windows and galleries, and publish a single manifest covering all three museums.
+
+MoMA's official introductory museum history can be reviewed at https://www.moma.org/about/ and https://www.moma.org/visit . TRACE is independent and unaffiliated with these museums. Artwork photography copyright has **not** been licensed; collection images in the prototype are attributed to original sources and must be cleared before formal institutional use. All MoMA works use the visitor-confirmed one-photo-or-no-photo visual comparison mode. No automatic 3D or image recognition is claimed for these newly added references.
 
 ## Whole-app language switching (English, French, Spanish)
 
