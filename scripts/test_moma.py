@@ -69,6 +69,10 @@ with sync_playwright() as q:
   print('MOMA MICA PASS',lang,flush=True)
  page.locator('[data-trace-lang="en"]').click()
  page.evaluate("state.stage='hub';state.found=[];save();render()")
+ page.locator('[data-tab="album"]').click()
+ assert page.locator('.v7-passport-item img').count()==0, 'Undiscovered art must remain hidden in passport'
+ assert page.locator('.tq-locked-passport').count()==8, 'All eight mysteries should have hidden covers'
+ page.locator('[data-tab="quest"]').click()
  for i,name in enumerate(GAMES):
   page.locator('[data-t1-open="'+str(i)+'"]').click()
   assert page.evaluate('A[state.current].id')=='moma-'+name
