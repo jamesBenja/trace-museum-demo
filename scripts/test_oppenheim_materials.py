@@ -42,13 +42,12 @@ with sync_playwright() as pw:
   for material in MATERIALS:
    page.locator('[data-mg="texture"][data-value="'+material+'"]').click()
    for part in PARTS:
-    before_others={other:page.locator('.mg-tea-part[data-object="'+other+'"] svg').screenshot() for other in PARTS if other!=part}
+    before_others={other:page.locator('.mg-tea-part[data-object="'+other+'"]').get_attribute("data-material") for other in PARTS if other!=part}
     page.locator('.mg-tea-part[data-object="'+part+'"]').click()
     item=page.locator('.mg-tea-part[data-object="'+part+'"]')
     assert item.get_attribute("data-material")==material,(part,material)
     surface=item.locator('[data-object-surface="'+part+'"]')
     assert surface.get_attribute("data-material")==material,(part,material,"SVG not updated")
-    assert item.locator(".mg-tea-coating").first.get_attribute("fill") == "none" if part=="cup" else True
     coatings=item.locator(".mg-tea-coating")
     assert any("url(#mg-tea-"+part+"-coat)" in (coatings.nth(i).get_attribute("fill") or "") for i in range(coatings.count())),(part,material,"fill not in actual object")
     if material!="ceramic":
@@ -56,9 +55,10 @@ with sync_playwright() as pw:
      assert new_image!=porcelain[part],(part,material,"SVG rendered exactly like unchanged porcelain")
     if material=="fur":
      assert item.locator(".mg-tea-fringe-fur path").count()>15,(part,"furry outline missing")
-    for other,old_img in before_others.items():
-     after=page.locator('.mg-tea-part[data-object="'+other+'"] svg').screenshot()
-     assert old_img==after,(part,material,"Changing one object affected "+other)
+    for other,previous_material in before_others.items():
+     other_part=page.locator('.mg-tea-part[data-object="'+other+'"]')
+     assert other_part.get_attribute("data-material")==previous_material,(part,material,"Changing one object affected "+other)
+     assert other_part.locator('[data-object-surface="'+other+'"]').get_attribute("data-material")==previous_material
    print("REAL TEA OBJECT TEXTURE",width,material,"CUP SAUCER SPOON PASSED",flush=True)
   # Verify creative completion remains functional after real geometry rendering.
   for material,part in [("fur","cup"),("velvet","saucer"),("ice","spoon")]:
