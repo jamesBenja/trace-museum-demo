@@ -20,6 +20,10 @@ const L={
  {symbol:'⌁',name:'The Houses on the Hill',subtitle:'The power of storytelling',hint:'A road connects the houses',friend:'Every photograph chooses what to show. What do you notice?'},
  {symbol:'✧',name:'The Hidden Alphabet',subtitle:'The power of making',hint:'A world of small drawn signs',friend:'A pencil made this whole world. What message can you make?'}]}
 };
+const EXTRA_SYMBOLS={'mmfa-eye':'👁','mmfa-frink':'♟','mmfa-riopelle':'🧩','mmfa-rodin':'◕','mmfa-cragg':'◉','pamm-chaos':'⬡','pamm-fonseca':'▣','pamm-yanko':'⚒','pamm-christo':'🏝','pamm-chromati':'✷'};
+for(const [venue,items] of [['mmfa',mmfa],['pamm',pamm]]){
+ for(const art of items.slice(3))L[venue].nodes.push({symbol:EXTRA_SYMBOLS[art.id],name:art.chapter,subtitle:'Power of '+art.power.toLowerCase(),hint:art.clue,friend:'Not all art is a painting! Look at the materials, shapes and space around this work.'})
+}
 const esc=s=>escapeHTML(String(s??''));
 const C={id:null,progress:0,points:[],done:false,chosen:null,xy:{x:78,y:77},teamCount:0,assisted:false,lastPuzzleId:null};
 function persist(){try{localStorage.setItem(K,JSON.stringify(prefs))}catch(e){}}
@@ -39,7 +43,7 @@ function picks(){return '<div class="t1-choices"><button class="t1-choice '+(pre
 function intro(){
  const world=L[state.venue];
  return '<div class="t1-screen"><div class="t1-head"><div class="t1-overline">TRACE 1.0 · ART BECOMES AN ADVENTURE</div><h2>'+esc(world.name)+'</h2><p>'+esc(world.description)+'</p><div class="venueSelect"><button data-venue="mmfa" class="'+(state.venue==='mmfa'?'chosen':'')+'">MONTRÉAL · MMFA</button><button data-venue="pamm" class="'+(state.venue==='pamm'?'chosen':'')+'">MIAMI · PAMM</button></div></div>'+
- mascot('Hello! I’m Mica. I’m a little spark of paint, and the museum has misplaced three artistic powers. Will you help me find them?')+
+ mascot('Hello! I’m Mica. I’m a little spark of paint, and the museum has misplaced eight artistic powers. Will you help me find them?')+
  '<div class="t1-overline">CHOOSE YOUR ADVENTURE STYLE</div>'+picks()+'<div class="v7-language"><button data-lang="en">EN</button><button data-lang="fr">FR</button><button data-lang="es">ES</button></div><p class="tiny">The new game interface is currently in English; artist stories and original quiz translations remain available in the earlier discovery views. Full localization is pending review.</p>'+
  '<div class="t1-task">Explore the real art, spot a clue and scan it. Every discovery unlocks something you can make or try. Choose your own route through three mysteries.</div>'+
  btn('✧ Enter the adventure map','t1-start')+
@@ -48,13 +52,13 @@ function intro(){
 function hub(){
  const world=L[state.venue],n=state.found.length,done=allDone();
  const nodes=world.nodes.map((node,i)=>{
- const a=A[i],isDone=state.found.includes(a.id),open=isDone||i<2||n>0;
+ const a=A[i],isDone=state.found.includes(a.id),open=isDone||i<=n+1;
  return '<button class="t1-island '+(isDone?'solved':open?'unlocked':'locked')+'" data-t1-open="'+i+'" '+(!open?'disabled':'')+'><b>'+node.symbol+'</b><span class="t1-island-text"><strong>'+esc(node.name)+'</strong><small>'+esc(node.subtitle)+(isDone?' · DISCOVERED':'')+'</small></span><span class="t1-island-status">'+(isDone?'✓':open?'›':'🔒')+'</span></button>';
  }).join('');
- const companion=done?'We did it! All three powers are ours. You can revisit any discovery, or start a new mystery.':n===0?'Two mysteries are open. You choose where to begin! Find either one to unlock the last path.':n===1?'Your first discovery changed the map! The third mystery has opened.': 'Only '+(3-n)+' power'+(3-n===1?'':'s')+' left. I think we can do it!';
+ const companion=done?'We did it! All eight powers are ours. You can revisit any discovery, or start a new mystery.':n===0?'Two mysteries are open. You choose where to begin! Find either one to unlock the last path.':n===1?'Your first discovery changed the map! The third mystery has opened.': 'Only '+(A.length-n)+' power'+(A.length-n===1?'':'s')+' left. I think we can do it!';
  return '<div class="t1-screen"><div class="t1-overline">ADVENTURE MAP · '+esc(world.name)+'</div><h2 class="t1-h1">Where shall we explore?</h2>'+paintProgress()+
  mascot(companion)+
- '<div class="t1-map"><div class="t1-map-head"><div class="t1-overline">A MAGICAL QUEST MAP</div><h3>Three secrets to find</h3></div><div class="t1-islands">'+nodes+'</div><p class="t1-legend">✦ Choose unlocked mysteries in any order. The map shows story chapters, not actual room positions.</p></div>'+
+ '<div class="t1-map"><div class="t1-map-head"><div class="t1-overline">A MAGICAL QUEST MAP</div><h3>'+A.length+' secrets to find</h3></div><div class="t1-islands">'+nodes+'</div><p class="t1-legend">✦ Choose unlocked mysteries in any order. The map shows story chapters, not actual room positions.</p></div>'+
  (n>=2?'<div class="tb-bonus-card"><div class="t1-overline">✦ A SECRET CHALLENGE HAS OPENED</div><h3>Connect the Artworks</h3><p>Two artworks. A sliding comparison lens. A new connection only you can create. Find the links hidden between paintings, then collect an Art Connector badge.</p><p><strong>✧ '+(window.TRACE_BONUS?.links()?.length||0)+' of '+(n>=3?3:1)+' possible bridges found</strong></p><button class="button" type="button" data-bonus-open>✧ Play the comparison bonus →</button></div>':'')+
  (done?'<div class="t1-complete"><h2 class="t1-h2">Your creative lens is restored! ✦</h2><p class="t1-small">Mica’s missing powers are safe in your passport. Every work of art can become a new adventure.</p>'+btn('Open my discovery passport','album')+'</div>':'')+
  '<div class="t1-team"><h3>How will you play?</h3>'+picks()+'<p class="t1-small">You can switch modes without losing your discoveries.</p></div>'+
@@ -76,11 +80,11 @@ function clue(){
  '<div class="t1-task">'+txt+'</div>'+
  '<div class="v7-fragment"><img src="'+img(a)+'" style="object-position:'+focus+'" alt="Mystery fragment from selected artwork"><div class="v7-cover">FIND THIS DETAIL</div></div>'+
  '<div class="t1-team"><div class="t1-overline">YOUR CLUE</div><h3>'+esc(a.chapter)+'</h3><p class="t1-small">'+esc(v7field(a,'clue'))+'</p></div>'+roleMessage()+
- btn('⌾ Scan artwork','scan')+btn('⌖ Help me find the gallery','map','outline')+
+ (a.previewOnly?'<div class="te-notice"><strong>New sculpture / mixed-media preview</strong><p>3D image recognition is not validated. Compare with the official collection record and confirm visually. The work might not currently be displayed.</p><a href="'+a.url+'" target="_blank" rel="noopener noreferrer">Official museum artwork record ↗</a></div>'+btn('👁 Compare and confirm visually','manual-review')+btn('⌾ Take a reference photo','scan','outline'):btn('⌾ Scan artwork','scan'))+btn('⌖ Help me find the gallery','map','outline')+
  (state.hints.includes(a.id)?'<div class="t1-task">✧ '+esc(a.hint)+'</div>':btn('✧ Ask Mica for a hint','hint','ghost'))+
  btn('← Back to adventure map','t1-hub','ghost')+
- '<details class="v7-cms"><summary style="font-size:12px;cursor:pointer;font-weight:800">Demo testing tools</summary><p class="t1-small">This artwork might not be on display. Test with the published collection image on a second screen, or use the simulated image test below.</p>'+
- btn('Test matching with a reference','sample:'+a.id,'outline')+'</details>'+
+ (a.previewOnly?'':'<details class="v7-cms"><summary style="font-size:12px;cursor:pointer;font-weight:800">Demo testing tools</summary><p class="t1-small">This artwork might not be on display. Test with the published collection image on a second screen, or use the simulated image test below.</p>'+
+ btn('Test matching with a reference','sample:'+a.id,'outline>')+
  '<p class="tiny">Museum collection image rights belong to their respective holders. <a target="_blank" rel="noopener noreferrer" href="'+a.url+'">Collection record ↗</a></p></div>';
 }
 function puzzleIntro(a){return '<div class="t1-overline">CREATE, EXPERIMENT, DISCOVER · '+esc(a.artist)+'</div><h2 class="t1-h1">'+esc(a.chapter)+'</h2>'+
@@ -89,6 +93,7 @@ function puzzleIntro(a){return '<div class="t1-overline">CREATE, EXPERIMENT, DIS
 function puzzle(){
  const a=A[state.current];if(!a)return hub();
  if(C.id!==a.id||C.lastPuzzleId!==a.id){C.id=a.id;C.lastPuzzleId=a.id;C.progress=0;C.points=[];C.done=false;C.chosen=null;C.xy={x:78,y:77};}
+ if(window.TRACE_EXTRA?.has(a.id))return window.TRACE_EXTRA.game(a,C);
  let content='';
  if(a.id==='mmfa-marrel')content='<div class="t1-puzzle"><h3>Reveal the copper beneath</h3><p class="t1-small">Marrel painted on a smooth copper surface. Rub the mist away with your finger to reveal its warm shimmer.</p>'+
  '<div class="t1-surface t1-scratch" id="t1-scratch"><canvas id="t1-copper" width="640" height="410" aria-label="Rub to reveal the copper surface"></canvas></div>'+
@@ -125,7 +130,7 @@ function success(){
  return '<div class="t1-screen"><div class="t1-complete">'+mascot(win?'We recovered every power! Now the museum is full of possibilities.':'You did it! Your eyes and imagination helped restore another piece of the lens.')+
  '<div class="t1-overline">POWER UNLOCKED ✦</div><h2 class="t1-h1">'+esc(a.power)+'</h2><p class="t1-small">'+esc(node.subtitle)+'</p>'+
  '<div class="t1-storyboard">'+t1Found().map(x=>'<span>'+v7meta(x).symbol+' '+esc(x.power)+'</span>').join('')+'</div>'+
- (win?'<h3 class="t1-h2">The lost lens is restored!</h3><p class="t1-small">All three discoveries are safely collected in your passport.</p>':'<p class="t1-small">There are '+(3-state.found.length)+' mysteries left to explore. The map may have changed!</p>')+'</div>'+
+ (win?'<h3 class="t1-h2">The lost lens is restored!</h3><p class="t1-small">All three discoveries are safely collected in your passport.</p>':'<p class="t1-small">There are '+(A.length-state.found.length)+' mysteries left to explore. The map may have changed!</p>')+'</div>'+
  btn(win?'View the completed adventure map':'Choose my next mystery','t1-hub')+
  btn('See my discoveries','album','outline')+
  '<p class="tiny">Your creativity and discoveries stay on this device.</p></div>';
@@ -136,13 +141,13 @@ function renderGame(v){
  if(state.stage==='intro'){v.innerHTML=intro();return true}
  if(state.stage==='hub'){v.innerHTML=hub();return true}
  if(state.stage==='clue'){v.innerHTML=clue();window.TRACE_COOP?.install();return true}
- if(state.stage==='puzzle'){v.innerHTML=puzzle();installPuzzle();return true}
+ if(state.stage==='puzzle'){v.innerHTML=puzzle();if(!window.TRACE_EXTRA?.has(A[state.current]?.id))installPuzzle();return true}
  if(state.stage==='success'){v.innerHTML=success();return true}
  if(state.stage==='complete'||state.current>=A.length){v.innerHTML=hub();return true}
  return false;
 }
 function openWork(i){
- if(!(i>=0&&i<A.length)||!(i<2||state.found.length>0))return;
+ if(!(i>=0&&i<A.length)||!(i<=state.found.length+1||state.found.includes(A[i].id)))return;
  stopCamera();state.current=i;state.quizError=false;state.reviewId=null;C.id=null;C.lastPuzzleId=null;C.done=false;C.progress=0;C.points=[];C.xy={x:78,y:77};stage(state.found.includes(A[i].id)?'clue':'clue');
 }
 function finishPuzzle(assisted){
