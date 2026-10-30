@@ -67,13 +67,15 @@ def play(p,name):
   assert p.locator('.mg-tea-part.mg-material-fur').count()==1
   assert p.locator('.mg-tea-part.mg-material-velvet').count()==1
   assert p.locator('.mg-tea-part.mg-material-ice').count()==1
+  assert p.locator('.mg-tea-shape').count()==3, 'Tactile illustrations missing'
+  assert p.locator('.mg-tea-shape').first.evaluate("(el)=>getComputedStyle(el).backgroundImage")!='none', 'Textures are not applied to the object itself'
+  assert p.locator('.mg-tea-part').first.inner_text().find('☕')==-1, 'Retired cup emoji still visible'
   p.locator('[data-mg="reaction"][data-value="1"]').click()
  elif name=='tinguely':
   for i,k in enumerate(['gear','belt','rod','hook','paint']):
    piece=p.locator('[data-mg="part"][data-value="'+k+'"]')
    destination=p.locator('[data-mg="socket"][data-value="'+str(i)+'"]')
    move(p,piece,destination)
-   print('MACHINE DRAG CHECK',i,p.evaluate('window.__mgPartDebug'),p.evaluate('window.TRACE_V1.puzzle.extra.installed'),flush=True)
    assert p.evaluate('window.TRACE_V1.puzzle.extra.installed.length')==i+1
   assert p.locator('.mg-wheel.can-spin').count()==1
   wheel=p.locator('.mg-wheel').bounding_box()
