@@ -114,12 +114,25 @@ function frink(s,t){
   '<div class="mf-controls">'+[0,1].map(i=>button((selected===i?'✓ ':'◉ ')+t.move+' '+(i+1),'select-guardian',i,selected===i?'active':'')).join('')+'</div><div class="mf-controls">'+[0,1].map(i=>button((s.facing[i]?'↶ ':'↻ ')+t.turn+' '+(i+1),'face',i,s.facing[i]?'active':'')).join('')+'</div><div class="mf-meter">'+safe(t.count)+' <b>'+s.facing.filter(Boolean).length+'/2</b></div>';
 }
 function riopelle(s,t){
- let pieces=s.pieces.map((name,i)=>'<div class="mf-junk mf-junk-'+name+'" style="--i:'+i+';left:'+(15+i*22)+'%;top:'+(25+(i%2)*20)+'%" aria-label="'+safe(name)+'">'+PI[P.indexOf(name)]+'</div>').join('');
- return '<div class="mf-board mf-assemblage"><div class="mf-assembly-back">✦ <span>FOUND OBJECTS</span> ✦</div><div class="mf-assembly-base '+(s.base?'wood-'+s.base:'')+'">'+(s.base?pieces:'<span>✧</span>')+'</div><div class="mf-assembly-wires"></div></div>'+
+ const shapes={
+ wheel:'<circle r="24" fill="none" stroke="#435c62" stroke-width="12"/><circle r="9" fill="#d3b18e" stroke="#435c62" stroke-width="5"/><path d="M-21 0H21M0 -21V21" stroke="#627f81" stroke-width="4"/>',
+ wire:'<path d="M-21 21Q-37 4 -11 -12T16 -27Q32 -36 27 -16T6 9Q-13 23 18 27" stroke="#bba87b" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M-28 -3Q0 -20 25 -1" stroke="#e0d1a7" stroke-width="3" fill="none"/>',
+ scrap:'<path d="M-22 24L-26 -24L4 -29L27 -1L14 27Z" fill="#7e8a82" stroke="#425c5d" stroke-width="5"/><path d="M4 -29L0 0L27 -1M-22 24L0 0L14 27" stroke="#c9c2a4" stroke-width="4" fill="none"/>',
+ fabric:'<path d="M-27 -27Q-6 -35 10 -19T29 8Q-8 -1 20 28Q-11 13 -25 29Z" fill="#bd818a" stroke="#8e596b" stroke-width="3"/><path d="M-19 -12Q4 -5 9 18" stroke="#f4d6bd" stroke-width="4" fill="none"/>',
+ bark:'<path d="M-19 -31Q7 -39 22 -27L15 30L-25 27Z" fill="#775b40" stroke="#4e4c3b" stroke-width="4"/><path d="M-9 -27Q-19 -1 -4 26M8 -28Q0 -8 14 24" stroke="#b09a74" stroke-width="5" fill="none"/>'};
+ const loose=[[75,79],[240,97],[95,166],[242,166],[160,56]],locked=[[153,182],[177,145],[146,112],[181,78],[153,47]];
+ const parts=s.pieces.map((name,i)=>{
+  const start=loose[i],end=locked[i],p=s.anchor?end:start,rot=s.anchor?(i%2?24:-17):(i*43-42);
+  return '<g class="mf-junk mf-junk-'+name+'" transform="translate('+p[0]+' '+p[1]+') rotate('+rot+')" aria-label="'+safe(name)+'" role="img">'+(shapes[name]||'')+'</g>';
+ }).join('');
+ const ties=s.anchor?'<g class="mf-assembly-joints"><path d="M153 216L153 182L177 145L146 112L181 78L153 47" stroke="#726a61" stroke-width="9" fill="none" stroke-linecap="round"/>'+locked.slice(0,s.pieces.length).map(p=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="7" fill="#e8c88a" stroke="#6b6e5a" stroke-width="3"/>').join('')+'</g>':'';
+ const plank=s.base?'<path d="M77 218L249 218L262 231L63 231Z" fill="'+(s.base==='dark'?'#674d3c':'#d7b88a')+'" stroke="#625543" stroke-width="6"/><path d="M95 224H236" stroke="#e6d2ae" opacity=".55" stroke-width="3"/>':'<rect x="79" y="213" width="162" height="14" rx="4" fill="#b2aaa0" stroke-dasharray="5 5"/>';
+ const illustration='<svg class="mf-assembly-sculpture '+(s.anchor?'assembled':'')+'" viewBox="0 0 320 245" role="img" aria-label="'+safe(t.title)+'"><ellipse cx="160" cy="233" rx="105" ry="11" fill="#606763" opacity=".2"/>'+plank+ties+parts+(s.anchor?'<g class="mf-assembly-sparks"><path d="M64 65l8 -14m0 14l-10 -12M246 67l9 -12m-13 0l13 12M244 190l15 -9" stroke="#fbe2a6" stroke-width="4" stroke-linecap="round"/></g>':'')+'</svg>';
+ return '<div class="mf-board mf-assemblage"><div class="mf-assembly-back">✦ <span>FOUND OBJECTS</span> ✦</div>'+illustration+'<div class="mf-assembly-wires"></div></div>'+
  '<div class="mf-controls">'+button('◧','base','light',s.base==='light'?'active':'')+button('▥','base','dark',s.base==='dark'?'active':'')+'</div>'+
  '<div class="mf-controls">'+P.map((name,i)=>button(PI[i]+' '+name,'piece',name,s.pieces.includes(name)?'active':'')).join('')+'</div>'+
  button((s.anchor?'✓ ':'⚓ ')+t.anchor,'anchor','yes',s.anchor?'active':'')+
- '<div class="mf-meter">'+safe(t.count)+' <b>'+new Set(s.pieces).size+'/3</b></div>';
+ '<div class="mf-meter">'+safe(t.count)+' <b>'+new Set(s.pieces).size+'/3</b>'+(s.anchor?' · ✦':'')+'</div>';
 }
 function rodin(s,t){
  const pose=s.pose;
@@ -136,11 +149,11 @@ function rodin(s,t){
 }
 function cragg(s,t){
  const profiles=['M57 30Q78 12 91 40L99 50L90 59Q93 93 67 110','M131 27Q153 21 166 45L169 61L159 69Q164 96 139 117','M204 28Q229 21 243 47L252 63L241 72Q237 96 211 111'];
- const visible=Math.min(2,Math.max(0,Math.round((s.angle+45)/45)));
- const svg='<svg class="mf-svg" viewBox="0 0 320 260" role="img" aria-label="'+safe(t.title)+'"><defs><linearGradient id="mf-stone" x2="1" y2=".5"><stop stop-color="#7d9f98"/><stop offset=".55" stop-color="#c1cbbc"/><stop offset="1" stop-color="#527c7c"/></linearGradient></defs><rect width="320" height="260" fill="#e6e9df"/><ellipse cx="162" cy="244" rx="99" ry="13" fill="#79928b" opacity=".3"/><g transform="translate('+s.angle*.55+' 0)"><path d="M155 18Q204 7 226 57Q255 107 219 139Q257 174 220 219Q177 247 115 222Q71 201 97 162Q57 120 91 86Q83 42 155 18Z" fill="url(#mf-stone)" stroke="#607e75" stroke-width="7"/><path d="M150 20Q115 85 146 126Q172 163 121 223" stroke="#e9f0df" fill="none" stroke-width="14" opacity=".46"/><path d="M203 40Q173 89 204 143Q233 187 204 227" stroke="#547d79" fill="none" stroke-width="9" opacity=".44"/></g>'+
- s.faces.map((v,i)=>'<path d="'+profiles[v]+'" stroke="'+['#c77a61','#e5ba7c','#7b9a91'][v]+'" stroke-width="5" fill="none" opacity=".65"/>').join('')+'</svg>';
- return '<div class="mf-board mf-cragg" data-mf-drag="rotate">'+svg+'<button class="mf-face-hotspot" style="left:'+(30+visible*22)+'%" type="button" data-mf="reveal" data-v="'+visible+'" aria-label="'+safe(t.count)+' '+(visible+1)+'">'+(s.faces.includes(visible)?'✓':'✧')+'</button></div>'+
- '<div class="mf-controls">'+[-45,0,45].map((angle,i)=>button('◖ '+(i+1),'angle',angle,visible===i?'active':'')).join('')+'</div>'+
+ const visible=Math.min(2,Math.max(0,Math.round((s.angle+45)/45))),shades=['#b6c9bd','#87a99e','#587e78'];
+ const svg='<svg class="mf-cragg-model" viewBox="0 0 320 260" role="img" aria-label="'+safe(t.title)+'"><defs><linearGradient id="mf-stone" x2="1" y2=".5"><stop stop-color="'+shades[visible]+'"/><stop offset=".55" stop-color="#c1cbbc"/><stop offset="1" stop-color="#4a746b"/></linearGradient></defs><g class="mf-cragg-volume"><path d="M155 18Q204 7 226 57Q255 107 219 139Q257 174 220 219Q177 247 115 222Q71 201 97 162Q57 120 91 86Q83 42 155 18Z" fill="#436964" stroke="#466e67" stroke-width="11" transform="translate(17 0)"/><path d="M155 18Q204 7 226 57Q255 107 219 139Q257 174 220 219Q177 247 115 222Q71 201 97 162Q57 120 91 86Q83 42 155 18Z" fill="url(#mf-stone)" stroke="#607e75" stroke-width="6"/><path d="M150 20Q115 85 146 126Q172 163 121 223" stroke="#e9f0df" fill="none" stroke-width="16" opacity=".61"/><path d="M203 40Q173 89 204 143Q233 187 204 227" stroke="#547d79" fill="none" stroke-width="9" opacity=".65"/><path d="'+profiles[visible]+'" stroke="#fff2c9" stroke-width="6" fill="none" opacity=".7"/>'+
+ s.faces.map(v=>'<path d="'+profiles[v]+'" stroke="'+['#c77a61','#e5ba7c','#7b9a91'][v]+'" stroke-width="7" fill="none" opacity=".92"/>').join('')+'</g></svg>';
+ return '<div class="mf-board mf-cragg" data-mf-drag="rotate"><div class="mf-cragg-backdrop"><div class="mf-turntable" style="--turn:'+(s.angle*1.72)+'deg">'+svg+'</div><div class="mf-cragg-shadow" style="transform:translateX('+(s.angle*.3)+'px) scale('+(1-Math.abs(s.angle)/230)+')"></div></div><button class="mf-face-hotspot" style="left:'+(30+visible*22)+'%" type="button" data-mf="reveal" data-v="'+visible+'" aria-label="'+safe(t.count)+' '+(visible+1)+'">'+(s.faces.includes(visible)?'✓':'✧')+'</button></div>'+
+ '<div class="mf-controls">'+button('↶','turn','left')+[-45,0,45].map((angle,i)=>button('◖ '+(i+1),'angle',angle,visible===i?'active':'')).join('')+button('↷','turn','right')+'</div>'+
  '<div class="mf-meter">'+safe(t.rotate)+' <b>'+Math.round(s.angle)+'°</b> · '+safe(t.count)+' <b>'+s.faces.length+'/3</b></div>';
 }
 const scenes={marrel,witte,fortin,eye,frink,riopelle,rodin,cragg};
@@ -166,7 +179,7 @@ case 'eye':if(act==='view'){s.view=Number(v);push(s.views,s.view)}if(act==='eye'
 case 'frink':if(act==='select-guardian')s.selectedGuardian=Number(v);if(act==='guardian'){const n=Number(v),occupant=s.guardians.indexOf(n);if(occupant>=0)s.selectedGuardian=occupant;else{let idx=s.guardians.indexOf(-1);if(idx<0)idx=s.selectedGuardian??0;s.guardians[idx]=n;s.selectedGuardian=idx===0?1:0;s.facing=[false,false]}}if(act==='face'){const i=Number(v);if(s.guardians.every(x=>x>=0))s.facing[i]=!s.facing[i]}break;
 case 'riopelle':if(act==='base'){s.base=v;s.anchor=false}if(act==='piece'){push(s.pieces,v);s.anchor=false}if(act==='anchor'&&s.base&&new Set(s.pieces).size>=3)s.anchor=true;break;
 case 'rodin':if(act==='pose'&&Number(v)===s.pose+1)s.pose++;break;
-case 'cragg':if(act==='angle')s.angle=Number(v);if(act==='reveal'){const n=Number(v);if(n===Math.min(2,Math.max(0,Math.round((s.angle+45)/45))))push(s.faces,n)}break;
+case 'cragg':if(act==='angle')s.angle=Number(v);if(act==='turn')s.angle=clamp(s.angle+(v==='left'?-15:15),-45,45);if(act==='reveal'){const n=Number(v);if(n===Math.min(2,Math.max(0,Math.round((s.angle+45)/45))))push(s.faces,n)}break;
 }redraw(c)
 }
 function push(a,x){if(!a.includes(x))a.push(x)}
@@ -192,7 +205,7 @@ document.addEventListener('pointermove',ev=>{
  if(d.kind==='point'){s.point.x=clamp((ev.clientX-r.left)/r.width*100,0,100);s.point.y=clamp((ev.clientY-r.top)/r.height*100,0,100);d.node.style.left=s.point.x+'%';d.node.style.top=s.point.y+'%'}
  if(d.kind==='sun'){s.sun=clamp((ev.clientX-r.left)/r.width,0,1);d.node.style.left=(10+s.sun*80)+'%';const light=document.querySelector('.mf-light-wash');if(light)light.style.opacity=s.sun*.7}
  if(d.kind==='eye'){s.eye=clamp((ev.clientX-r.left)/r.width,0,1);d.node.style.left=(20+s.eye*65)+'%';const eye=document.querySelector('.mf-big-eye');if(eye){const v=s.view??-1;eye.setAttribute('transform','translate('+(160+(v===0?34:v===1?-38:0))+' '+(123+(v===0?-11:v===1?20:0))+') rotate('+(v===0?-13:v===1?24:0)+') scale('+((.28+s.eye*1.63)*(v===0?1.1:v===1?.69:1))+')')}}
- if(d.kind==='rotate'){s.angle=clamp(s.angle+dx*.65,-45,45);const sculpture=document.querySelector('.mf-cragg .mf-svg g[transform^="translate"]');if(sculpture)sculpture.setAttribute('transform','translate('+(s.angle*.55)+' 0)')}
+ if(d.kind==='rotate'){s.angle=clamp(s.angle+dx*.65,-45,45);const sculpture=document.querySelector('.mf-turntable');if(sculpture)sculpture.style.setProperty('--turn',(s.angle*1.72)+'deg')}
  if(d.kind==='sweep'){s.sweep=clamp(s.sweep+Math.hypot(dx,dy)*.34,0,150);const p=[Math.round(clamp((ev.clientX-r.left)/r.width*320,0,320)),Math.round(clamp((ev.clientY-r.top)/r.height*245,0,245))];const rub=s.rubs[d.rubIndex];if(rub&&rub.length<350){rub.push(p);const path=document.getElementById('mf-rub-'+d.rubIndex);if(path)path.setAttribute('d',rub.map((xy,i)=>(i?'L':'M')+xy[0]+' '+xy[1]).join(' '))}}
  if(d.kind==='sky'){const x=clamp((ev.clientX-r.left)/r.width*320,10,205),y=clamp((ev.clientY-r.top)/r.height*245,10,130);d.x=x;d.y=y}
  if(d.kind==='guardian'&&d.distance>7)d.node.style.left=clamp((ev.clientX-r.left)/r.width*100,12,88)+'%'
