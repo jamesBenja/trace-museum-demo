@@ -164,7 +164,7 @@ with sync_playwright() as q:
   page.locator('[data-action="manual-accept"]').click()
   page.locator('[data-action="v7-story"]').click()
   page.locator('[data-action="v7-puzzle"]').click()
-  assert page.locator('.tm-screen').count()==1
+  assert page.locator('.mg-screen').count()==1
   assert not page.locator('[data-t1-finish]').is_enabled()
   play(page,name)
   page.locator('[data-t1-finish]').click()
