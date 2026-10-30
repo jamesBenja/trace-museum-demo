@@ -39,31 +39,42 @@ function routeWorks(){
  return active.filter(a=>S.selected.includes(a.id));
 }
 function edges(){return display()?.connections(state.venue)||[]}
-function adjacency(){
- const graph=new Map();
- for(const x of display()?.rooms(state.venue)||[])graph.set(x.id,[]);
- for(const c of edges()){
-  if(S.stepFree&&c.type==='stairs')continue;
-  if(graph.has(c.from)&&graph.has(c.to)){graph.get(c.from).push(c.to);graph.get(c.to).push(c.from)}
- }
- return graph;
-}
-function path(from,to){
+// Approved links produce visitor directions. Research links can only appear as a labelled preview.
+function route(from,to,preview=false){
  if(!from||!to)return null;
- if(from===to)return [from];
- const graph=adjacency(),q=[from],seen=new Set([from]),parent=new Map();
- if(!graph.has(from)||!graph.has(to))return null;
- while(q.length){
-  const u=q.shift();
-  for(const v of graph.get(u)||[]){
-   if(seen.has(v))continue;
-   seen.add(v);parent.set(v,u);
-   if(v===to){const out=[to];while(out[0]!==from)out.unshift(parent.get(out[0]));return out}
-   q.push(v);
+ const rooms=display()?.rooms(state.venue)||[],known=new Set(rooms.map(r=>r.id));
+ if(!known.has(from)||!known.has(to))return null;
+ if(from===to)return {rooms:[from],edges:[],cost:0,research:false};
+ const graph=new Map([...known].map(id=>[id,[]]));
+ for(const edge of edges()){
+  if(edge.closed||(!preview&&edge.status==='research')||(S.stepFree&&edge.type==='stairs'))continue;
+  if(!known.has(edge.from)||!known.has(edge.to))continue;
+  const raw=Math.max(.25,Number(edge.cost)||1);
+  const cost=raw+(edge.type==='elevator'?2:0)+(edge.type==='stairs'?1:0);
+  graph.get(edge.from).push({to:edge.to,edge,cost});
+  graph.get(edge.to).push({to:edge.from,edge,cost});
+ }
+ const dist=new Map([[from,0]]),parent=new Map(),visited=new Set();
+ while(true){
+  let current=null,best=Infinity;
+  for(const [id,value] of dist)if(!visited.has(id)&&value<best){current=id;best=value}
+  if(current===null)break;
+  if(current===to)break;
+  visited.add(current);
+  for(const option of graph.get(current)||[]){
+   const alt=best+option.cost;
+   if(alt<(dist.get(option.to)??Infinity)){dist.set(option.to,alt);parent.set(option.to,{id:current,edge:option.edge})}
   }
  }
- return null;
+ if(!dist.has(to))return null;
+ const order=[to],segments=[];
+ while(order[0]!==from){
+  const step=parent.get(order[0]);if(!step)return null;
+  order.unshift(step.id);segments.unshift(step.edge);
+ }
+ return {rooms:order,edges:segments,cost:dist.get(to),research:segments.some(e=>e.status==='research')};
 }
+function path(from,to,preview=false){return route(from,to,preview)?.rooms||null}
 function floorValue(s){
  const m=/^(?:S(\d+)|(-?\d+)|Outdoor)$/i.exec(s||'');
  if(!m)return 200;
@@ -81,7 +92,7 @@ function plannedOrder(){
  if(fullyConnected&&edges().length){
   const remaining=mapped.slice(),ordered=[];let curr=start;
   while(remaining.length){
-   remaining.sort((a,b)=>path(curr,artworkRoom(a).id).length-path(curr,artworkRoom(b).id).length);
+   remaining.sort((a,b)=>route(curr,artworkRoom(a).id).cost-route(curr,artworkRoom(b).id).cost);
    const next=remaining.shift();ordered.push(next);curr=artworkRoom(next).id;
   }
   return {ordered:[...ordered,...unmapped],optimised:true};
@@ -95,10 +106,10 @@ function plannedOrder(){
 function stopCard(a,i,prevId){
  const r=artworkRoom(a),verified=display()?.isVerified(a.id);
  const previous=prevId||S.start||MAPS[state.venue].startRoom;
- const corridor=r?path(previous,r.id):null;
+ const corridor=r?route(previous,r.id):null;
  const instructions= !r?'No room assigned yet. Ask museum staff or view the official plan.':
   !verified?'Room is a local/demo assignment; not confirmed as current exhibition placement.':
-  corridor?(corridor.length===1?'You are already at this room.':'Staff-entered route: '+corridor.slice(1).map((id,i)=>{const edge=edges().find(x=>x.from===corridor[i]&&x.to===id||x.to===corridor[i]&&x.from===id);const mode=edge?.type==='stairs'?'Take the stairs':edge?.type==='elevator'?'Use the elevator':edge?.type==='outdoor'?'Take the outdoor passage':'Continue';return mode+' to '+(room(id)?.label||id)}).join(' → ')):
+  corridor?(corridor.rooms.length===1?'You are already at this room.':'Staff-entered route: '+corridor.rooms.slice(1).map((id,i)=>{const edge=corridor.edges[i];const mode=edge?.type==='stairs'?'Take the stairs':edge?.type==='elevator'?'Use the elevator':edge?.type==='outdoor'?'Take the outdoor passage':'Continue';return mode+' to '+(room(id)?.label||id)}).join(' → ')):
   'Room known, but no approved corridor connection is configured. See the official floor plan.';
  return '<article class="tn-stop '+(found(a)?'tn-solved':'')+'"><div class="tn-stop-num">'+(i+1)+'</div><div class="tn-stop-detail"><div class="tn-title-line"><strong>'+esc(a.artist)+'</strong><small>'+(found(a)?'✓ Solved':'◉ To discover')+'</small></div><p>'+esc(a.name)+'</p>'+
  '<div class="tn-room-line">'+(r?'<b>'+esc(r.label)+'</b> · '+esc(r.wing)+' · '+esc(r.floor==='Outdoor'?'Outdoors':'Floor '+r.floor):'<b>Room not assigned</b>')+'</div>'+
@@ -191,5 +202,5 @@ document.addEventListener('change',ev=>{
  const b=ev.target.closest('[data-tn-select],[data-tn-access],[data-tn-start]');if(!b)return;
  touch();if(b.dataset.tnAccess!==undefined){S.stepFree=b.value==='stepfree';saveRoute();reRender();return}if(b.dataset.tnStart!==undefined){if(room(b.value))S.start=b.value;saveRoute();reRender();return}S.mode='custom';S.selected=b.checked?[...new Set([...S.selected,b.dataset.tnSelect])]:S.selected.filter(id=>id!==b.dataset.tnSelect);saveRoute();reRender();
 });
-window.TRACE_ROUTING={map,adminUI,routeWorks,plannedOrder,path,MAPS,get state(){return S},touch};
+window.TRACE_ROUTING={map,adminUI,routeWorks,plannedOrder,path,route,MAPS,get state(){return S},touch};
 })();
