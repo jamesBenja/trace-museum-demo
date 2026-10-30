@@ -137,7 +137,7 @@ with sync_playwright() as p:
   admin_url=URL+('&portal=admin' if '?' in URL else '?portal=admin')
   res=page.goto(admin_url,wait_until='domcontentloaded',timeout=45000)
   assert res and res.status==200
-  assert 'v2.0' in page.title(),page.title()
+  assert 'v2.1' in page.title(),page.title()
   page.locator('#traceAdminToken').fill('mock-write-token')
   page.locator('#traceAdminSubmit').click()
   page.locator('#traceAdminLogin').wait_for(state='detached',timeout=18000)
