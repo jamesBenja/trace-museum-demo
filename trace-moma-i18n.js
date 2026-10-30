@@ -7,6 +7,13 @@ const rows=[];
 const works=window.TRACE_MOMA_DATA||[];
 for(const art of works){const v=translations[art.id];if(!v)continue;const keys=['chapter','clue','hint','story','quiz'];keys.forEach((key,i)=>rows.push([art[key],v.fr[i],v.es[i]]));art.opts.forEach((opt,i)=>rows.push([opt,v.fr[5][i],v.es[5][i]]));}
 rows.push([openings.en[0],openings.fr[0],openings.es[0]],[openings.en[1],openings.fr[1],openings.es[1]],[openings.en[2],openings.fr[2],openings.es[2]],[openings.en[3],openings.fr[3],openings.es[3]]);
+rows.push(
+['MoMA official visitor map','Plan officiel du MoMA','Plano oficial del MoMA'],
+['53rd Street main entrance, Rockefeller Building','Entrée principale de la 53e Rue, bâtiment Rockefeller','Entrada principal de la calle 53, edificio Rockefeller'],
+['Midtown Manhattan museum with galleries across several floors and a sculpture garden','Musée de Midtown Manhattan avec plusieurs étages de galeries et un jardin de sculptures','Museo de Midtown Manhattan con galerías en varias plantas y un jardín de esculturas'],
+['New York · MoMA','New York · MoMA','Nueva York · MoMA'],
+['The Moving Imagination','L’imagination en mouvement','La imaginación en movimiento']
+);
 window.TRACE_I18N?.addMany(rows);
 if(typeof V7_OPENINGS!=='undefined'){for(const lang of ['en','fr','es'])V7_OPENINGS[lang].moma={title:openings[lang][0],intro:openings[lang][2],desc:openings[lang][3]};}
 })();
