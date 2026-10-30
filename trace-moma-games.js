@@ -286,6 +286,7 @@ function pointerEnd(ev){
   const rect=targetEl?.getBoundingClientRect();
   const near=rect&&Math.hypot(ev.clientX-(rect.left+rect.width/2),ev.clientY-(rect.top+rect.height/2))<48;
   const distance=Math.hypot(ev.clientX-a.downX,ev.clientY-a.downY);
+  window.__mgPointerDebug={kind:type,i:a.index,changed:a.changed,distance,near:!!near,mouse:{x:ev.clientX,y:ev.clientY},rect:rect?{x:rect.x,y:rect.y,w:rect.width,h:rect.height}:null,links:s.links.length};
   if((a.changed||distance>15)&&near)pushUnique(s.links,a.index);
  }
  if(type==='texture'&&a.changed){const point=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('[data-mg-drop]');if(point){s.chosenTexture=a.material;s.textures[point.dataset.mgDrop]=a.material}}
