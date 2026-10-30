@@ -1,4 +1,4 @@
-# TRACE v1.2 | A museum you can play
+# TRACE v1.4 | A museum you can play
 
 **Live mobile demo:** https://jamesbenja.github.io/trace-museum-demo/?v=10
 
@@ -26,6 +26,17 @@ TRACE is an independent, experimental visitor discovery experience with three sa
 6. Collect the artistic power and choose a new mystery. A bonus observation prompt unlocks after two finds. Progress, optional photos and the art-passport certificate remain local to the browser.
 
 The fantasy adventure map is **not** a factual museum floor plan. The separate **MAP** navigation tab links to official museum wayfinding, with exact artwork rooms explicitly marked unverified. Works in these collections may not currently be exhibited.
+
+## Interactive bonus: Connect the Artworks
+
+When at least two collection works are solved, a **Connect the Artworks** bonus unlocks on the **fantasy adventure map** and in **My Finds**.
+
+- Choose any two solved works, then drag a responsive comparison divider between their real artwork reproductions. Full views of both works remain visible below.
+- Compare through three lenses: **Shapes & lines**, **Light & colour**, or **Stories & ideas**.
+- Choose one grounded observation about each work; a glowing connection bridge forms between them.
+- Mica explains the specific pair's relationship and awards an **Art Connector badge**. Three separate artwork pairs are available per museum after the third work is solved.
+- Connections are saved locally and appear in the discovery passport. They survive page reloads and switching between MMFA and PAMM, but museum-adventure reset clears that museum's connections.
+- This is a creative comparison activity; there are no arbitrary right-or-wrong interpretations. The artwork's physical location/on-view status remains unverified.
 
 ## Family and accessibility
 
