@@ -1,29 +1,35 @@
-/* TRACE Mica character v1: the approved round, two-eyed, pearlescent guide.
-   Uses one transparent character asset across the welcome, clues and games. */
-:root{--trace-mica-art:url("trace-mica.webp")}
+/* TRACE Mica v2: scalable pearlescent character art, responsive stage, and gentle motion.
+   Shared visual identity across welcome, companions, clues and all museum celebrations. */
+:root{--trace-mica-art:url("trace-mica-polished.svg")}
 .t1-mica,.tw-mica,.t1-detail-mica-body,.t1-detail-mini-mica,.mf-mica-avatar,.pg-mica-avatar,.mg-mica{
   background-image:var(--trace-mica-art);
   background-repeat:no-repeat;
+  background-color:transparent;
 }
-/* Companion card, adventure hub, clues and completion */
-.t1-mica{background-color:transparent;background-size:auto 59px;background-position:center center}
+/* The smaller appearances show Mica's whole round FACE, not a tiny full-body thumbnail. */
+.t1-mica{height:60px;width:62px;min-width:62px;background-size:70px auto;background-position:center top;filter:drop-shadow(0 3px 5px #5a71902a);animation:trace-mica-idle 3.8s ease-in-out infinite}
 .t1-mica-body{display:none}
-.t1-mica-sparkle{color:#9a82c7;right:-2px}
-.t1-mica{animation:trace-mica-float 3.2s ease-in-out infinite}
-.t1-complete .t1-mica{animation:trace-mica-celebrate 3.2s ease-in-out infinite}
-/* Museum welcome: show the character's rounded head and full little body */
-.tw-mica{top:18px;width:146px;height:178px;background-size:contain;background-position:center center}
+.t1-mica-sparkle{color:#9f90d1;right:-3px;top:0}
+.t1-complete .t1-mica{animation:trace-mica-celebrate 3.1s ease-in-out infinite}
+/* Welcome: keep the full character ABOVE the speech bubble, with soft lighting and no square cutout. */
+.tw-mica{left:50%;top:24px;width:134px;height:156px;z-index:2;background-size:contain;background-position:center center;filter:drop-shadow(0 8px 8px #506d8d28);transform:translateX(-50%);animation:trace-mica-welcome 3.8s ease-in-out infinite}
 .tw-mica-body{display:none}
-.tw-star{color:#fac77b}
-.tw-star-two{color:#bba9ef}
-/* Zoomed detail reveal: keep existing pop/reveal animation */
-.t1-detail-mica-body{border:0;box-shadow:0 4px 10px #6b579329;border-radius:50%;background-color:transparent;background-size:59px auto;background-position:center top;transform:none}
+.tw-star{color:#f2bb72;right:-5px;top:22px;font-size:26px}
+.tw-star-two{color:#c4b7ee;left:-9px;right:auto;top:80px;font-size:18px}
+.tw-visual{isolation:isolate}
+.tw-speech{z-index:3}
+.tw-building{z-index:0}
+.tw-glow{z-index:0}
+/* Detail-reveal avatar: face crops preserve both sparkly eyes. */
+.t1-detail-mica-body{inset:11px 5px 11px 7px;border:0;border-radius:50%;box-shadow:none;background-size:65px auto;background-position:center top;transform:none}
 .t1-detail-mica-face{display:none}
-.t1-detail-mini-mica{width:32px;height:32px;padding:0;border-radius:50%;font-size:0;background-color:transparent;background-size:35px auto;background-position:center top}
-/* Art-specific discovery celebrations, consistently the same Mica */
-.mf-mica-avatar,.pg-mica-avatar{border:0;border-radius:50%;background-color:transparent;background-size:100% auto;background-position:center top;overflow:hidden;box-shadow:0 5px 11px #6b57932e;transform:none}
+.t1-detail-mini-mica{width:32px;height:32px;padding:0;border-radius:50%;font-size:0;background-size:36px auto;background-position:center top}
+/* Reward / conclusion badges: the same consistent Mica in all three museums. */
+.mf-mica-avatar,.pg-mica-avatar{height:56px;width:56px;min-width:56px;border:0;border-radius:50%;background-size:65px auto;background-position:center top;box-shadow:0 3px 8px #52668b27;overflow:hidden}
 .mf-mica-avatar span,.pg-mica-avatar span{display:none}
-.mg-mica{border-radius:50%;font-size:0;background-color:transparent;background-size:52px auto;background-position:center top;overflow:hidden}
-@keyframes trace-mica-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-@keyframes trace-mica-celebrate{0%,100%{transform:translateY(0) scale(1.4)}50%{transform:translateY(-4px) scale(1.45)}}
-@media(prefers-reduced-motion:reduce){.t1-mica,.t1-complete .t1-mica{animation:none}.t1-complete .t1-mica{transform:scale(1.4)}}
+.mg-mica{width:48px;min-width:48px;height:48px;font-size:0;border-radius:50%;background-size:56px auto;background-position:center top;box-shadow:0 3px 8px #52668b27;overflow:hidden}
+@keyframes trace-mica-welcome{0%,100%{transform:translate(-50%,0) rotate(-1deg)}50%{transform:translate(-50%,-6px) rotate(1deg)}}
+@keyframes trace-mica-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes trace-mica-celebrate{0%,100%{transform:translateY(0) scale(1.4)}50%{transform:translateY(-4px) scale(1.44)}}
+@media(max-width:365px){.tw-mica{width:120px;height:147px;top:21px}.tw-star{right:0}}
+@media(prefers-reduced-motion:reduce){.tw-mica,.t1-mica,.t1-complete .t1-mica{animation:none!important}.tw-mica{transform:translateX(-50%)}.t1-complete .t1-mica{transform:scale(1.4)}}
