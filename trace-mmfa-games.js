@@ -43,7 +43,7 @@ const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const button=(name,cmd,value='',klass='')=>'<button class="mf-btn '+klass+'" type="button" data-mf="'+cmd+'" data-v="'+safe(value)+'">'+safe(name)+'</button>';
 const P=['wheel','wire','scrap','fabric','bark'],PI=['◉','〰','◆','▧','⌁'];
 function data(C,id){
- if(!C.extra||C.extra.id!==id)C.extra={id,sweep:0,rubs:[],found:[],point:{x:79,y:74},doors:[],strokes:[],sun:.1,eye:.15,view:-1,views:[],guardians:[-1,-1],facing:[false,false],selectedGuardian:0,base:'',pieces:[],selectedPiece:'wheel',anchor:false,pose:0,angle:-40,faces:[]};
+ if(!C.extra||C.extra.id!==id)C.extra={id,sweep:0,rubs:[],found:[],point:{x:79,y:74},doors:[],strokes:[],sun:.1,eye:.15,view:-1,views:[],guardians:[-1,-1],facing:[false,false],selectedGuardian:0,base:'',pieces:[],selectedPiece:'wheel',anchor:false,pose:0,joints:null,moves:[],angle:-40,faces:[]};
  return C.extra;
 }
 function complete(id,s){
@@ -54,7 +54,7 @@ function complete(id,s){
  case 'eye':return s.eye>=.8&&s.views.length===2;
  case 'frink':return s.guardians.every(v=>v>=0)&&s.guardians[0]!==s.guardians[1]&&s.facing.every(Boolean);
  case 'riopelle':return !!s.base&&new Set(s.pieces).size>=3&&s.anchor;
- case 'rodin':return s.pose>=3;
+ case 'rodin':return s.pose>=3||(s.moves||[]).length>=3;
  case 'cragg':return s.faces.length===3;
  }return false;
 }
@@ -134,18 +134,34 @@ function riopelle(s,t){
  button((s.anchor?'✓ ':'⚓ ')+t.anchor,'anchor','yes',s.anchor?'active':'')+
  '<div class="mf-meter">'+safe(t.count)+' <b>'+new Set(s.pieces).size+'/3</b>'+(s.anchor?' · ✦':'')+'</div>';
 }
+const RODIN_POSES=[
+ {shoulder:[151,95],hip:[157,164],head:[153,59],elbow:[209,130],hand:[191,159],knee:[128,205]},
+ {shoulder:[148,94],hip:[171,155],head:[148,62],elbow:[191,130],hand:[180,162],knee:[133,169]},
+ {shoulder:[147,92],hip:[175,153],head:[146,64],elbow:[195,137],hand:[180,150],knee:[132,171]},
+ {shoulder:[144,91],hip:[175,153],head:[144,62],elbow:[191,129],hand:[157,77],knee:[132,171]}
+];
+function rodinGeometry(s){
+ const source=s.joints||RODIN_POSES[clamp(s.pose||0,0,3)];
+ return Object.fromEntries(Object.entries(source).map(([k,v])=>[k,[...v]]));
+}
+function rodinPaths(p){
+ const xy=k=>p[k][0]+' '+p[k][1];
+ return {torso:'M'+xy('shoulder')+'L'+xy('hip'),arm:'M'+xy('shoulder')+'L'+xy('elbow')+'L'+xy('hand'),legs:'M'+xy('hip')+'L'+xy('knee')+'L137 213M'+xy('hip')+'L204 170L207 212'};
+}
 function rodin(s,t){
- const pose=s.pose;
- const forms=[
- {arm:'M156 101L209 130L191 159',torso:'M154 95L157 164',leg:'M157 160L128 218M157 160L201 212',head:[153,59]},
- {arm:'M150 101L190 132L178 160',torso:'M149 90L172 152',leg:'M171 154L206 166L206 209M171 154L134 169L141 209',head:[148,61]},
- {arm:'M150 101L196 137L180 151',torso:'M147 92L175 151',leg:'M175 154L208 163L204 209M175 154L132 170L137 209',head:[146,63]},
- {arm:'M150 98L195 135L156 71',torso:'M144 90L175 151',leg:'M175 154L208 163L204 209M175 154L132 170L137 209',head:[144,62]}
- ][pose];
- const svg='<svg class="mf-svg mf-thinker-svg" viewBox="0 0 320 240" role="img" aria-label="'+safe(t.title)+'"><defs><linearGradient id="mf-bronze"><stop stop-color="#b68b66"/><stop offset=".55" stop-color="#746e63"/><stop offset="1" stop-color="#3e5855"/></linearGradient></defs><rect width="320" height="240" fill="#e8e2d0"/><path d="M80 212H240" stroke="#b9aa93" stroke-width="9"/><path d="M106 158H182V216" stroke="#65726a" stroke-width="16" fill="none"/><g class="mf-pose-motion"><path d="'+forms.leg+'" stroke="#435b56" stroke-width="20" stroke-linecap="round" fill="none"/><path d="'+forms.torso+'" stroke="url(#mf-bronze)" stroke-width="34" stroke-linecap="round"/><path d="'+forms.arm+'" stroke="#b29072" stroke-width="17" stroke-linecap="round" fill="none"/><circle cx="'+forms.head[0]+'" cy="'+forms.head[1]+'" r="24" fill="#a78e73" stroke="#6c6255" stroke-width="4"/></g>'+(pose>=3?'<path class="mf-thought" d="M184 52Q224 15 255 52" fill="none" stroke="#d5a45b" stroke-width="4" stroke-dasharray="6 6"/><text x="255" y="29" font-size="25" fill="#a57853">?</text>':'')+'</svg>';
- return '<div class="mf-board mf-rodin">'+svg+'<button class="mf-body-handle" type="button" data-mf="pose" data-v="'+(pose+1)+'" aria-label="'+safe(t.title)+' '+(pose+1)+'">'+(pose===3?'✓':'⇢')+'</button></div>'+
+ const pose=s.pose,p=rodinGeometry(s),path=rodinPaths(p);
+ const svg='<svg class="mf-svg mf-thinker-svg" viewBox="0 0 320 240" role="img" aria-label="'+safe(t.title)+'"><defs><linearGradient id="mf-bronze"><stop stop-color="#b68b66"/><stop offset=".55" stop-color="#746e63"/><stop offset="1" stop-color="#3e5855"/></linearGradient></defs><rect width="320" height="240" fill="#e8e2d0"/><path d="M80 212H240" stroke="#b9aa93" stroke-width="9"/><path d="M106 158H182V216" stroke="#65726a" stroke-width="16" fill="none"/><g class="mf-pose-motion"><path class="mf-rodin-leg" d="'+path.legs+'" stroke="#435b56" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path class="mf-rodin-torso" d="'+path.torso+'" stroke="url(#mf-bronze)" stroke-width="34" stroke-linecap="round"/><path class="mf-rodin-arm" d="'+path.arm+'" stroke="#b29072" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle class="mf-rodin-head" cx="'+p.head[0]+'" cy="'+p.head[1]+'" r="24" fill="#a78e73" stroke="#6c6255" stroke-width="4"/></g>'+(pose>=3||(s.moves||[]).length>=3?'<path class="mf-thought" d="M184 52Q224 15 255 52" fill="none" stroke="#d5a45b" stroke-width="4" stroke-dasharray="6 6"/><text x="255" y="29" font-size="25" fill="#a57853">?</text>':'')+'</svg>';
+ const handles=['head','elbow','hand','knee'].map((name,i)=>'<button class="mf-joint-handle mf-joint-'+name+'" type="button" data-mf-drag="joint" data-joint="'+name+'" style="left:'+(p[name][0]/320*100)+'%;top:'+(p[name][1]/240*100)+'%" aria-label="'+safe(name)+' '+safe(t.title)+'">'+['◌','↷','✋','⌁'][i]+'</button>').join('');
+ return '<div class="mf-board mf-rodin" data-pose="'+pose+'">'+svg+handles+'<button class="mf-body-handle" type="button" data-mf="pose" data-v="'+(pose+1)+'" aria-label="'+safe(t.title)+' '+(pose+1)+'">'+(pose===3?'✓':'⇢')+'</button></div>'+
  '<div class="mf-controls">'+['①','②','③'].map((v,i)=>button(v,'pose',i+1,pose>=i+1?'active':'')).join('')+'</div>'+
- '<div class="mf-meter">'+safe(t.count)+' <b>'+pose+'/3</b></div>';
+ '<div class="mf-meter">'+safe(t.count)+' <b>'+Math.max(pose,(s.moves||[]).length)+'/3</b></div>';
+}
+function updateRodinLive(s){
+ const p=rodinGeometry(s),path=rodinPaths(p),board=document.querySelector('.mf-rodin');if(!board)return;
+ const set=(selector,a,v)=>{const e=board.querySelector(selector);if(e)e.setAttribute(a,v)};
+ set('.mf-rodin-torso','d',path.torso);set('.mf-rodin-arm','d',path.arm);set('.mf-rodin-leg','d',path.legs);
+ set('.mf-rodin-head','cx',p.head[0]);set('.mf-rodin-head','cy',p.head[1]);
+ for(const name of ['head','elbow','hand','knee']){const e=board.querySelector('.mf-joint-'+name);if(e){e.style.left=(p[name][0]/320*100)+'%';e.style.top=(p[name][1]/240*100)+'%'}}
 }
 function cragg(s,t){
  const profiles=['M57 30Q78 12 91 40L99 50L90 59Q93 93 67 110','M131 27Q153 21 166 45L169 61L159 69Q164 96 139 117','M204 28Q229 21 243 47L252 63L241 72Q237 96 211 111'];
@@ -178,7 +194,7 @@ case 'fortin':if(act==='add-stroke')s.strokes.push({x:70+s.strokes.length*39,y:4
 case 'eye':if(act==='view'){s.view=Number(v);push(s.views,s.view)}if(act==='eye')s.eye=clamp(s.eye+.2,0,1);break;
 case 'frink':if(act==='select-guardian')s.selectedGuardian=Number(v);if(act==='guardian'){const n=Number(v),occupant=s.guardians.indexOf(n);if(occupant>=0)s.selectedGuardian=occupant;else{let idx=s.guardians.indexOf(-1);if(idx<0)idx=s.selectedGuardian??0;s.guardians[idx]=n;s.selectedGuardian=idx===0?1:0;s.facing=[false,false]}}if(act==='face'){const i=Number(v);if(s.guardians.every(x=>x>=0))s.facing[i]=!s.facing[i]}break;
 case 'riopelle':if(act==='base'){s.base=v;s.anchor=false}if(act==='piece'){push(s.pieces,v);s.anchor=false}if(act==='anchor'&&s.base&&new Set(s.pieces).size>=3)s.anchor=true;break;
-case 'rodin':if(act==='pose'&&Number(v)===s.pose+1)s.pose++;break;
+case 'rodin':if(act==='pose'&&Number(v)===s.pose+1){s.pose++;s.joints=null}break;
 case 'cragg':if(act==='angle')s.angle=Number(v);if(act==='turn')s.angle=clamp(s.angle+(v==='left'?-15:15),-45,45);if(act==='reveal'){const n=Number(v);if(n===Math.min(2,Math.max(0,Math.round((s.angle+45)/45))))push(s.faces,n)}break;
 }redraw(c)
 }
@@ -190,10 +206,10 @@ document.addEventListener('pointerdown',ev=>{
  const kind=node.dataset.mfDrag;
  // Placing and revealing a symbol is a click, not a painting drag.
  if(ev.target.closest('[data-mf]')&&['sweep','rotate'].includes(kind))return;
- const map={sweep:'marrel',point:'witte',sky:'fortin',sun:'fortin',eye:'eye',rotate:'cragg',guardian:'frink'};
+ const map={sweep:'marrel',point:'witte',sky:'fortin',sun:'fortin',eye:'eye',rotate:'cragg',guardian:'frink',joint:'rodin'};
  if(map[kind]!==c.id)return;
  const r=node.closest('.mf-board')?.getBoundingClientRect();if(!r)return;
- drag={c,kind,node,rect:r,startX:ev.clientX,startY:ev.clientY,lastX:ev.clientX,lastY:ev.clientY,distance:0,guardian:Number(node.dataset.v)};
+ drag={c,kind,node,rect:r,startX:ev.clientX,startY:ev.clientY,lastX:ev.clientX,lastY:ev.clientY,distance:0,guardian:Number(node.dataset.v),joint:node.dataset.joint};
  if(kind==='sweep'){c.s.rubs??=[];c.s.rubs.push([]);drag.rubIndex=c.s.rubs.length-1}
  try{node.setPointerCapture(ev.pointerId)}catch(_){}
  ev.preventDefault();
@@ -208,12 +224,14 @@ document.addEventListener('pointermove',ev=>{
  if(d.kind==='rotate'){s.angle=clamp(s.angle+dx*.65,-45,45);const sculpture=document.querySelector('.mf-turntable');if(sculpture)sculpture.style.setProperty('--turn',(s.angle*1.72)+'deg')}
  if(d.kind==='sweep'){s.sweep=clamp(s.sweep+Math.hypot(dx,dy)*.34,0,150);const p=[Math.round(clamp((ev.clientX-r.left)/r.width*320,0,320)),Math.round(clamp((ev.clientY-r.top)/r.height*245,0,245))];const rub=s.rubs[d.rubIndex];if(rub&&rub.length<350){rub.push(p);const path=document.getElementById('mf-rub-'+d.rubIndex);if(path)path.setAttribute('d',rub.map((xy,i)=>(i?'L':'M')+xy[0]+' '+xy[1]).join(' '))}}
  if(d.kind==='sky'){const x=clamp((ev.clientX-r.left)/r.width*320,10,205),y=clamp((ev.clientY-r.top)/r.height*245,10,130);d.x=x;d.y=y}
- if(d.kind==='guardian'&&d.distance>7)d.node.style.left=clamp((ev.clientX-r.left)/r.width*100,12,88)+'%'
+ if(d.kind==='guardian'&&d.distance>7)d.node.style.left=clamp((ev.clientX-r.left)/r.width*100,12,88)+'%';
+ if(d.kind==='joint'){s.joints??=rodinGeometry(s);const p=s.joints[d.joint];if(p){p[0]=Math.round(clamp((ev.clientX-r.left)/r.width*320,65,255));p[1]=Math.round(clamp((ev.clientY-r.top)/r.height*240,19,217));updateRodinLive(s)}}
 },true);
 function end(ev){
  const d=drag;if(!d)return;drag=null;
  if(d.kind==='sky'&&d.distance>=28)d.c.s.strokes.push({x:d.x||30,y:d.y||40});
  if(d.kind==='sweep'&&d.distance>=8)d.c.s.sweep=clamp(d.c.s.sweep+8,0,150);
+ if(d.kind==='joint'&&d.distance>=11)push(d.c.s.moves,d.joint);
  if(d.kind==='guardian'&&d.distance>=16){const pts=[13,31,50,69,87],x=(ev.clientX-d.rect.left)/d.rect.width*100,n=pts.reduce((best,p,i)=>Math.abs(p-x)<Math.abs(pts[best]-x)?i:best,0);if(!d.c.s.guardians.includes(n)||d.c.s.guardians[d.guardian]===n){d.c.s.guardians[d.guardian]=n;d.c.s.facing=[false,false];d.c.s.selectedGuardian=d.guardian}}
  redraw(d.c);
 }
@@ -229,6 +247,7 @@ document.addEventListener('keydown',ev=>{
  if(k==='sky')s.strokes.push({x:35+(s.strokes.length%3)*35,y:30+s.strokes.length*14});
  if(k==='eye')s.eye=clamp(s.eye+.22,0,1);
  if(k==='guardian')s.selectedGuardian=Number(node.dataset.v);
+ if(k==='joint'){s.joints??=rodinGeometry(s);const p=s.joints[node.dataset.joint];if(p){p[0]=clamp(p[0]+(ev.key==='ArrowLeft'?-10:ev.key==='ArrowRight'?10:0),65,255);p[1]=clamp(p[1]+(ev.key==='ArrowUp'?-10:ev.key==='ArrowDown'?10:0),19,217);push(s.moves,node.dataset.joint)}}
  if(k==='rotate')s.angle=clamp(s.angle+45,-45,45);
  redraw(c);
 },true);
