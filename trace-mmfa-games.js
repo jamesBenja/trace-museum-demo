@@ -210,7 +210,7 @@ document.addEventListener('pointerdown',ev=>{
  if(map[kind]!==c.id)return;
  const r=node.closest('.mf-board')?.getBoundingClientRect();if(!r)return;
  drag={c,kind,node,rect:r,startX:ev.clientX,startY:ev.clientY,lastX:ev.clientX,lastY:ev.clientY,distance:0,guardian:Number(node.dataset.v),joint:node.dataset.joint};
- if(kind==='sweep'){c.s.rubs??=[];c.s.rubs.push([]);drag.rubIndex=c.s.rubs.length-1}
+ if(kind==='sweep'){c.s.rubs??=[];c.s.rubs.push([]);drag.rubIndex=c.s.rubs.length-1;const mask=document.getElementById('mf-brush-mask');if(mask){const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('id','mf-rub-'+drag.rubIndex);path.setAttribute('fill','none');path.setAttribute('stroke','#000');path.setAttribute('stroke-width','48');path.setAttribute('stroke-linecap','round');path.setAttribute('stroke-linejoin','round');mask.appendChild(path)}}
  try{node.setPointerCapture(ev.pointerId)}catch(_){}
  ev.preventDefault();
 },true);
