@@ -6,7 +6,8 @@
 const STORE='trace-route-plan-v1',S={museum:null,mode:'quick',selected:[],focus:null,start:'entrance',expanded:false,stepFree:true};
 const MAPS={
  mmfa:{url:'https://www.mbam.qc.ca/en/mmfa-museum-map/',title:'MMFA official museum map (2026)',entrance:'Main entrance, Jean-Noël Desmarais Pavilion, level 1',startRoom:'mmfa-entrance',description:'Five connected pavilions and an outdoor sculpture garden'},
- pamm:{url:'https://www.pamm.org/wp-content/uploads/2025/12/web_map_2025.pdf',title:'PAMM visitor floor plan (2025)',entrance:'Visitor Services Center 1, Floor 1',startRoom:'pamm-1',description:'Numbered first-floor galleries and second-floor galleries'}
+ pamm:{url:'https://www.pamm.org/wp-content/uploads/2025/12/web_map_2025.pdf',title:'PAMM visitor floor plan (2025)',entrance:'Visitor Services Center 1, Floor 1',startRoom:'pamm-1',description:'Numbered first-floor galleries and second-floor galleries'},
+ moma:{url:'https://www.moma.org/visit/guide/map',title:'MoMA official visitor map',entrance:'53rd Street main entrance, Rockefeller Building',startRoom:'moma-entry',description:'Midtown Manhattan museum with galleries across several floors and a sculpture garden'}
 };
 const esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 let stored={};
