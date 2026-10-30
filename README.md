@@ -1,6 +1,6 @@
-# TRACE v2.5: Three-museum art adventures, including MoMA New York
+# TRACE v2.6: Three-museum art adventures, including MoMA New York
 
-**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=25
+**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=26
 
 **Official MMFA map:** https://www.mbam.qc.ca/en/mmfa-museum-map/
 
@@ -15,6 +15,14 @@ TRACE is an independent pilot concept with **eight real collection artworks each
 For paintings and photographs with calibrated image references, the camera scan remains the primary matching method. After requesting a hint, **Compare visually with museum reference** becomes available for every artwork. The same option appears if an automatic scan fails or the camera is unavailable. Sculptures and newer works without validated reference images use **visitor self-confirmation** from the beginning. This is always labelled clearly and never presented as automatic verification.
 
 On the visual comparison screen, visitors can **take or select one photo (optional)** and compare it alongside the museum's collection image. They may also visually confirm without taking a photo, including when museum photography is not permitted. Only explicit visitor confirmation advances the story. This is a visitor-assisted comparison, **not automatic recognition or a 3D scan**. Uploaded photos stay on the device and may be saved in the visitor's local discovery album once confirmed. A future multi-angle recognition feature would require curated reference photography and validation, not extra photo steps for visitors.
+
+## v2.6: Oppenheim tea-set visual reconstruction
+
+Following a user review, the *Object* game no longer uses a teacup emoji or geometric squiggles. **All three objects are individually drawn SVG illustrations**: a rounded teacup with a hollow rim and dimensional handle, a shallow elliptical saucer with a recessed centre and raised lip, and a recognizable spoon with an elongated handle and shaped bowl. Each shape is shaded and carries an independent material coating.
+
+The selected textures now **fill the cup, saucer, and spoon themselves**, including cup handles, saucer faces, spoon bowls and stems. Fur also generates numerous fibres **outside the object's silhouette**, instead of changing its background. Other materials, including velvet, feathers, metal, ice, grass and spikes, use custom procedural SVG patterns, shading and edge effects. Users still drag a swatch onto any object or tap a swatch then an object. The emotional-response conclusion and full trilingual lesson remain intact.
+
+A dedicated screenshot-based browser regression test checks that each of the eight materials changes the actual illustrated SVG, and that applying a material to one object does not alter the others, at both 320 px and 390 px phone widths.
 
 ## v2.5: Eight redesigned MoMA art games
 
