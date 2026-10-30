@@ -187,10 +187,10 @@ function download(){
 }
 document.addEventListener('change',ev=>{
  const el=ev.target,ids=['td-active','td-verified','td-room','td-start','td-end'];
- for(const f of ids)if(el.dataset[f]!==undefined){
+ for(const f of ids)if(el.hasAttribute('data-'+f)){
   const field={'td-active':'active','td-verified':'onViewVerified','td-room':'room','td-start':'startDate','td-end':'endDate'}[f];
   const view=document.getElementById('view'),previous=view?.scrollTop||0;
-  setField(el.dataset[f],field,f==='td-active'||f==='td-verified'?el.checked:el.value);
+  setField(el.getAttribute('data-'+f),field,f==='td-active'||f==='td-verified'?el.checked:el.value);
   if(view)view.scrollTop=previous;
   return;
  }
