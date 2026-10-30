@@ -17,6 +17,16 @@ const DETAILS={
  'pamm-delano':{shapes:['A winding road through the scene','Rows and shapes of houses'],light:['A dramatic sky over the houses','Light and shadow in the landscape'],stories:['Homes connected by a road','A documentary view of daily life']},
  'pamm-grid':{shapes:['Stacked rectangular sections','Small symbols drawn inside a grid'],light:['Dark graphite lines','Light blank space around marks'],stories:['Signs that feel like an alphabet','A drawing that suggests a map']}
 };
+/* New sculpture chapters use grounded, medium-specific comparison prompts. */
+for(const art of [...mmfa,...pamm]){
+ if(DETAILS[art.id])continue;
+ DETAILS[art.id]={
+  shapes:[art.kind==='sculpture'?'The three-dimensional outline of the object':'How different materials are arranged','The shapes and space around this work'],
+  light:['The material changes how the light looks','Highlights, shadows, and what they reveal'],
+  stories:[art.chapter,'Why the artist chose '+art.medium.toLowerCase()]
+ };
+}
+
 const STORIES={
  mmfa:{
  '0-1':{shapes:'Marrel fills a vase with curving natural forms. De Witte makes a room feel deep through repeated doorways and floor lines.',light:'Marrel uses tiny bright highlights on flowers. De Witte uses interior light and shadows to make an imagined room feel real.',stories:'A still-life painting invites you to discover hidden creatures; a room painting invites you to imagine the life happening just outside its doors.'},
@@ -58,7 +68,7 @@ function header(){return '<div class="tb-top"><div class="t1-overline">BONUS MYS
 function chooseScreen(){
  const works=solved(),picked=new Set(S.selected);
  return '<div class="tb-screen">'+header()+mascot('Pick any two discoveries. You can connect a new pair every time you explore.')+
- '<div class="tb-summary"><span>✦ '+links().length+' connections collected</span><span>'+Math.min(3,works.length*(works.length-1)/2)+' possible now</span></div>'+
+ '<div class="tb-summary"><span>✦ '+links().length+' connections collected</span><span>'+works.length*(works.length-1)/2+' possible now</span></div>'+
  '<div class="tb-pairs">'+works.map(a=>'<button data-bonus-pick="'+a.id+'" class="'+(picked.has(a.id)?'selected':'')+'" type="button"><img src="'+img(a)+'" alt=""><span><strong>'+esc(a.artist)+'</strong><small>'+esc(a.name)+'</small><small>'+ (picked.has(a.id)?'✓ SELECTED':'Tap to choose')+'</small></span></button>').join('')+'</div>'+
  '<p class="tb-guide">Choose two works. Look for different ways the artists use shape, light and storytelling.</p>'+
  (links().length?'<div class="tb-saved"><b>YOUR DISCOVERED CONNECTIONS</b>'+links().map(k=>{const ids=k.split('-').map(Number);return '<button type="button" data-bonus-pair="'+k+'">✦ '+esc(A[ids[0]]?.artist||'')+' + '+esc(A[ids[1]]?.artist||'')+' <span>↗ Replay</span></button>'}).join('')+'</div>':'')+
@@ -94,7 +104,7 @@ function explore(){
 }
 function reveal(){
  const [a,b]=S.selected.map(id=>A.find(x=>x.id===id));if(!a||!b)return chooseScreen();
- const key=keyNow(),story=STORIES[state.venue][key]?.[S.lens]||'The artworks use different choices to draw your eye. What else can you find?';
+ const key=keyNow(),story=STORIES[state.venue][key]?.[S.lens]||'These artists worked with different materials and forms. '+a.artist+' uses '+a.medium.toLowerCase()+', while '+b.artist+' uses '+b.medium.toLowerCase()+'. What do their choices make you notice?';
  return '<div class="tb-screen"><div class="tb-celebration"><div class="tb-badge-big">✦</div><div class="t1-overline">ART BRIDGE CREATED</div><h2 class="t1-h1">You found a connection!</h2><div class="tb-bridge-names"><span>'+esc(a.artist)+'</span><b>✧</b><span>'+esc(b.artist)+'</span></div><p>'+esc(story)+'</p><div class="tb-stamp">✦ Art Connector badge earned</div></div>'+
  mascot('You looked at two artworks together and found a way to connect them. Try the same pair with another lens, or find a new pair!')+
  '<button class="button" type="button" data-bonus-another>Connect another pair</button>'+
