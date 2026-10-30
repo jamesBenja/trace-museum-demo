@@ -200,7 +200,7 @@ function finishPuzzle(assisted){
  if(!assisted&&!C.done)return;
  const a=A[state.current];
  if(!state.found.includes(a.id))state.found.push(a.id);
- if(a.id==='pamm-grid')prefs.symbols[a.id]=C.points.slice();
+ if(a.id==='pamm-grid')prefs.symbols[a.id]=(window.TRACE_PAMM_GAME?.has(a.id)&&Array.isArray(C.extra?.glyphs)?C.extra.glyphs:C.points).slice();
  persist();stage('success');
 }
 function setDone(message){C.done=true;const el=document.getElementById('t1-finish');if(el)el.disabled=false;const label=document.getElementById('t1-status');if(label)label.textContent=message||'Discovery unlocked. Finish the creative challenge!'}
