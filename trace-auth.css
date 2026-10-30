@@ -45,3 +45,10 @@ body.admin-locked .website{filter:blur(3px);pointer-events:none;user-select:none
 .td-venue-help{margin:11px 0 0;font-size:11px;line-height:1.6;color:#446b59}
 body.admin-mode #venueSwitcher{background:#285d4d;color:#fff;border-color:#174737}
 @media(max-width:365px){.td-venue-panel{padding:11px}.td-venue-option{padding:10px}.td-venue-option strong{font-size:20px}}
+
+/* Global localization remains selectable while the admin sign-in modal is open. */
+.ta-language-picker{display:flex;align-items:center;gap:7px;margin:11px 0 17px;padding:8px;background:#eff4ed;border:1px solid #d1e0d4;border-radius:11px}
+.ta-language-picker>span{margin-right:auto;color:#406f5c;font-size:10px;font-weight:850;letter-spacing:.7px}
+.ta-language-picker button{min-width:40px;min-height:37px;border-radius:8px;background:#fff;color:#285b4c;font-size:11px;font-weight:900;border:1px solid #b6d0c1}
+.ta-language-picker button.active{background:#2a6654;color:#fff}
+.ta-language-picker button:focus-visible{outline:3px solid #dba46c;outline-offset:2px}
