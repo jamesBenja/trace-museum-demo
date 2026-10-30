@@ -1,6 +1,6 @@
-# TRACE v1.9: Playable museum adventures with institutional routing
+# TRACE v1.9.1: Playable museum adventures with institutional routing
 
-**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=19
+**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=191
 
 **Official MMFA map:** https://www.mbam.qc.ca/en/mmfa-museum-map/
 
@@ -14,7 +14,7 @@ TRACE is an independent pilot concept with **eight real collection artworks from
 
 For paintings and photographs with calibrated image references, the camera scan remains the primary matching method. After requesting a hint, **Compare visually with museum reference** becomes available for every artwork. The same option appears if an automatic scan fails or the camera is unavailable. Sculptures and newer works without validated reference images use **visitor self-confirmation** from the beginning. This is always labelled clearly and never presented as automatic verification.
 
-Selected sculptures additionally offer **Explore three viewpoints**. Visitors may take up to three photos (front, left, right) from permitted viewpoints, with previews, then compare these photos against the museum's collection record. At least two photos enable the dedicated comparison action, and an accessible no-photo alternative always remains. Photos remain on the visitor device. This is **guided multi-view observation, not automatic 3D recognition or a reconstructed 3D mesh**. True recognition needs institutionally collected multi-angle reference assets, curator validation, and a separately tested recognition model. Apple RealityKit Object Capture offers 3D photogrammetry on compatible LiDAR devices in a native app, not in this static GitHub Pages browser prototype.
+On the visual comparison screen, visitors can **take or select one photo (optional)** and compare it alongside the museum's collection image. They may also visually confirm without taking a photo, including when museum photography is not permitted. Only explicit visitor confirmation advances the story. This is a visitor-assisted comparison, **not automatic recognition or a 3D scan**. Uploaded photos stay on the device and may be saved in the visitor's local discovery album once confirmed. A future multi-angle recognition feature would require curated reference photography and validation, not extra photo steps for visitors.
 
 ## Visitor experience
 
