@@ -99,7 +99,7 @@ document.addEventListener('click',ev=>{
  const el=ev.target.closest('[data-tw-lang],[data-tw-next],[data-tw-back],[data-tw-skip],[data-tw-auto],[data-tw-voice]');
  if(!el||state.tab!=='quest'||state.stage!=='welcome')return;
  ev.preventDefault();ev.stopImmediatePropagation();
- if(el.dataset.twLang!==undefined){halt();stopVoice();state.lang=el.dataset.twLang;save();window.__traceAppRender?.();if(playing)autoAdvance();return}
+ if(el.dataset.twLang!==undefined){halt();stopVoice();if(window.TRACE_I18N)window.TRACE_I18N.setLanguage(el.dataset.twLang);else{state.lang=el.dataset.twLang;save();window.__traceAppRender?.()}if(playing)autoAdvance();return}
  if(el.dataset.twSkip!==undefined){leave();return}
  if(el.dataset.twNext!==undefined){if(scene===4)leave();else showScene(scene+1);return}
  if(el.dataset.twBack!==undefined){showScene(scene-1);return}
