@@ -1,6 +1,6 @@
-# TRACE v2.6: Three-museum art adventures, including MoMA New York
+# TRACE v2.7: Three-museum art adventures, including MoMA New York
 
-**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=26
+**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=27
 
 **Official MMFA map:** https://www.mbam.qc.ca/en/mmfa-museum-map/
 
@@ -15,6 +15,23 @@ TRACE is an independent pilot concept with **eight real collection artworks each
 For paintings and photographs with calibrated image references, the camera scan remains the primary matching method. After requesting a hint, **Compare visually with museum reference** becomes available for every artwork. The same option appears if an automatic scan fails or the camera is unavailable. Sculptures and newer works without validated reference images use **visitor self-confirmation** from the beginning. This is always labelled clearly and never presented as automatic verification.
 
 On the visual comparison screen, visitors can **take or select one photo (optional)** and compare it alongside the museum's collection image. They may also visually confirm without taking a photo, including when museum photography is not permitted. Only explicit visitor confirmation advances the story. This is a visitor-assisted comparison, **not automatic recognition or a 3D scan**. Uploaded photos stay on the device and may be saved in the visitor's local discovery album once confirmed. A future multi-angle recognition feature would require curated reference photography and validation, not extra photo steps for visitors.
+
+## v2.7: MoMA browser-based camera matching and PAMM interactive lab overhaul
+
+All eight MoMA works now enter the real reference-loading workflow instead of being universally excluded as uncalibrated. The matching library can only activate the camera scan for an artwork if its collection reference image loads, can be decoded and can be read in a canvas. The chapter-specific geometric / colour matcher still requires confidence and never substitutes a guessed match. There is a strict browser test that verifies all eight reference images against their own source and a different artwork before an all-eight-scannable release can be claimed. Image matching is still an experimental prototype and should be tested on visitors' physical camera photographs and gallery lighting before museum use. No visitor photo leaves the device.
+
+PAMM now has eight distinct rebuilt educational labs, with animated original illustrations and a substantial Mica interpretation on both the completion screen and the finished artwork screen:
+
+- *Construction with Two Masks*: build and fill all four grid compartments with distinct symbolic signs, including the previously broken last slot.
+- *Federal Housing Project near Yauco*: investigate road, houses and sky, compare changing light and reflect on documentary photography.
+- *Construction*: compose a six-room graphite alphabet with multiple symbols.
+- *Chaos SAS*: manipulate open-cube positioning, rotation and wobble in an animated balance study.
+- *Column with Objects*: carve and furnish at least four niches in a detailed marble column.
+- *wild wild country*: construct an actual five-part interconnected sculpture with a base, steel sheet, pneumatic hose, dried paint skin and support.
+- *Surrounded Islands*: wrap both islands with moving pink fabric around a sparkling Biscayne Bay.
+- *The Bull Is Out and My Foot Is in My Mouth*: paint layered acrylic, gouache and glitter on an expressive nine-cell canvas.
+
+All games use English, French and Spanish interpretive copy, preserve original visitor discovery/photo checks, and include reduced-motion styling. These are original educational abstractions rather than copies of the physical artworks.
 
 ## v2.6: Oppenheim tea-set visual reconstruction
 
