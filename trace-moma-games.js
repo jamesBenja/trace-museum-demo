@@ -113,7 +113,7 @@ function warhol(s,t){
  (match?'<div class="mg-jackpot">✦ '+h(t.jackpot)+' ✦<div class="mg-pop-grid">'+Array.from({length:9},(_,i)=>'<div style="--i:'+i+'">'+canHtml(s.reels[0],i)+'</div>').join('')+'</div></div>':'');
 }
 function objectPart(name,label,material){
- return '<button class="mg-tea-part mg-tea-'+name+' mg-material-'+material+'" data-mg="apply" data-value="'+name+'" data-mg-drop="'+name+'" aria-label="'+h(label)+'"><span class="mg-tea-shape">'+(name==='cup'?'☕':name==='saucer'?'◡':'⌁')+'</span><small>'+h(label)+'</small></button>';
+ return '<button class="mg-tea-part mg-tea-'+name+' mg-material-'+material+'" data-mg="apply" data-value="'+name+'" data-mg-drop="'+name+'" aria-label="'+h(label)+'"><span class="mg-tea-shape" aria-hidden="true"><span class="mg-tea-object-shine"></span></span><span class="mg-tea-touch-reaction" aria-hidden="true">'+(material==='ice'?'❄':material==='fur'?'✧':material==='spikes'?'⚡':material==='grass'?'✿':material==='feathers'?'❧':'✦')+'</span><small>'+h(label)+'</small></button>';
 }
 function oppenheim(s,t){
  const textureKeys=Object.values(s.textures),n=textureKeys.filter(x=>x!=='ceramic'&&x!=='metal').length;
