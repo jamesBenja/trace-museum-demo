@@ -1,106 +1,5 @@
 {
   "schemaVersion": 1,
-  "mode": "independent-pitch-demo",
-  "updatedAt": "2026-10-29",
-  "description": "Official pavilion/floor or gallery number labels were transcribed from museum-issued 2026 MMFA and 2025 PAMM maps. These do not verify artwork installations or inter-room walking links. Edges must be approved by an administrator. Active means demo route membership, not confirmed on view.",
-  "works": {
-    "mmfa-marrel": {
-      "active": true,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Original pitch demo work; current display status not independently confirmed."
-    },
-    "mmfa-witte": {
-      "active": true,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Original pitch demo work; current display status not independently confirmed."
-    },
-    "mmfa-fortin": {
-      "active": true,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Original pitch demo work; current display status not independently confirmed."
-    },
-    "mmfa-eye": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    },
-    "mmfa-frink": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    },
-    "mmfa-riopelle": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    },
-    "mmfa-rodin": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    },
-    "mmfa-cragg": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    },
-    "pamm-masks": {
-      "active": true,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Original pitch demo work; current display status not independently confirmed."
-    },
-    "pamm-delano": {
-      "active": true,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Original pitch demo work; current display status not independently confirmed."
-    },
-    "pamm-grid": {
-      "active": true,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Original pitch demo work; current display status not independently confirmed."
-    },
-    "pamm-chaos": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    },
-    "pamm-fonseca": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    },
-    "pamm-yanko": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    },
-    "pamm-christo": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    },
-    "pamm-chromati": {
-      "active": false,
-      "onViewVerified": false,
-      "room": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    }
-  },
   "rooms": {
     "mmfa": [
       {
@@ -369,8 +268,137 @@
     "mmfa": [],
     "pamm": []
   },
-  "floorPlans": {
-    "mmfa": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
-    "pamm": "https://www.pamm.org/wp-content/uploads/2025/12/web_map_2025.pdf"
+  "mode": "independent-pitch-demo",
+  "updatedAt": "2026-10-30T02:17:02.213Z",
+  "description": "Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.",
+  "works": {
+    "mmfa-marrel": {
+      "active": true,
+      "onViewVerified": true,
+      "room": "mmfa-peace-2",
+      "startDate": "2026-10-29",
+      "endDate": "",
+      "note": "Original pitch demo work; current display status not independently confirmed."
+    },
+    "mmfa-witte": {
+      "active": true,
+      "onViewVerified": true,
+      "room": "mmfa-peace-3",
+      "startDate": "",
+      "endDate": "",
+      "note": "Original pitch demo work; current display status not independently confirmed."
+    },
+    "mmfa-fortin": {
+      "active": true,
+      "onViewVerified": true,
+      "room": "mmfa-bourgie-4",
+      "startDate": "",
+      "endDate": "",
+      "note": "Original pitch demo work; current display status not independently confirmed."
+    },
+    "mmfa-eye": {
+      "active": true,
+      "onViewVerified": true,
+      "room": "mmfa-garden",
+      "startDate": "",
+      "endDate": "",
+      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+    },
+    "mmfa-frink": {
+      "active": true,
+      "onViewVerified": true,
+      "room": "mmfa-garden",
+      "startDate": "",
+      "endDate": "",
+      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+    },
+    "mmfa-riopelle": {
+      "active": true,
+      "onViewVerified": true,
+      "room": "mmfa-bourgie-3",
+      "startDate": "",
+      "endDate": "",
+      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+    },
+    "mmfa-rodin": {
+      "active": true,
+      "onViewVerified": true,
+      "room": "mmfa-bourgie-1",
+      "startDate": "",
+      "endDate": "",
+      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+    },
+    "mmfa-cragg": {
+      "active": true,
+      "onViewVerified": true,
+      "room": "mmfa-bourgie-2",
+      "startDate": "",
+      "endDate": "",
+      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+    },
+    "pamm-masks": {
+      "active": true,
+      "onViewVerified": false,
+      "room": "",
+      "startDate": "",
+      "endDate": "",
+      "note": "Original pitch demo work; current display status not independently confirmed."
+    },
+    "pamm-delano": {
+      "active": true,
+      "onViewVerified": false,
+      "room": "",
+      "startDate": "",
+      "endDate": "",
+      "note": "Original pitch demo work; current display status not independently confirmed."
+    },
+    "pamm-grid": {
+      "active": true,
+      "onViewVerified": false,
+      "room": "",
+      "startDate": "",
+      "endDate": "",
+      "note": "Original pitch demo work; current display status not independently confirmed."
+    },
+    "pamm-chaos": {
+      "active": false,
+      "onViewVerified": false,
+      "room": "",
+      "startDate": "",
+      "endDate": "",
+      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+    },
+    "pamm-fonseca": {
+      "active": false,
+      "onViewVerified": false,
+      "room": "",
+      "startDate": "",
+      "endDate": "",
+      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+    },
+    "pamm-yanko": {
+      "active": false,
+      "onViewVerified": false,
+      "room": "",
+      "startDate": "",
+      "endDate": "",
+      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+    },
+    "pamm-christo": {
+      "active": false,
+      "onViewVerified": false,
+      "room": "",
+      "startDate": "",
+      "endDate": "",
+      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+    },
+    "pamm-chromati": {
+      "active": false,
+      "onViewVerified": false,
+      "room": "",
+      "startDate": "",
+      "endDate": "",
+      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+    }
   }
 }
