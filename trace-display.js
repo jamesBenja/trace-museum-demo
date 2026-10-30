@@ -4,10 +4,11 @@
    it on the CURRENT BROWSER only; curators export and deploy JSON to publish. */
 (function(){
 'use strict';
-const URL='display-status.json',STORE='trace-display-admin-draft-v1';
+const URL='https://raw.githubusercontent.com/jamesBenja/trace-museum-demo/main/display-status.json',STORE='trace-display-admin-draft-v1';
 const ORIGINAL=['mmfa-marrel','mmfa-witte','mmfa-fortin','pamm-masks','pamm-delano','pamm-grid'];
 let published={schemaVersion:1,mode:'independent-pitch-demo',updatedAt:'',works:{}};
-let draft=null,loading=true,error='';
+let draft=null,loading=true,error='',syncError='',publishStatus='',publishing=false,lastSync=0;
+const admin=()=>window.TRACE_AUTH?.isAdmin()===true;
 const h=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const sourceWorks=()=>[...mmfa,...pamm];
 const validWork=id=>sourceWorks().some(a=>a.id===id);
@@ -50,7 +51,7 @@ function clean(input){
 }
 published=clean(published);
 try{const x=JSON.parse(localStorage.getItem(STORE)||'null');if(x&&x.schemaVersion===1)draft=clean(x)}catch(e){}
-function manifest(){return draft||published}
+function manifest(){return admin()&&draft?draft:published}
 function rec(id){return manifest().works[id]||defaultRec(id)}
 function today(venue){
  const tz=venue==='pamm'?'America/New_York':'America/Toronto';
@@ -60,13 +61,13 @@ function today(venue){
  }catch(e){return new Date().toISOString().slice(0,10)}
 }
 function isActive(id){
- if(!validWork(id))return false;
+ if(!validWork(id)||loading||syncError)return false;
  const r=rec(id),venue=id.startsWith('pamm-')?'pamm':'mmfa',date=today(venue);
  return !!(r.active&&(!r.startDate||date>=r.startDate)&&(!r.endDate||date<=r.endDate));
 }
 function activeWorks(venue){return (venue==='pamm'?pamm:mmfa).filter(a=>isActive(a.id))}
 function isVerified(id){return rec(id).onViewVerified===true}
-function room(id){return isVerified(id)?rec(id).room:''}
+function room(id){return rec(id).room||''}
 function isDraft(){return draft!==null}
 function renderApp(){if(typeof window.__traceAppRender==='function')window.__traceAppRender()}
 function afterUpdate(){
@@ -80,9 +81,9 @@ function afterUpdate(){
  renderApp();
  if(typeof window.TRACE_LOAD_ACTIVE==='function')Promise.resolve().then(()=>window.TRACE_LOAD_ACTIVE()).catch(e=>console.error('Matcher refresh failed:',e));
 }
-function setDraft(){if(!draft)draft=clean(published);return draft}
+function setDraft(){if(!admin())throw Error('Administrator sign-in required');if(!draft)draft=clean(published);return draft}
 function setField(id,field,value){
- if(!validWork(id)||!['active','onViewVerified','room','startDate','endDate'].includes(field))return;
+ if(!admin()||!validWork(id)||!['active','onViewVerified','room','startDate','endDate'].includes(field))return;
  const x=setDraft(),r=x.works[id];
  if(field==='active'||field==='onViewVerified')r[field]=!!value;
  else if(field==='room')r.room=String(value).slice(0,100);
@@ -96,7 +97,7 @@ function setField(id,field,value){
 function rooms(venue){return (manifest().rooms?.[venue]||[]).map(x=>({...x}))}
 function connections(venue){return (manifest().connections?.[venue]||[]).map(x=>({...x}))}
 function alterRooms(venue,operation,data){
- if(!['mmfa','pamm'].includes(venue))return false;
+ if(!admin()||!['mmfa','pamm'].includes(venue))return false;
  const x=setDraft();
  if(operation==='add'){
   const label=String(data?.label||'').trim().slice(0,100),floor=String(data?.floor||'').trim().slice(0,50),wing=String(data?.wing||'').trim().slice(0,100);
@@ -108,7 +109,7 @@ function alterRooms(venue,operation,data){
   const id=String(data?.id||'');
   x.rooms[venue]=x.rooms[venue].filter(v=>v.id!==id);
   x.connections[venue]=x.connections[venue].filter(v=>v.from!==id&&v.to!==id);
-  for(const a of sourceWorks())if(a.museum===venue&&x.works[a.id].room===id)x.works[a.id].room='';
+  for(const a of sourceWorks())if(a.id.startsWith(venue+'-')&&x.works[a.id].room===id)x.works[a.id].room='';
  }
  if(operation==='connect'){
   const from=String(data?.from||''),to=String(data?.to||'');
@@ -131,6 +132,7 @@ function statusLabel(id){
  return r.onViewVerified?'In route · on-display staff confirmation entered':'In demo route · display unverified';
 }
 function adminUI(){
+ if(!admin())return '<div class="td-screen"><h2>Administrator sign-in required</h2></div>';
  const venue=state.venue,arts=venue==='pamm'?pamm:mmfa;
  const rows=arts.map(a=>{
   const r=rec(a.id),enabled=isActive(a.id),verified=r.onViewVerified;
@@ -146,6 +148,7 @@ function adminUI(){
  }).join('');
  return '<div class="td-screen"><div class="t1-overline">TRACE · MUSEUM ADMINISTRATOR PREVIEW</div><h2>Manage works on display</h2>'+
  '<p class="td-intro">Your live game can include up to eight collection works per museum. Turn individual works on or off, enter confirmed rooms, and schedule display windows. A work that is off the route disappears from playable quests and scan recognition, but earlier discoveries remain in the visitor passport.</p>'+
+ (window.TRACE_AUTH?.adminControls()||'')+
  '<div class="td-kpis"><div><b>'+count(venue)+' / '+arts.length+'</b><span>Playable in this preview</span></div><div><b>'+arts.filter(a=>isActive(a.id)&&isVerified(a.id)).length+'</b><span>Marked display-confirmed</span></div></div>'+
  '<div class="td-mode '+(draft?'td-draft':'')+'">'+(draft?'<strong>LOCAL ADMIN DRAFT</strong><p>Your edits are active in this browser only. Visitors on other devices see the published catalogue until you deploy it.</p>':
  '<strong>PUBLISHED DEMO CONFIGURATION</strong><p>You are viewing the current public artwork configuration. Changing a switch creates a local preview draft.</p>')+'</div>'+
@@ -196,10 +199,11 @@ document.addEventListener('change',ev=>{
  }
 });
 document.addEventListener('click',ev=>{
- const button=ev.target.closest('[data-td-export],[data-td-copy],[data-td-reset]');
+ const button=ev.target.closest('[data-td-publish],[data-td-export],[data-td-copy],[data-td-reset]');
  if(!button)return;
  if(button.tagName==='A'&&button.dataset.tdExport!==undefined)return;
  ev.stopImmediatePropagation();ev.preventDefault();
+ if(button.dataset.tdPublish!==undefined){publish();return}
  if(button.dataset.tdExport!==undefined){download();return}
  if(button.dataset.tdCopy!==undefined){
   if(navigator.clipboard?.writeText)navigator.clipboard.writeText(exportJSON()).then(()=>{button.textContent='✓ Copied JSON'}).catch(()=>{button.textContent='Use Download JSON instead'});
@@ -213,6 +217,8 @@ document.addEventListener('click',ev=>{
   afterUpdate();
  }
 },true);
-window.TRACE_DISPLAY={isActive,activeWorks,count,isVerified,room,rooms,connections,alterRooms,rec,adminUI,visitorNotice,setField,statusLabel,load,exportJSON,get draft(){return draft},get published(){return published},get loading(){return loading},get error(){return error}};
+window.TRACE_DISPLAY={isActive,activeWorks,count,isVerified,room,rooms,connections,alterRooms,rec,adminUI,visitorNotice,setField,statusLabel,load,publish,exportJSON,get draft(){return draft},get published(){return published},get loading(){return loading},get error(){return error},get syncError(){return syncError},get publishing(){return publishing}};
 load();
+setInterval(()=>{if(!draft&&!document.hidden&&Date.now()-lastSync>45000)load()},60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!draft&&Date.now()-lastSync>30000)load()});
 })();
