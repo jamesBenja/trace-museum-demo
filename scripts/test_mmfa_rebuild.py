@@ -36,6 +36,7 @@ with sync_playwright() as pw:
  r=page.goto(URL,wait_until="domcontentloaded",timeout=45000)
  assert r.status==200
  page.wait_for_function("window.TRACE_DISPLAY && !window.TRACE_DISPLAY.loading && window.TRACE_MMFA_GAME && window.TRACE_V1",timeout=45000)
+ page.wait_for_function("window.__traceRefsFinished === true",timeout=60000)
  assert page.evaluate("state.venue")=="mmfa"
  assert page.evaluate("A.map(a=>a.id)") == ["mmfa-"+x for x in names]
  for i,name in enumerate(names):
