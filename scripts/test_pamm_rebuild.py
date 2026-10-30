@@ -83,7 +83,7 @@ with sync_playwright() as pw:
   finish.click()
   assert page.evaluate('state.stage')=='success'
   if name=='grid':
-   assert page.evaluate("(prefs.symbols['pamm-grid']||[]).filter(Boolean).length")>=5, 'New graphite alphabet must be saved in journal'
+   assert page.evaluate("(window.TRACE_V1.prefs.symbols['pamm-grid']||[]).filter(Boolean).length")>=5, 'New graphite alphabet must be saved in journal'
   assert page.locator('.pg-mica-conclusion').count()==1,"Mica conclusion must be present on completed screen"
   print('REDESIGNED PAMM GAME',name,'MICA CONCLUSION PASSED',flush=True)
  for lang in ['en','fr','es']:
