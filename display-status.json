@@ -262,14 +262,71 @@
         "wing": "Galleries",
         "floor": "2"
       }
+    ],
+    "moma": [
+      {
+        "id": "moma-entry",
+        "label": "Main entrance, West 53rd Street",
+        "wing": "Rockefeller Building",
+        "floor": "1"
+      },
+      {
+        "id": "moma-501",
+        "label": "Gallery 501 · The Starry Night",
+        "wing": "Alfred H. Barr, Jr. Galleries",
+        "floor": "5"
+      },
+      {
+        "id": "moma-506",
+        "label": "Gallery 506 · Dance (I)",
+        "wing": "Alfred H. Barr, Jr. Galleries",
+        "floor": "5"
+      },
+      {
+        "id": "moma-515",
+        "label": "Gallery 515 · Water Lilies",
+        "wing": "David Geffen Wing",
+        "floor": "5"
+      },
+      {
+        "id": "moma-412",
+        "label": "Gallery 412 · Campbell's Soup Cans",
+        "wing": "David Geffen Wing",
+        "floor": "4"
+      },
+      {
+        "id": "moma-517",
+        "label": "Gallery 517 · Surrealist Objects",
+        "wing": "Alfred H. Barr, Jr. Galleries",
+        "floor": "5"
+      },
+      {
+        "id": "moma-405",
+        "label": "Gallery 405 · Acting Out",
+        "wing": "David Geffen Galleries",
+        "floor": "4"
+      },
+      {
+        "id": "moma-six",
+        "label": "Floor 6 · Brancusi presentation",
+        "wing": "MoMA",
+        "floor": "6"
+      },
+      {
+        "id": "moma-414",
+        "label": "Gallery 414 · Wipe Cycle",
+        "wing": "MoMA",
+        "floor": "4"
+      }
     ]
   },
   "connections": {
     "mmfa": [],
-    "pamm": []
+    "pamm": [],
+    "moma": []
   },
   "mode": "independent-pitch-demo",
-  "updatedAt": "2026-10-30T02:33:59.577Z",
+  "updatedAt": "2026-10-30T00:00:00.000Z",
   "description": "Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.",
   "works": {
     "mmfa-marrel": {
@@ -399,6 +456,70 @@
       "startDate": "",
       "endDate": "",
       "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+    },
+    "moma-starry": {
+      "active": true,
+      "onViewVerified": false,
+      "room": "moma-501",
+      "startDate": "",
+      "endDate": "",
+      "note": "MoMA online collection listed this work on view in Oct 2026. Gallery is a proposed assignment from the online record; museum staff must reverify before providing live visitor directions."
+    },
+    "moma-dance": {
+      "active": true,
+      "onViewVerified": false,
+      "room": "moma-506",
+      "startDate": "",
+      "endDate": "",
+      "note": "MoMA online collection listed this work on view in Oct 2026. Gallery is a proposed assignment from the online record; museum staff must reverify before providing live visitor directions."
+    },
+    "moma-lilies": {
+      "active": true,
+      "onViewVerified": false,
+      "room": "moma-515",
+      "startDate": "",
+      "endDate": "",
+      "note": "MoMA online collection listed this work on view in Oct 2026. Gallery is a proposed assignment from the online record; museum staff must reverify before providing live visitor directions."
+    },
+    "moma-warhol": {
+      "active": true,
+      "onViewVerified": false,
+      "room": "moma-412",
+      "startDate": "",
+      "endDate": "",
+      "note": "MoMA online collection listed this work on view in Oct 2026. Gallery is a proposed assignment from the online record; museum staff must reverify before providing live visitor directions."
+    },
+    "moma-oppenheim": {
+      "active": true,
+      "onViewVerified": false,
+      "room": "moma-517",
+      "startDate": "",
+      "endDate": "",
+      "note": "MoMA online collection listed this work on view in Oct 2026. Gallery is a proposed assignment from the online record; museum staff must reverify before providing live visitor directions."
+    },
+    "moma-tinguely": {
+      "active": true,
+      "onViewVerified": false,
+      "room": "moma-405",
+      "startDate": "",
+      "endDate": "",
+      "note": "MoMA online collection listed this work on view in Oct 2026. Gallery is a proposed assignment from the online record; museum staff must reverify before providing live visitor directions."
+    },
+    "moma-brancusi": {
+      "active": true,
+      "onViewVerified": false,
+      "room": "moma-six",
+      "startDate": "",
+      "endDate": "",
+      "note": "MoMA online collection listed this work on view in Oct 2026. Gallery is a proposed assignment from the online record; museum staff must reverify before providing live visitor directions."
+    },
+    "moma-lamelas": {
+      "active": true,
+      "onViewVerified": false,
+      "room": "moma-414",
+      "startDate": "",
+      "endDate": "",
+      "note": "MoMA online collection listed this work on view in Oct 2026. Gallery is a proposed assignment from the online record; museum staff must reverify before providing live visitor directions."
     }
   }
 }
