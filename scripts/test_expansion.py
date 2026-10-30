@@ -13,9 +13,23 @@ with sync_playwright() as p:
   page=browser.new_page(viewport={'width':390,'height':844})
   errors=[]
   page.on('pageerror',lambda e:errors.append(str(e)))
-  res=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
+  def fake_github(route):
+   path=route.request.url
+   if path.endswith('/user'):
+    route.fulfill(status=200,content_type='application/json',headers={'Access-Control-Allow-Origin':'*'},body='{"login":"trace-test-editor"}')
+   elif '/contents/display-status.json' in path:
+    route.fulfill(status=200,content_type='application/json',headers={'Access-Control-Allow-Origin':'*'},body='{"sha":"mock-read-sha","content":"e30="}')
+   else:
+    route.continue_()
+  page.route('https://api.github.com/**',fake_github)
+  admin_url=URL+('&portal=admin' if '?' in URL else '?portal=admin')
+  res=page.goto(admin_url,wait_until='domcontentloaded',timeout=45000)
   assert res and res.status==200, 'HTTP error'
-  assert 'v1.6' in page.title(),page.title()
+  assert 'v1.7' in page.title(),page.title()
+  page.locator('#traceAdminToken').fill('mock-write-token')
+  page.locator('#traceAdminSubmit').click()
+  page.locator('#traceAdminLogin').wait_for(state='detached',timeout=18000)
+  assert page.evaluate('window.TRACE_AUTH.isAdmin()')
   page.wait_for_function("window.TRACE_EXTRA && window.TRACE_V1 && document.querySelector('#status')?.textContent.includes('IMAGE REFERENCES')",timeout=50000)
   if museum=='pamm':
    page.locator('#venueSwitcher').click()
