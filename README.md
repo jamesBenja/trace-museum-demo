@@ -1,6 +1,6 @@
-# TRACE v2.2: Three-museum art adventures, including MoMA New York
+# TRACE v2.3: Three-museum art adventures, including MoMA New York
 
-**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=22
+**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=23
 
 **Official MMFA map:** https://www.mbam.qc.ca/en/mmfa-museum-map/
 
