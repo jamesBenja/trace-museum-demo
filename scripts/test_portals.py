@@ -60,8 +60,8 @@ with sync_playwright() as p:
       body='{"message":"Conflict; please refresh"}')
      return
     data=json.loads(base64.b64decode(req["content"]).decode("utf-8"))
-    assert len(data["works"])==16
-    assert data["rooms"]["mmfa"] and data["rooms"]["pamm"]
+    assert len(data["works"])==24
+    assert data["rooms"]["mmfa"] and data["rooms"]["pamm"] and data["rooms"]["moma"]
     shared["content"]=data
     shared["version"]+=1
     shared["writes"]+=1
@@ -179,6 +179,8 @@ with sync_playwright() as p:
  assert shared["content"]["works"]["pamm-chaos"]["active"]==True
  assert shared["content"]["works"]["pamm-chaos"]["room"]=="pamm-3"
  assert shared["content"]["works"]["pamm-chaos"]["onViewVerified"]==True
+ assert shared["content"]["works"]["moma-starry"]["room"]=="moma-501"
+ assert len(shared["content"]["works"])==24
  assert "Published" in admin.locator("#view").inner_text()
  for visitor in [v1,v2]:
   visitor.evaluate("window.TRACE_DISPLAY.load()")
