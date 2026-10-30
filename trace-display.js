@@ -10,7 +10,7 @@ let published={schemaVersion:1,mode:'independent-pitch-demo',updatedAt:'',works:
 let draft=null,loading=true,error='',syncError='',publishStatus='',publishing=false,lastSync=0;
 const admin=()=>window.TRACE_AUTH?.isAdmin()===true;
 const h=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
-const sourceWorks=()=>[...mmfa,...pamm];
+const sourceWorks=()=>[...mmfa,...pamm,...moma];
 const validWork=id=>sourceWorks().some(a=>a.id===id);
 const defaultRec=id=>({active:ORIGINAL.includes(id),onViewVerified:false,room:'',startDate:'',endDate:'',note:''});
 function clean(input){
@@ -26,8 +26,8 @@ function clean(input){
    note:String(r.note||'').slice(0,500)
   };
  }
- const rooms={mmfa:[],pamm:[]},connections={mmfa:[],pamm:[]};
- for(const museum of ['mmfa','pamm']){
+ const rooms={mmfa:[],pamm:[],moma:[]},connections={mmfa:[],pamm:[],moma:[]};
+ for(const museum of ['mmfa','pamm','moma']){
   const incoming=Array.isArray(input?.rooms?.[museum])?input.rooms[museum]:[];
   const ids=new Set();
   for(const item of incoming.slice(0,120)){
@@ -54,7 +54,7 @@ try{const x=JSON.parse(localStorage.getItem(STORE)||'null');if(x&&x.schemaVersio
 function manifest(){return admin()&&draft?draft:published}
 function rec(id){return manifest().works[id]||defaultRec(id)}
 function today(venue){
- const tz=venue==='pamm'?'America/New_York':'America/Toronto';
+ const tz=venue==='pamm'||venue==='moma'?'America/New_York':'America/Toronto';
  try{const parts=new Intl.DateTimeFormat('en-US',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
   const get=x=>parts.find(p=>p.type===x)?.value||'';
   return [get('year'),get('month'),get('day')].join('-');
@@ -62,10 +62,10 @@ function today(venue){
 }
 function isActive(id){
  if(!validWork(id)||loading||syncError)return false;
- const r=rec(id),venue=id.startsWith('pamm-')?'pamm':'mmfa',date=today(venue);
+ const r=rec(id),venue=id.split('-')[0],date=today(venue);
  return !!(r.active&&(!r.startDate||date>=r.startDate)&&(!r.endDate||date<=r.endDate));
 }
-function activeWorks(venue){return (venue==='pamm'?pamm:mmfa).filter(a=>isActive(a.id))}
+function activeWorks(venue){return (MUSEUMS[venue]||[]).filter(a=>isActive(a.id))}
 function isVerified(id){return rec(id).onViewVerified===true}
 function room(id){return rec(id).room||''}
 function isDraft(){return draft!==null}
@@ -97,7 +97,7 @@ function setField(id,field,value){
 function rooms(venue){return (manifest().rooms?.[venue]||[]).map(x=>({...x}))}
 function connections(venue){return (manifest().connections?.[venue]||[]).map(x=>({...x}))}
 function alterRooms(venue,operation,data){
- if(!admin()||!['mmfa','pamm'].includes(venue))return false;
+ if(!admin()||!['mmfa','pamm','moma'].includes(venue))return false;
  const x=setDraft();
  if(operation==='add'){
   const label=String(data?.label||'').trim().slice(0,100),floor=String(data?.floor||'').trim().slice(0,50),wing=String(data?.wing||'').trim().slice(0,100);
@@ -133,7 +133,7 @@ function statusLabel(id){
 }
 function adminUI(){
  if(!admin())return '<div class="td-screen"><h2>Administrator sign-in required</h2></div>';
- const venue=state.venue,arts=venue==='pamm'?pamm:mmfa;
+ const venue=state.venue,arts=MUSEUMS[venue]||[];
  const rows=arts.map(a=>{
   const r=rec(a.id),enabled=isActive(a.id),verified=r.onViewVerified;
   return '<article class="td-art '+(enabled?'td-active':'td-inactive')+'" data-td-row="'+a.id+'">'+
@@ -153,6 +153,7 @@ function adminUI(){
  '<div class="td-venue-switcher" role="group" aria-label="Choose a museum to administer">'+
  '<button type="button" data-venue="mmfa" class="td-venue-option '+(venue==='mmfa'?'is-current':'')+'" aria-pressed="'+(venue==='mmfa')+'"><strong>MMFA</strong><span>Montréal</span><small>'+count('mmfa')+' / '+mmfa.length+' works in route</small></button>'+
  '<button type="button" data-venue="pamm" class="td-venue-option '+(venue==='pamm'?'is-current':'')+'" aria-pressed="'+(venue==='pamm')+'"><strong>PAMM</strong><span>Miami</span><small>'+count('pamm')+' / '+pamm.length+' works in route</small></button>'+
+  '<button type="button" data-venue="moma" class="td-venue-option '+(venue==='moma'?'is-current':'')+'" aria-pressed="'+(venue==='moma')+'"><strong>MoMA</strong><span>New York</span><small>'+count('moma')+' / '+moma.length+' works in route</small></button>'+
  '</div><p class="td-venue-help">Switch museums without leaving administration. Each museum has its own artworks, rooms and route settings. Your unpublished edits to both are retained until you publish or discard them.</p></section>'+
  '<p class="td-intro">Your live game can include up to eight collection works per museum. Turn individual works on or off, enter confirmed rooms, and schedule display windows. A work that is off the route disappears from playable quests and scan recognition, but earlier discoveries remain in the visitor passport.</p>'+
  '<div class="td-kpis"><div><b>'+count(venue)+' / '+arts.length+'</b><span>Playable in this preview</span></div><div><b>'+arts.filter(a=>isActive(a.id)&&isVerified(a.id)).length+'</b><span>Marked display-confirmed</span></div></div>'+
@@ -172,7 +173,7 @@ function adminUI(){
 function visitorNotice(id){
  const r=rec(id);
  if(isActive(id)&&!r.onViewVerified)return '<div class="td-visitor-notice">DEMO WORK: Museum staff have not yet confirmed that this artwork is on public display. Use collection images to test recognition; do not rely on this as an onsite route.</div>';
- if(isActive(id))return '<div class="td-visitor-confirmed">Museum-curated route: '+h(r.room?'Assigned room: '+(rooms(id.startsWith('pamm-')?'pamm':'mmfa').find(x=>x.id===r.room)?.label||'Unlabelled room'):'Room confirmation pending')+'.</div>';
+ if(isActive(id))return '<div class="td-visitor-confirmed">Museum-curated route: '+h(r.room?'Assigned room: '+(rooms(id.split('-')[0]).find(x=>x.id===r.room)?.label||'Unlabelled room'):'Room confirmation pending')+'.</div>';
  return '<div class="td-visitor-notice">This artwork is not currently available in the visitor adventure.</div>';
 }
 async function load(){
