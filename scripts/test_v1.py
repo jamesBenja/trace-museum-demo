@@ -109,6 +109,16 @@ with sync_playwright() as p:
             assert 'FIND THE HIDDEN ARTWORK' in page.locator('#view').inner_text()
             assert page.locator('.v7-fragment img').count()==0, 'Mystery image must be hidden before scanning'
             assert 'MICA’S FAMILY DISCOVERY' in page.locator('#view').inner_text()
+            # Calibrated painting/photo scans must NEVER show the reference before a successful match.
+            if n==0:
+                page.locator('[data-action="scan"]').first.click()
+                assert page.evaluate('state.stage')=='scan'
+                assert page.locator('#view img[src*="artworks"]').count()==0
+                assert page.locator('#view img[src*="collections"]').count()==0
+                assert page.locator('.tv-compare-pair').count()==0
+                assert page.locator('[data-action="manual-review"]').count()==1, 'Reference available only by explicit fallback'
+                page.locator('[data-action="close"]').click()
+                assert page.evaluate('state.stage')=='clue'
             # Every painting and photograph offers self-confirmation after requesting a hint.
             if n==0:
                 assert page.locator('[data-action="manual-review"]').count()==0
@@ -148,6 +158,8 @@ with sync_playwright() as p:
                 for symbol in ['🎭','🐟','▦']:
                     page.locator('[data-c2-code="'+symbol+'"]').click()
             elif art=='pamm-delano':
+                assert page.locator('.c2-photo img').count()==0, 'Family mini-game must not spoil the reference image'
+                assert page.locator('.c2-abstract-road svg').count()==1
                 for k in range(3):
                     page.locator('[data-c2-stop="'+str(k)+'"]').click()
             elif art=='pamm-grid':
