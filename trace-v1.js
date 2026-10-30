@@ -4,7 +4,7 @@
 (function(){
 'use strict';
 const K='trace-v1-play';
-let prefs={mode:'family',age:'8-12',familyPoints:{mmfa:0,pamm:0},symbols:{}};
+let prefs={mode:'family',age:'8-12',familyPoints:{mmfa:0,pamm:0,moma:0},symbols:{}};
 try{const stored=JSON.parse(localStorage.getItem(K)||'{}');if(stored&&typeof stored==='object')prefs={...prefs,...stored}}catch(e){}
 const L={
  mmfa:{
@@ -20,9 +20,10 @@ const L={
  {symbol:'⌁',name:'The Houses on the Hill',subtitle:'The power of storytelling',hint:'A road connects the houses',friend:'Every photograph chooses what to show. What do you notice?'},
  {symbol:'✧',name:'The Hidden Alphabet',subtitle:'The power of making',hint:'A world of small drawn signs',friend:'A pencil made this whole world. What message can you make?'}]}
 };
+L.moma={name:'The Moving Imagination',description:'Find movement, mystery, colour and new ideas through eight extraordinary MoMA artworks.',nodes:[]};
 const EXTRA_SYMBOLS={'mmfa-eye':'👁','mmfa-frink':'♟','mmfa-riopelle':'🧩','mmfa-rodin':'◕','mmfa-cragg':'◉','pamm-chaos':'⬡','pamm-fonseca':'▣','pamm-yanko':'⚒','pamm-christo':'🏝','pamm-chromati':'✷'};
-for(const [venue,items] of [['mmfa',mmfa],['pamm',pamm]]){
- for(const art of items.slice(3))L[venue].nodes.push({symbol:EXTRA_SYMBOLS[art.id],name:art.chapter,subtitle:'Power of '+art.power.toLowerCase(),hint:art.clue,friend:'Not all art is a painting! Look at the materials, shapes and space around this work.'})
+for(const [venue,items] of [['mmfa',mmfa],['pamm',pamm],['moma',moma]]){
+ for(const art of items.slice(venue==='moma'?0:3))L[venue].nodes.push({symbol:EXTRA_SYMBOLS[art.id]||({painting:'✺',sculpture:'◉'}[art.kind]||'✦'),name:art.chapter,subtitle:'Power of '+art.power.toLowerCase(),hint:art.clue,friend:'Not all art is a painting! Look at the materials, shapes and space around this work.'})
 }
 const esc=s=>escapeHTML(String(s??''));
 const C={id:null,progress:0,points:[],done:false,chosen:null,xy:{x:78,y:77},teamCount:0,assisted:false,lastPuzzleId:null};
@@ -49,7 +50,7 @@ const INTRO_LANG={
 function intro(){
  const world=L[state.venue],l=INTRO_LANG[state.lang]||INTRO_LANG.en;
  const localized=typeof V7_OPENINGS!=='undefined'?V7_OPENINGS[state.lang]?.[state.venue]:null;
- return '<div class="t1-screen"><div class="t1-head"><div class="t1-overline">TRACE · ART BECOMES AN ADVENTURE</div><h2>'+esc(localized?.title||world.name)+'</h2><p>'+esc(localized?.intro||world.description)+'</p><div class="venueSelect"><button data-venue="mmfa" class="'+(state.venue==='mmfa'?'chosen':'')+'">MONTRÉAL · MMFA</button><button data-venue="pamm" class="'+(state.venue==='pamm'?'chosen':'')+'">MIAMI · PAMM</button></div></div>'+
+ return '<div class="t1-screen"><div class="t1-head"><div class="t1-overline">TRACE · ART BECOMES AN ADVENTURE</div><h2>'+esc(localized?.title||world.name)+'</h2><p>'+esc(localized?.intro||world.description)+'</p><div class="venueSelect"><button data-venue="mmfa" class="'+(state.venue==='mmfa'?'chosen':'')+'">MONTRÉAL · MMFA</button><button data-venue="pamm" class="'+(state.venue==='pamm'?'chosen':'')+'">MIAMI · PAMM</button><button data-venue="moma" class="'+(state.venue==='moma'?'chosen':'')+'">NEW YORK · MoMA</button></div></div>'+
  mascot(l.hello)+
  '<div class="t1-overline">'+esc(l.lang)+'</div><div class="v7-language">'+['en','fr','es'].map(code=>'<button data-lang="'+code+'" class="'+(state.lang===code?'active':'')+'" aria-pressed="'+(state.lang===code)+'">'+code.toUpperCase()+'</button>').join('')+'</div>'+
  '<div class="t1-overline">'+esc(l.style)+'</div>'+picks()+
