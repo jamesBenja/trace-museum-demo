@@ -11,19 +11,37 @@ def solve_puzzle(page,art):
     page.locator('[data-action="v7-puzzle"]').click()
     assert page.locator('[data-t1-finish]').is_disabled(), 'Puzzle should not be pre-solved '+art
     if art=='mmfa-marrel':
-        b=page.locator('#t1-copper').bounding_box()
-        assert b, 'Copper canvas unavailable'
-        page.mouse.move(b['x']+15,b['y']+25)
-        page.mouse.down()
-        for i in range(19):
-            page.mouse.move(b['x']+15+((i+1)%8)*(b['width']-30)/8,b['y']+30+(i%2)*(b['height']-60),steps=2)
-        page.mouse.up()
+        board=page.locator('.mf-garden')
+        board.scroll_into_view_if_needed()
+        b=board.bounding_box()
+        for i in range(4):
+            page.mouse.move(b['x']+b['width']*.24,b['y']+b['height']*.77)
+            page.mouse.down()
+            page.mouse.move(b['x']+b['width']*.76,b['y']+b['height']*.77,steps=15)
+            page.mouse.up()
+        for i in range(5):page.locator('[data-mf="find"][data-v="'+str(i)+'"]').click()
     elif art=='mmfa-witte':
-        page.locator('.t1-marker').focus()
-        for key in ['ArrowLeft']*5+['ArrowUp']*7:
-            page.keyboard.press(key)
+        for i in range(3):page.locator('[data-mf="door"][data-v="'+str(i)+'"]').click()
+        handle=page.locator('.mf-drag-point')
+        handle.scroll_into_view_if_needed()
+        area=page.locator('.mf-perspective').bounding_box()
+        pos=handle.bounding_box()
+        page.mouse.move(pos['x']+pos['width']/2,pos['y']+pos['height']/2)
+        page.mouse.down()
+        page.mouse.move(area['x']+area['width']*.5,area['y']+area['height']*.45,steps=14)
+        page.mouse.up()
     elif art=='mmfa-fortin':
-        page.locator('#t1-light').evaluate("(el)=>{el.value='85';el.dispatchEvent(new Event('input',{bubbles:true}))}")
+        board=page.locator('.mf-storm')
+        board.scroll_into_view_if_needed()
+        area=board.bounding_box()
+        for i in range(3):
+            x=area['x']+area['width']*.25;y=area['y']+area['height']*(.25+i*.1)
+            page.mouse.move(x,y);page.mouse.down();page.mouse.move(x+area['width']*.32,y+9,steps=11);page.mouse.up()
+        sun=page.locator('.mf-sun-handle')
+        sun.scroll_into_view_if_needed()
+        area=board.bounding_box();pos=sun.bounding_box()
+        page.mouse.move(pos['x']+pos['width']/2,pos['y']+pos['height']/2);page.mouse.down()
+        page.mouse.move(area['x']+area['width']*.89,area['y']+25,steps=12);page.mouse.up()
     elif art=='pamm-masks':
         for i in range(4):
             page.locator('[data-pg="symbol"]').nth(i).click()
