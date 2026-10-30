@@ -4,32 +4,99 @@ from playwright.sync_api import sync_playwright
 
 URL=os.getenv('TRACE_TEST_URL','http://127.0.0.1:8765/?v=22')
 GAMES=['starry','dance','lilies','warhol','oppenheim','tinguely','brancusi','lamelas']
-def slide(p,name,value):
- p.locator('[data-tm-range="'+name+'"]').evaluate('(el,v)=>{el.value=String(v);el.dispatchEvent(new Event("input",{bubbles:true}))}',value)
+def move(p,element,destination,steps=12):
+ a=element.bounding_box()
+ assert a,a
+ x=a['x']+a['width']/2;y=a['y']+a['height']/2
+ p.mouse.move(x,y)
+ p.mouse.down()
+ p.mouse.move(destination[0],destination[1],steps=steps)
+ p.mouse.up()
 
 def play(p,name):
+ finish=p.locator('[data-t1-finish]')
+ assert finish.is_disabled(),name+' unlocked without creative action'
+ before=p.locator('.mg-screen').inner_html()
  if name=='starry':
-  for i in range(3):p.locator('[data-tm="star"][data-val="'+str(i)+'"]').click()
+  area=p.locator('.mg-night').bounding_box()
+  for i in range(3):
+   x=area['x']+area['width']*(.15+i*.18)
+   y=area['y']+area['height']*(.22+i*.12)
+   p.mouse.move(x,y);p.mouse.down()
+   p.mouse.move(x+85,y+38,steps=14);p.mouse.up()
+   assert p.locator('.mg-swirl').count()==i+1
  elif name=='dance':
-  for i in range(5):p.locator('[data-tm="dancer"][data-val="'+str(i)+'"]').click()
+  for i in range(5):
+   source=p.locator('.mg-hand-handle[data-i="'+str(i)+'"]')
+   dest=p.locator('.mg-hand-target[data-mg-target="'+str(i)+'"]').bounding_box()
+   move(p,source,(dest['x']+dest['width']/2,dest['y']+dest['height']/2))
+   assert p.evaluate('window.TRACE_V1.puzzle.extra.links.length')==i+1
+  assert p.locator('.mg-dance-complete').count()==1
  elif name=='lilies':
-  for i in range(4):p.locator('[data-tm="lily"][data-val="'+str(i)+'"]').click()
-  slide(p,'reflection',80)
+  for i in range(4):p.locator('[data-mg="pad"][data-value="'+str(i)+'"]').click()
+  area=p.locator('.mg-pond-scene').bounding_box()
+  sun=p.locator('.mg-sun')
+  move(p,sun,(area['x']+area['width']*.9,area['y']+28))
+  assert p.evaluate('window.TRACE_V1.puzzle.extra.sun')>=.70
+  assert float(p.locator('#mg-reflect').get_attribute('opacity'))>.7
  elif name=='warhol':
-  for x in ('Tomato','Mushroom','Pea'):p.locator('[data-tm="soup"][data-val="'+x+'"]').click()
+  p.locator('[data-mg="spin"]').click()
+  assert p.evaluate('window.TRACE_V1.puzzle.extra.spins')==1
+  target=p.evaluate('window.TRACE_V1.puzzle.extra.reels[0]')
+  for i in [1,2]:
+   for attempt in range(5):
+    if p.evaluate('(i)=>window.TRACE_V1.puzzle.extra.reels[i]',i)==target:break
+    p.locator('[data-mg="nudge"][data-value="'+str(i)+'"]').click()
+  assert p.locator('.mg-jackpot').count()==1
+  assert p.locator('.mg-pop-grid .mg-can').count()==9
  elif name=='oppenheim':
-  p.locator('[data-tm="texture"][data-val="fur"]').click()
-  for x in ('surprise','strange'):p.locator('[data-tm="feeling"][data-val="'+x+'"]').click()
+  for material,part in [('fur','cup'),('velvet','saucer'),('ice','spoon')]:
+   swatch=p.locator('[data-mg="texture"][data-value="'+material+'"]')
+   destination=p.locator('[data-mg-drop="'+part+'"]')
+   # The game also supports tapping a swatch then a part.
+   swatch.click()
+   destination.click()
+  assert p.locator('.mg-tea-part.mg-material-fur').count()==1
+  assert p.locator('.mg-tea-part.mg-material-velvet').count()==1
+  assert p.locator('.mg-tea-part.mg-material-ice').count()==1
+  p.locator('[data-mg="reaction"][data-value="1"]').click()
  elif name=='tinguely':
-  for i in range(3):p.locator('.tm-part[data-tm="part"][data-val="'+str(i)+'"]').click()
-  slide(p,'turn',80)
+  for i,k in enumerate(['gear','belt','rod','hook','paint']):
+   piece=p.locator('[data-mg="part"][data-value="'+k+'"]')
+   dest=p.locator('[data-mg="socket"][data-value="'+str(i)+'"]').bounding_box()
+   move(p,piece,(dest['x']+dest['width']/2,dest['y']+dest['height']/2))
+   assert p.evaluate('window.TRACE_V1.puzzle.extra.installed.length')==i+1
+  assert p.locator('.mg-wheel.can-spin').count()==1
+  wheel=p.locator('.mg-wheel').bounding_box()
+  cx=wheel['x']+wheel['width']/2;cy=wheel['y']+wheel['height']/2
+  from math import sin,cos,pi
+  radius=min(wheel['width'],wheel['height'])*.31
+  p.mouse.move(cx+radius,cy);p.mouse.down()
+  for step in range(1,26):
+   angle=step*2*pi/25
+   p.mouse.move(cx+radius*cos(angle),cy+radius*sin(angle))
+  p.mouse.up()
+  assert p.locator('.mg-machine.is-fired').count()==1
+  assert p.locator('.mg-paint-bucket').count()==1
  elif name=='brancusi':
-  slide(p,'crest',90)
+  for key,dx,dy in [('tip',0,-38),('width',24,0)]:
+   point=p.locator('[data-mg-drag="sculpt"][data-point="'+key+'"]')
+   rect=point.bounding_box()
+   move(p,point,(rect['x']+rect['width']/2+dx,rect['y']+rect['height']/2+dy))
+  assert p.evaluate('window.TRACE_V1.puzzle.extra.sculptMoves.length')>=2
+  p.locator('[data-mg="listen"]').click()
+  assert p.evaluate('window.TRACE_V1.puzzle.extra.previewed') is True
  elif name=='lamelas':
-  for i in range(3):p.locator('.tm-channel[data-tm="source"][data-val="'+str(i)+'"]').click()
- assert p.evaluate('window.TRACE_V1.puzzle.done') is True, 'Game did not unlock: '+name
- assert p.locator('[data-t1-finish]').is_enabled()
- print('MOMA GAME PASSED',name,flush=True)
+  for medium in ['news','radio','tv']:
+   p.locator('[data-mg="media"][data-value="'+medium+'"]').click()
+   assert p.locator('.mg-media-'+medium).count()==1
+  p.locator('[data-mg="takeaway"][data-value="different"]').click()
+  assert p.evaluate('window.TRACE_V1.puzzle.extra.mediaSeen.length')==3
+ assert p.evaluate('window.TRACE_V1.puzzle.done') is True,'Game did not unlock: '+name
+ assert finish.is_enabled()
+ assert p.locator('.mg-feedback.is-complete').count()==1
+ assert before !=p.locator('.mg-screen').inner_html(),name+' visual did not change'
+ print('REDESIGNED MOMA GAME PASSED',name,flush=True)
 
 with sync_playwright() as q:
  browser=q.chromium.launch(headless=True,args=['--no-sandbox'])
@@ -117,7 +184,7 @@ with sync_playwright() as q:
   assert expected in page.locator('#view').inner_text()
   # Game controls and curator room labels must be localized, not only artwork stories.
   page.evaluate("state.current=3;state.stage='puzzle';render()")
-  assert ({'fr':'Champignons','es':'Champiñones'}[lang]) in page.locator('.tm-controls').inner_text()
+  assert ({'fr':'TIRER LE LEVIER','es':'TIRA DE LA PALANCA'}[lang]) in page.locator('.mg-slot').inner_text()
   page.evaluate("state.stage='hub';render()")
   page.locator('[data-tab="map"]').click()
   assert {'fr':'Plan officiel du MoMA','es':'Plano oficial del MoMA'}[lang] in page.locator('#view').inner_text()
