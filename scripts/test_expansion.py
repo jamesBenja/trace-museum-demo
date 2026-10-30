@@ -1,6 +1,7 @@
 """TRACE v1.8: verify ten distinct, stateful art-making labs, not placeholder taps."""
 from playwright.sync_api import sync_playwright
-import os
+import os,json
+from pathlib import Path
 
 URL=os.getenv('TRACE_TEST_URL','https://jamesbenja.github.io/trace-museum-demo/?v=18')
 ADDED={
@@ -85,10 +86,25 @@ def play(page,ident):
  assert page.evaluate('window.TRACE_V1.puzzle.done') is True
  print('REAL LAB PASSED',ident,flush=True)
 
+def isolate_manifest(page):
+ fixture=json.loads((Path(__file__).resolve().parents[1]/"display-status.json").read_text(encoding="utf-8"))
+ initial={"mmfa-marrel","mmfa-witte","mmfa-fortin","pamm-masks","pamm-delano","pamm-grid"}
+ for ident,row in fixture["works"].items():
+  row["active"]=ident in initial
+ body=json.dumps(fixture)
+ def intercept(route):
+  if "display-status.json" in route.request.url:
+   route.fulfill(status=200,content_type="application/json",
+                 headers={"Access-Control-Allow-Origin":"*"},body=body)
+  else:
+   route.continue_()
+ page.route("https://raw.githubusercontent.com/**",intercept)
+
 with sync_playwright() as p:
  browser=p.chromium.launch(headless=True,args=['--no-sandbox'])
  for museum,ids in ADDED.items():
   page=browser.new_page(viewport={'width':390,'height':844},has_touch=True,is_mobile=True)
+  isolate_manifest(page)
   errors=[]
   page.on('pageerror',lambda e:errors.append(str(e)))
   def fake_github(route):
