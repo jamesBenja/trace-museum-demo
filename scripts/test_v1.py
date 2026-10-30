@@ -82,6 +82,24 @@ with sync_playwright() as p:
         assert 'Mica' in page.locator('#view').inner_text()
         page.locator('[data-t1-mode="family"]').first.click()
         page.locator('[data-t1-start]').click()
+        assert page.evaluate("state.stage")=="welcome"
+        assert page.locator('.tw-mica').is_visible()
+        assert page.locator('.tw-building').count()==1
+        # Switch languages during the welcome, verify museum-specific translated history,
+        # then return to English so the existing artwork tests remain unchanged.
+        page.locator('[data-tw-lang="fr"]').click()
+        assert page.locator('.tw-screen').get_attribute('lang')=="fr"
+        page.locator('[data-tw-next]').click()
+        assert ('1860' if museum=='mmfa' else '1984') in page.locator('#view').inner_text()
+        page.locator('[data-tw-lang="es"]').click()
+        assert page.locator('.tw-screen').get_attribute('lang')=="es"
+        assert ('1860' if museum=='mmfa' else '1984') in page.locator('#view').inner_text()
+        page.locator('[data-tw-lang="en"]').click()
+        assert page.locator('.tw-screen').get_attribute('lang')=="en"
+        # A visitor can skip the intro with no progress loss.
+        page.locator('[data-tw-skip]').click()
+        assert page.evaluate("state.stage")=="hub"
+        assert page.locator('[data-t1-replay]').count()==1
         assert 'A MAGICAL QUEST MAP' in page.locator('#view').inner_text()
         assert page.locator('[data-t1-open="2"]').is_disabled(), 'Final path must unlock by finding art'
         # Deliberately take chapter 2 first, then chapter 1, then chapter 3.
