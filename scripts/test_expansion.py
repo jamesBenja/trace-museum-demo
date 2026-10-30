@@ -60,6 +60,16 @@ def play(page,ident):
   assert page.evaluate('window.TRACE_V1.puzzle.extra.changed.filter(Boolean).length')==2
   assert page.locator('.te-balance-label b').inner_text()!='0 / 100'
   assert page.locator('.te-tower-warning').inner_text()==''
+  # Touch-style direct manipulation changes the actual cube offset, not just the controls.
+  top=page.locator('.te-cube-2')
+  rect=top.bounding_box()
+  assert rect, 'Top cube cannot be manipulated'
+  initial=page.evaluate("window.TRACE_V1.puzzle.extra.offsets[2]")
+  page.mouse.move(rect['x']+rect['width']*.5,rect['y']+rect['height']*.5)
+  page.mouse.down()
+  page.mouse.move(rect['x']+rect['width']*.5+18,rect['y']+rect['height']*.5,steps=6)
+  page.mouse.up()
+  assert page.evaluate("window.TRACE_V1.puzzle.extra.offsets[2]")!=initial, 'Dragging did not move the 3D frame'
   assert page.locator('[data-te-tilt]').count()==0, 'Old tilt buttons removed'
  elif ident=='pamm-fonseca':
   page.locator('[data-te-niche="0"]').click()
