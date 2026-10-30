@@ -289,8 +289,23 @@ function pointerEnd(ev){
   window.__mgPointerDebug={kind:type,i:a.index,changed:a.changed,distance,near:!!near,mouse:{x:ev.clientX,y:ev.clientY},rect:rect?{x:rect.x,y:rect.y,w:rect.width,h:rect.height}:null,links:s.links.length};
   if((a.changed||distance>15)&&near)pushUnique(s.links,a.index);
  }
- if(type==='texture'&&a.changed){const point=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('[data-mg-drop]');if(point){s.chosenTexture=a.material;s.textures[point.dataset.mgDrop]=a.material}}
- if(type==='part'&&a.changed){const point=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('[data-mg-drop]');if(point){const i=Number(point.dataset.mgDrop);if(PART[i]===a.part){s.selectedPart=a.part;pushUnique(s.installed,a.part)}}}
+ function dropTarget(selector){
+  const under=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('[data-mg-drop]');
+  if(under&&under.matches(selector))return under;
+  let nearest=null,best=Infinity;
+  document.querySelectorAll(selector).forEach(target=>{
+   const r=target.getBoundingClientRect();
+   const distance=Math.hypot(ev.clientX-(r.left+r.width/2),ev.clientY-(r.top+r.height/2));
+   if(distance<best){nearest=target;best=distance}
+  });
+  return best<52?nearest:null;
+ }
+ if(type==='texture'&&a.changed){const point=dropTarget('.mg-tea-part[data-mg-drop]');if(point){s.chosenTexture=a.material;s.textures[point.dataset.mgDrop]=a.material}}
+ if(type==='part'){
+  const point=dropTarget('.mg-socket[data-mg-drop]');
+  window.__mgPartDebug={changed:a.changed,mouse:[ev.clientX,ev.clientY],part:a.part,near:point?.dataset.mgDrop,installed:s.installed.slice()};
+  if((a.changed||Math.hypot(ev.clientX-a.downX,ev.clientY-a.downY)>15)&&point){const i=Number(point.dataset.mgDrop);if(PART[i]===a.part){s.selectedPart=a.part;pushUnique(s.installed,a.part)}}
+ }
  if(type==='wheel'&&s.installed.length===5&&Math.abs(a.total)>=220){s.fired=true;shortTone(425,.30)}
  if(type==='sculpt'&&a.changed)pushUnique(s.sculptMoves,a.key);
  if(a.changed||type==='hand'||type==='sun'||type==='wheel')redraw(ctx);
