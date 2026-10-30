@@ -55,8 +55,9 @@ with sync_playwright() as p:
    assert page.locator('.t1-detail-stars span').count()==4,artwork
    assert page.locator('.t1-detail-frame img').count()==1,artwork
    assert page.locator('.t1-detail-annotation p').inner_text()==page.locator('.t1-word-clue p').inner_text(),artwork
-   vals=page.locator('.t1-detail-frame img').evaluate("""img=>{
-    const f=img.closest('.t1-detail-frame'),styles=getComputedStyle(img),rect=img.getBoundingClientRect(),box=f.getBoundingClientRect();
+   page.wait_for_function("""()=>{const img=document.querySelector('.t1-detail-frame img'),frame=img?.closest('.t1-detail-frame');return img?.isConnected&&frame?.isConnected&&frame.getBoundingClientRect().width>0&&getComputedStyle(frame).overflow==='hidden'}""",timeout=10000)
+   vals=page.evaluate("""()=>{
+    const img=document.querySelector('.t1-detail-frame img'),f=img.closest('.t1-detail-frame'),styles=getComputedStyle(img),rect=img.getBoundingClientRect(),box=f.getBoundingClientRect();
     return {zoom:rect.width/box.width,overflow:getComputedStyle(f).overflow,fit:styles.objectFit,origin:styles.transformOrigin}
    }""")
    assert vals['zoom']>2.8,('Not a close-up crop',artwork,vals)
