@@ -60,7 +60,7 @@ with sync_playwright() as p:
         page.set_default_timeout(12000)
         isolate_manifest(page)
         r=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
-        assert r.status==200 and 'v1.8' in page.title(),page.title()
+        assert r.status==200 and 'v1.9' in page.title(),page.title()
         page.wait_for_timeout(1800)
         print('BROWSER DIAG',page.evaluate("({title:document.title,status:document.querySelector('#status')?.textContent,script:typeof window.TRACE_V1,scripts:Array.from(document.scripts).map(x=>x.src)})"),'JS ERRORS',errs,flush=True)
         page.wait_for_function("window.TRACE_V1 && document.querySelector('#status')?.textContent.includes('SCAN READY')",timeout=12000)
@@ -90,6 +90,16 @@ with sync_playwright() as p:
             page.locator('[data-t1-open="'+str(index)+'"]').click()
             assert 'FIND THIS DETAIL' in page.locator('#view').inner_text()
             assert 'MICA’S FAMILY DISCOVERY' in page.locator('#view').inner_text()
+            # Every painting and photograph offers self-confirmation after requesting a hint.
+            if n==0:
+                assert page.locator('[data-action="manual-review"]').count()==0
+                page.locator('[data-action="hint"]').click()
+                assert page.locator('[data-action="manual-review"]').count()==1
+                page.locator('[data-action="manual-review"]').click()
+                assert 'NOT AUTOMATICALLY VERIFIED' in page.locator('#view').inner_text()
+                assert page.locator('[data-action="manual-accept"]').count()==1
+                page.locator('[data-action="close"]').click()
+                assert page.evaluate("state.stage")=="clue"
             page.locator('[data-c2-start]').click()
             assert 'STEP 1' in page.locator('#view').inner_text()
             if art=='mmfa-marrel':
