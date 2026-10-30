@@ -110,6 +110,7 @@ function puzzleIntro(a){return '<div class="t1-overline">CREATE, EXPERIMENT, DIS
 function puzzle(){
  const a=A[state.current];if(!a||!activeArts().some(x=>x.id===a.id))return hub();
  if(C.id!==a.id||C.lastPuzzleId!==a.id){C.id=a.id;C.lastPuzzleId=a.id;C.progress=0;C.points=[];C.done=false;C.chosen=null;C.xy={x:78,y:77};}
+ if(window.TRACE_MOMA_GAME?.has(a.id))return window.TRACE_MOMA_GAME.game(a,C);
  if(window.TRACE_EXTRA?.has(a.id))return window.TRACE_EXTRA.game(a,C);
  let content='';
  if(a.id==='mmfa-marrel')content='<div class="t1-puzzle"><h3>Reveal the copper beneath</h3><p class="t1-small">Marrel painted on a smooth copper surface. Rub the mist away with your finger to reveal its warm shimmer.</p>'+
