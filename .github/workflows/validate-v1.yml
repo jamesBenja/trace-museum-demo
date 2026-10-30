@@ -13,6 +13,10 @@ on:
       - "trace-extra.js"
       - "trace-extra.css"
       - "scripts/test_expansion.py"
+      - "trace-display.js"
+      - "trace-routing.js"
+      - "display-status.json"
+      - "scripts/test_admin_maps.py"
       - "trace-bonus.js"
       - "trace-bonus.css"
       - "scripts/test_bonus.py"
@@ -43,6 +47,8 @@ jobs:
           node --check trace-coop-v2.js
           node --check trace-bonus.js
           node --check trace-extra.js
+          node --check trace-display.js
+          node --check trace-routing.js
           node --check trace-display.js
           node --check trace-routing.js
           python -m json.tool display-status.json >/dev/null
