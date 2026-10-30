@@ -97,7 +97,13 @@ with sync_playwright() as q:
   page.locator('[data-trace-lang="'+lang+'"]').click()
   page.locator('[data-t1-open="0"]').click()
   assert expected in page.locator('#view').inner_text()
+  # Game controls and curator room labels must be localized, not only artwork stories.
+  page.evaluate("state.current=3;state.stage='puzzle';render()")
+  assert ({'fr':'Champignons','es':'Champiñones'}[lang]) in page.locator('.tm-controls').inner_text()
   page.evaluate("state.stage='hub';render()")
+  page.locator('[data-tab="map"]').click()
+  assert {'fr':'Plan officiel du MoMA','es':'Plano oficial del MoMA'}[lang] in page.locator('#view').inner_text()
+  page.locator('[data-tab="quest"]').click()
  assert not errors,errors
  print('ALL MOMA THIRD MUSEUM END-TO-END TESTS PASSED',flush=True)
  browser.close()
