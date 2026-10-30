@@ -78,7 +78,7 @@ function afterUpdate(){
   state.stage='hub';save();
  }
  renderApp();
- if(typeof rebuild==='function')Promise.resolve().then(()=>rebuild()).catch(e=>console.error('Matcher refresh failed:',e));
+ if(typeof window.TRACE_LOAD_ACTIVE==='function')Promise.resolve().then(()=>window.TRACE_LOAD_ACTIVE()).catch(e=>console.error('Matcher refresh failed:',e));
 }
 function setDraft(){if(!draft)draft=clean(published);return draft}
 function setField(id,field,value){
