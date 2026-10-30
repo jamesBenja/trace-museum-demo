@@ -1,6 +1,6 @@
-# TRACE v2.0: Mica museum welcomes, sculpture-making labs and institutional routing
+# TRACE v2.1: Complete trilingual experience, Mica welcomes and museum routing
 
-**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=20
+**Live pilot:** https://jamesbenja.github.io/trace-museum-demo/?v=21
 
 **Official MMFA map:** https://www.mbam.qc.ca/en/mmfa-museum-map/
 
@@ -15,6 +15,14 @@ TRACE is an independent pilot concept with **eight real collection artworks from
 For paintings and photographs with calibrated image references, the camera scan remains the primary matching method. After requesting a hint, **Compare visually with museum reference** becomes available for every artwork. The same option appears if an automatic scan fails or the camera is unavailable. Sculptures and newer works without validated reference images use **visitor self-confirmation** from the beginning. This is always labelled clearly and never presented as automatic verification.
 
 On the visual comparison screen, visitors can **take or select one photo (optional)** and compare it alongside the museum's collection image. They may also visually confirm without taking a photo, including when museum photography is not permitted. Only explicit visitor confirmation advances the story. This is a visitor-assisted comparison, **not automatic recognition or a 3D scan**. Uploaded photos stay on the device and may be saved in the visitor's local discovery album once confirmed. A future multi-angle recognition feature would require curated reference photography and validation, not extra photo steps for visitors.
+
+## Whole-app language switching (English, French, Spanish)
+
+The always-visible **EN / FR / ES** control works on every visitor and administrator screen, including **before administrator sign-in**. Language preference persists in the browser while visitors move between MMFA and PAMM. Switching language re-renders the current chapter, map, game or editor without resetting the visitor's discoveries or unpublished administrator draft.
+
+TRACE v2.1 includes offline editorial translations for the artwork clues, gallery stories, interpretation questions and answer choices for all 16 works, plus animated welcome scripts, family activities, ten art-making labs, their controls and feedback, artwork-connection puzzles and stories, the private passport, camera and manual matching, map and route planning, curator editing, publishing instructions and administrator sign-in. The static app does not send visitor content to online translation APIs.
+
+Artwork and artist names as officially recorded in museum catalogues, room IDs, source URLs and data identifiers retain their original names. These should not be machine-translated. Device text-to-speech narration is optional and uses the chosen language if that voice is available. Regional accessibility and editorial review are still advisable before a museum-run launch.
 
 ## Animated Mica museum welcomes (English, French, Spanish)
 
