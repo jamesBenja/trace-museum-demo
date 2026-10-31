@@ -115,6 +115,9 @@
 .venueCardCopy small{color:#587365;font-size:11px}
 .venueCardArrow{font-size:29px;color:#53806d}
 .venueNote{background:#f5e9d1;border-radius:11px;padding:10px}
+.restartMuseumQuest{display:block;width:100%;min-height:46px;background:#fff8ed;border:1px solid #bf8972;border-radius:12px;color:#844d38;padding:11px 13px;text-align:center;font-size:13px;font-weight:800}
+.restartMuseumQuest:hover{background:#ffead9}
+.restartMuseumQuest:focus-visible{outline:3px solid #e9ac72;outline-offset:3px}
 @media(max-width:375px){.top{padding-left:10px;padding-right:8px;gap:4px}.top .logo{font-size:21px}.top .status{max-width:100px;font-size:7px}.venueSwitcher{padding:6px 8px;font-size:11px}}
 /* The mystery image remains hidden until a photo or intentional comparison fallback. */
 .t1-hidden-reference{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;background:radial-gradient(circle at 50% 35%,#e9e8ca,#d9e9df 65%,#bcd4c9);border:2px dashed #8bab9b;text-align:center}
@@ -148,7 +151,7 @@
    <div class="venueCards">
     <button type="button" data-venue="mmfa"><span class="venueCardIcon">✺</span><span class="venueCardCopy"><strong>Montréal · MMFA</strong><small>The Lost Colours</small><small id="mmfaSavedCount">0 of 8 discoveries</small></span><span class="venueCardArrow">›</span></button>
     <button type="button" data-venue="pamm"><span class="venueCardIcon">◉</span><span class="venueCardCopy"><strong>Miami · PAMM</strong><small>The Hidden Signals</small><small id="pammSavedCount">0 of 8 discoveries</small></span><span class="venueCardArrow">›</span></button>
-   <button type="button" data-venue="moma"><span class="venueCardIcon">✦</span><span class="venueCardCopy"><strong>New York · MoMA</strong><small>The Moving Imagination</small><small id="momaSavedCount">0 of 8 discoveries</small></span><span class="venueCardArrow">›</span></button></div><p class="venueNote">Artwork locations and display status require confirmation by each museum.</p>
+   <button type="button" data-venue="moma"><span class="venueCardIcon">✦</span><span class="venueCardCopy"><strong>New York · MoMA</strong><small>The Moving Imagination</small><small id="momaSavedCount">0 of 8 discoveries</small></span><span class="venueCardArrow">›</span></button></div><button type="button" id="restartMuseumQuest" class="restartMuseumQuest" data-action="reset">↻ Restart this museum quest</button><p class="venueNote">Restart clears only your discoveries in the currently selected museum. Artwork locations and display status require confirmation by each museum.</p>
   </section>
 </div><div class="panel" id="view"><div class="loading"><div class="spinner"></div><h2>Preparing the collection...</h2><p>All artwork matching happens privately on your device.</p></div></div><nav class="tabs"><button data-tab="quest" class="selected"><span>✧</span>QUEST</button><button data-tab="map"><span>⌖</span>MAP</button><button data-tab="album"><span>▦</span>MY FINDS</button><button data-tab="guide"><span>ⓘ</span>GUIDE</button><button data-tab="museum"><span>▤</span>MUSEUM</button></nav></main>
   <aside class="right"><div class="eyebrow">SCAN IT FOR REAL</div><h2>From painting<br>to portal.</h2><p>This demo does not simulate scan success. It compares the image you photograph or upload with the sample collection using on-device visual feature matching.</p><div class="sideCard"><strong>Test it in two ways</strong><p><b>One device:</b> Open a sample artwork and select “Test recognition.”</p><p><b>Two devices:</b> Open the <button class="sideLink" data-action="targets">artwork reference gallery</button> on a second screen, or print it, then scan with your phone.</p></div><p class="fine">A live camera needs HTTPS and browser permission. Upload / Take Photo is available as a fallback. The scan library uses actual collection artwork reference images when those sources load. Rights clearance and on-site validation are still required.</p></aside>
@@ -384,6 +387,8 @@ function updateMuseumSwitcher(){
  const b=el('venueSwitcher');if(!b)return;
  b.innerHTML=state.venue.toUpperCase()+' <span aria-hidden="true">⌄</span>';
  b.setAttribute('aria-label','Switch museum (currently '+({pamm:'PAMM Miami',mmfa:'MMFA Montréal',moma:'MoMA New York'}[state.venue]||state.venue)+')');
+ const restart=el('restartMuseumQuest');
+ if(restart)restart.textContent=({en:'↻ Restart this museum quest',fr:'↻ Recommencer la quête de ce musée',es:'↻ Reiniciar la aventura de este museo'}[state.lang]||'↻ Restart this museum quest');
 }
 function showMuseumPicker(show){
  const picker=el('venuePicker');if(!picker)return;
@@ -563,7 +568,7 @@ function v7Render(v){
  v.innerHTML='<div class="v7-panel"><div class="v7-tag">PERSONAL DISCOVERY JOURNAL</div><div class="v7-passport"><div class="eyebrow">TRACE · ART EXPLORER</div><h2>'+v7t('passport')+'</h2><p class="sub">'+escapeHTML(themes[state.venue].tag)+' · '+state.found.length+' / '+A.length+' discoveries</p>'+v7StampRow()+
  A.filter(a=>!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(a.id)||state.found.includes(a.id)).map(a=>'<div class="v7-passport-item">'+(state.found.includes(a.id)?'<img src="'+img(a)+'" alt="Discovered artwork">':'<div class="tq-locked-passport" role="img" aria-label="Undiscovered artwork hidden">?</div>')+'<div><strong>'+(state.found.includes(a.id)?escapeHTML(a.artist):'Mystery artwork')+'</strong><p>'+(state.found.includes(a.id)?escapeHTML(a.name):'Find it from Mica’s clue first')+'</p><p>'+(state.found.includes(a.id)?'✓ DISCOVERED':'○ STILL TO FIND')+'</p>'+(state.found.includes(a.id)?'<button type="button" class="v9-passport-open" data-review-work="'+a.id+'">↗ Revisit this artwork</button>':'')+
  (window.TRACE_COOP?.savedChoice(a.id)!==null&&window.TRACE_COOP?.savedChoice(a.id)!==undefined?'<div class="tf-passport-badge">✦ Team Discovery earned</div>':'')+(window.TRACE_DISPLAY&&!window.TRACE_DISPLAY.isActive(a.id)?'<div class="td-visitor-notice">Not currently in the visitor route. Your earlier discovery stays saved.</div>':'')+'</div></div>').join('')+
- '</div>'+(state.found.length>=2?'<div class="tb-passport-seal"><b>✦ Art Connector · '+(window.TRACE_BONUS?.links()?.length||0)+' connections</b>Explore the links between the paintings you’ve solved. Earn a badge for every new pair.</div><button class="button" type="button" data-bonus-open>✧ Connect two artworks</button>':'')+'<p class="tiny">'+v7t('private')+' The downloadable certificate does not contain artwork images or visitor photos.</p>'+v7button(v7t('save'),'v7-save')+v7button(v7t('return'),'quest','outline')+'</div>';return true;
+ '</div>'+(state.found.length>=2?'<div class="tb-passport-seal"><b>✦ Art Connector · '+(window.TRACE_BONUS?.links()?.length||0)+' connections</b>Explore the links between the paintings you’ve solved. Earn a badge for every new pair.</div><button class="button" type="button" data-bonus-open>✧ Connect two artworks</button>':'')+'<p class="tiny">'+v7t('private')+' The downloadable certificate does not contain artwork images or visitor photos.</p>'+v7button(v7t('save'),'v7-save')+v7button(v7t('return'),'quest','outline')+v7button(({en:'↻ Restart this museum quest',fr:'↻ Recommencer la quête de ce musée',es:'↻ Reiniciar la aventura de este museo'}[state.lang]||'↻ Restart this museum quest'),'reset','ghost')+'</div>';return true;
  }
  if(state.tab!=='quest')return false;
  const a=A[state.current],meta=a&&v7meta(a);
@@ -724,7 +729,28 @@ function accept(){const a=A[state.current];if(!a||!window.TRACE_DISPLAY?.isActiv
 function manualAccept(){const a=A[state.current];if(!a||state.stage!=='manualreview'||!window.TRACE_DISPLAY?.isActive(a.id))return;state.result={recognized:true,id:a.id,method:'visitor visual confirmation',manual:true};state.photos[a.id]=state.scanImage;state.stage='reveal';save();render();}
 function answer(n){const a=A[state.current];if(n!==a.correct){state.quizError=true;render();return}state.quizError=false;if(!state.found.includes(a.id))state.found.push(a.id);stage('success')}
 function next(){state.current++;state.scanImage=null;state.result=null;stage(state.current>=A.length?'complete':'clue')}
-function reset(){if(!confirm('Restart this museum adventure, including its comparison badges, and remove its stored photos?'))return;window.TRACE_BONUS?.clearVenue(state.venue);state.current=0;state.found=[];state.photos={};state.hints=[];state.quizError=false;stage('intro')}
+function reset(){
+ const names={mmfa:'MMFA',pamm:'PAMM',moma:'MoMA'};
+ const messages={
+  en:'Restart the '+names[state.venue]+' quest from Mica’s introduction? All discoveries, hints, revealed details, photos, family seals and comparison badges for this museum will be erased. Other museums and curator settings will not change.',
+  fr:'Recommencer la quête du '+names[state.venue]+' depuis la présentation de Mica ? Toutes les découvertes, les indices, les détails révélés, les photos et les badges de ce musée seront effacés. Les autres musées et les réglages du musée resteront inchangés.',
+  es:'¿Reiniciar la aventura del '+names[state.venue]+' desde la presentación de Mica? Se borrarán los descubrimientos, las pistas, los detalles revelados, las fotos y las insignias de este museo. Los otros museos y la configuración del museo no cambiarán.'
+ };
+ if(!confirm(messages[state.lang]||messages.en))return;
+ stopCamera();window.TRACE_WELCOME?.cleanup();
+ window.TRACE_BONUS?.clearVenue(state.venue);
+ window.TRACE_V1?.clearMuseumProgress(state.venue);
+ window.TRACE_COOP?.clearVenue(state.venue);
+ state.current=0;state.found=[];state.photos={};state.hints=[];
+ state.quizError=false;state.scanImage=null;state.result=null;state.mapFocusId=null;
+ state.reviewId=null;state.reviewFrom='album';state.reviewAnswer=null;
+ state.puzzleChoice=-1;state.showDemoTools=false;state.tab='quest';
+ showMuseumPicker(false);
+ document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('selected',b.dataset.tab==='quest'));
+ const panel=el('view');if(panel)panel.scrollTop=0;
+ if(window.TRACE_WELCOME)window.TRACE_WELCOME.enter({autoplay:true});
+ else stage('intro');
+}
 async function upload(file,cb){if(!file||!file.type.startsWith('image/'))return;const url=URL.createObjectURL(file),image=new Image();try{image.src=url;await image.decode();await cb(image)}catch(e){alert('Could not read image: '+e.message)}finally{URL.revokeObjectURL(url)}}
 async function importReference(id,file){const a=ALL.find(a=>a.id===id);if(!a)return;await upload(file,async image=>{const c=document.createElement('canvas');const scale=Math.min(950/Math.max(image.width,image.height),1),w=Math.round(image.width*scale),h=Math.round(image.height*scale);c.width=w;c.height=h;c.getContext('2d').drawImage(image,0,0,w,h);const ref=new Image();ref.src=c.toDataURL('image/jpeg',.9);await ref.decode();a.reference=ref;a.asset=ref.src;await rebuild();render()})}
 async function sample(id){const a=ALL.find(a=>a.id===id);if(!a)return;if(!a.reference){tab('guide');el('status').textContent='REFERENCE MISSING · IMPORT PHOTO';return;}if(!ready){el('status').textContent='SCANNER PREPARING';return;}await scan(a.reference)}
@@ -762,4 +788,4 @@ async function boot(){render();el('status').textContent='LOADING ARTWORK REFEREN
 window.TRACE_LOAD_ACTIVE=ensureActiveReferences;
 window.__traceAppRender=render;
 boot();
-</script><script src="trace-coop-v2.js?v=2"></script><script src="trace-mica-accessories.js?v=1"></script><script src="trace-welcome.js?v=3"></script><script src="trace-v1.js?v=18"></script><script src="trace-bonus.js?v=3"></script><script src="trace-extra.js?v=3"></script><script src="trace-pamm-games.js?v=1"></script><script src="trace-mmfa-games.js?v=3"></script><script src="trace-moma-games.js?v=5"></script><script src="trace-auth.js?v=2"></script><script src="trace-routing.js?v=7"></script><script src="trace-display.js?v=6"></script><script src="trace-i18n.js?v=2"></script><script src="trace-i18n-art.js?v=1"></script><script src="trace-i18n-content.js?v=1"></script><script src="trace-i18n-map.js?v=3"></script><script src="trace-i18n-details.js?v=1"></script><script src="trace-i18n-final.js?v=1"></script><script src="trace-moma-i18n.js?v=2"></script><script src="trace-photo-i18n.js?v=1"></script></body></html>
+</script><script src="trace-coop-v2.js?v=3"></script><script src="trace-mica-accessories.js?v=1"></script><script src="trace-welcome.js?v=4"></script><script src="trace-v1.js?v=19"></script><script src="trace-bonus.js?v=3"></script><script src="trace-extra.js?v=3"></script><script src="trace-pamm-games.js?v=1"></script><script src="trace-mmfa-games.js?v=3"></script><script src="trace-moma-games.js?v=5"></script><script src="trace-auth.js?v=2"></script><script src="trace-routing.js?v=7"></script><script src="trace-display.js?v=6"></script><script src="trace-i18n.js?v=2"></script><script src="trace-i18n-art.js?v=1"></script><script src="trace-i18n-content.js?v=1"></script><script src="trace-i18n-map.js?v=3"></script><script src="trace-i18n-details.js?v=1"></script><script src="trace-i18n-final.js?v=1"></script><script src="trace-moma-i18n.js?v=2"></script><script src="trace-photo-i18n.js?v=1"></script></body></html>
