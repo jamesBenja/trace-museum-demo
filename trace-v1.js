@@ -80,6 +80,7 @@ function hub(){
  (done?'<div class="t1-complete"><h2 class="t1-h2">All available artworks discovered! ✦</h2><p class="t1-small">Come back when the museum activates more artworks. Your discoveries stay saved.</p>'+btn('Open my discovery passport','album')+'</div>':'')+
  '<div class="t1-team"><h3>How will you play?</h3>'+picks()+'<p class="t1-small">Switch modes without losing progress.</p></div>'+
  btn('⌖ Plan my museum route','map','outline')+btn('View my passport','album','outline')+
+ btn(({en:'↻ Restart this museum quest',fr:'↻ Recommencer la quête de ce musée',es:'↻ Reiniciar la aventura de este museo'}[state.lang]||'↻ Restart this museum quest'),'reset','outline')+
  '<button class="button ghost" type="button" data-t1-replay>'+esc(window.TRACE_WELCOME?.translations[state.lang]?.replay||'Watch Mica’s welcome again')+'</button></div>';
 }
 
@@ -286,6 +287,19 @@ document.addEventListener('input',e=>{
  if(C.progress>=75)setDone('The bright sky now contrasts with the dark land, creating a dramatic storm!');
 });
 document.addEventListener('click',event,true);
-window.TRACE_V1={render:renderGame,finishPuzzle,openWork,prefs,hub,moveXY,get puzzle(){return C},get allDone(){return allDone()}};
+function clearMuseumProgress(museum){
+ const works=MUSEUMS[museum]||[];
+ for(const art of works){
+  if(prefs.symbols)delete prefs.symbols[art.id];
+  if(prefs.detailRevealed)delete prefs.detailRevealed[art.id];
+ }
+ if(prefs.familyPoints)prefs.familyPoints[museum]=0;
+ if(state.venue===museum){
+  C.id=null;C.lastPuzzleId=null;C.progress=0;C.points=[];C.done=false;
+  C.chosen=null;C.xy={x:78,y:77};C.teamCount=0;C.assisted=false;C.extra=null;
+ }
+ persist();
+}
+window.TRACE_V1={render:renderGame,finishPuzzle,openWork,prefs,hub,moveXY,clearMuseumProgress,get puzzle(){return C},get allDone(){return allDone()}};
 render();
 })();
