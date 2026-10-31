@@ -150,5 +150,14 @@ document.addEventListener('input',ev=>{
  if(label)label.textContent=String(S.value);
  if(S.value>=75)markDone();
 });
-window.TRACE_COOP={render,install,savedChoice,tasks:TASKS,get completed(){return seals},get scene(){return S}};
+function clearVenue(museum){
+ const works=MUSEUMS[museum]||[];
+ for(const art of works)delete seals[art.id];
+ if(works.some(art=>art.id===S.id)){
+  S.id=null;S.phase='invite';S.replay=false;S.done=false;
+  S.steps=0;S.value=0;S.draw=0;S.symbols=[];S.point={x:82,y:76};
+ }
+ save();
+}
+window.TRACE_COOP={render,install,savedChoice,clearVenue,tasks:TASKS,get completed(){return seals},get scene(){return S}};
 })();

@@ -48,7 +48,7 @@ function keyNow(){return S.selected.length===2?pairKey(...S.selected):null}
 function bonusData(){return saved[state.venue]||{}}
 function links(){return Object.keys(bonusData()).filter(k=>{const ids=k.split('-').map(Number);return ids.length===2&&ids.every(i=>A[i]&&state.found.includes(A[i].id)&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(A[i].id)))})}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){console.warn('Cannot save art connections',e)}}
-function clearVenue(id){saved[id]={};persist();if(S.museum===id)S.stage='choose'}
+function clearVenue(id){saved[id]={};persist();if(S.museum===id){S.selected=[];S.stage='choose';S.lens='shapes';S.position=50;S.hasCompared=false;S.celebrate=false;S.seen={left:null,right:null}}}
 function prepare(){
  if(S.museum!==state.venue){S.museum=state.venue;S.selected=[];S.stage='choose';S.position=50;S.lens='shapes';S.hasCompared=false;S.celebrate=false;S.seen={left:null,right:null}}
 }

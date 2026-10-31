@@ -68,7 +68,7 @@ function halt(){if(clock!==null){clearTimeout(clock);clock=null}}
 function stopVoice(){if('speechSynthesis' in window)window.speechSynthesis.cancel();voicing=false}
 function cleanup(){halt();stopVoice();playing=false;scene=0}
 function showScene(n){halt();stopVoice();scene=Math.max(0,Math.min(4,n));window.__traceAppRender?.();if(playing)autoAdvance()}
-function enter(){cleanup();state.stage='welcome';state.tab='quest';save();window.__traceAppRender?.()}
+function enter(options={}){cleanup();playing=options.autoplay===true;state.stage='welcome';state.tab='quest';save();window.__traceAppRender?.();if(playing)autoAdvance()}
 function leave(){cleanup();state.stage='hub';state.tab='quest';save();window.__traceAppRender?.()}
 function autoAdvance(){halt();if(!playing||state.stage!=='welcome')return;clock=setTimeout(()=>{if(state.stage!=='welcome')return;if(scene===4){playing=false;halt();window.__traceAppRender?.();return}showScene(scene+1)},9500)}
 function voice(){
