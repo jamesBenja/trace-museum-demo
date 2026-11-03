@@ -1,5 +1,6 @@
 """End-to-end three-institution MoMA pilot validation, including all eight unique games."""
-import os
+import os,json
+from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 URL=os.getenv('TRACE_TEST_URL','http://127.0.0.1:8765/?v=22')
@@ -120,6 +121,15 @@ def play(p,name):
 with sync_playwright() as q:
  browser=q.chromium.launch(headless=True,args=['--no-sandbox'])
  page=browser.new_page(viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
+ # Exercise all eight authored games in this test, including any work temporarily
+ # off display. The separate wayfinder test verifies live published activation.
+ fixture=json.loads((Path(__file__).resolve().parents[1]/'display-status.json').read_text())
+ for id,rec in fixture['works'].items():
+  if id.startswith('moma-'):rec['active']=True
+ def demo_manifest(route):
+  route.fulfill(status=200,content_type='application/json',
+    headers={'Access-Control-Allow-Origin':'*'},body=json.dumps(fixture))
+ page.route('https://raw.githubusercontent.com/**/display-status.json*',demo_manifest)
  errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
  response=page.goto(URL,wait_until='domcontentloaded',timeout=45000)
  assert response and response.status==200
@@ -133,7 +143,7 @@ with sync_playwright() as q:
  assert page.evaluate('state.venue')=='moma'
  assert page.evaluate('A.map(a=>a.id)')==['moma-'+x for x in GAMES]
  assert page.evaluate("window.TRACE_DISPLAY.count('moma')")==8
- assert page.evaluate("window.TRACE_DISPLAY.isVerified('moma-starry')")==False
+ assert page.evaluate("window.TRACE_DISPLAY.isVerified('moma-starry')")==True
  assert page.evaluate("window.TRACE_ROUTING.MAPS.moma.url")=="https://www.moma.org/visit/guide/map"
  page.locator('[data-tab="map"]').click()
  assert page.locator('.wf-page').count()==1
