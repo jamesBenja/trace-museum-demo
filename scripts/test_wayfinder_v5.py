@@ -25,7 +25,8 @@ with sync_playwright() as p:
     assert page.locator('[data-wf-to] option').count()==7
     assert page.locator('[data-wf-to] option').first.inner_text().startswith('Mystery')
     assert page.locator('.wf-site-map').evaluate('(n)=>n.scrollWidth<=n.clientWidth+2')
-    assert page.locator('.wf-site-map').evaluate('(n)=>n.clientHeight>160')
+    page.locator('.wf-site-map').wait_for(state='visible',timeout=10000)
+    assert page.locator('.wf-site-map').evaluate('(n)=>n.clientHeight>=200')
     assert "Pavilion layout" in page.locator('.wf-map-caption').inner_text()
 
     page.locator('[data-wf-to]').select_option('mmfa-fortin')
