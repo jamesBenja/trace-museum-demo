@@ -46,7 +46,7 @@ on:
       - "trace-routing.css"
       - "trace-wayfinder.js"
       - "trace-wayfinder.css"
-      - "scripts/test_wayfinder_v5.py"
+      - "scripts/test_wayfinder_v6.py"
       - "scripts/test_navigation.py"
       - "trace-extra.js"
       - "trace-extra.css"
@@ -106,7 +106,7 @@ jobs:
           python scripts/check_syntax.py
           python -m json.tool display-status.json >/dev/null
           python -m http.server 8765 --bind 127.0.0.1 >/tmp/trace-local-http.log 2>&1 &
-          TRACE_TEST_URL=http://127.0.0.1:8765/?v=40 python scripts/test_wayfinder_v5.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=40 python scripts/test_wayfinder_v6.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_detail_reveal.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_moma_recognition.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_moma.py
