@@ -7,7 +7,7 @@
 const STORE='trace-route-plan-v1',S={museum:null,mode:'quick',selected:[],focus:null,start:'entrance',expanded:false,stepFree:true};
 const MAPS={
  mmfa:{url:'https://www.mbam.qc.ca/en/mmfa-museum-map/',title:'MMFA official museum map (2026)',entrance:'Main entrance, Jean-Noël Desmarais Pavilion, level 1',startRoom:'mmfa-entrance',description:'Five connected pavilions and an outdoor sculpture garden'},
- pamm:{url:'https://www.pamm.org/wp-content/uploads/2025/12/web_map_2025.pdf',title:'PAMM visitor floor plan (2025)',entrance:'Visitor Services Center 1, Floor 1',startRoom:'pamm-1',description:'Numbered first-floor galleries and second-floor galleries'},
+ pamm:{url:'https://www.pamm.org/wp-content/uploads/2025/02/PAMM-Digital-Map-2025.pdf',title:'PAMM numbered gallery map (2025)',entrance:'Visitor Services Center 1, Floor 1',startRoom:'pamm-1',description:'Numbered first-floor galleries and second-floor galleries'},
  moma:{url:'https://www.moma.org/visit/guide/map',title:'MoMA official visitor map',entrance:'53rd Street main entrance, Rockefeller Building',startRoom:'moma-entry',description:'Midtown Manhattan museum with galleries across several floors and a sculpture garden'}
 };
 const esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
@@ -40,7 +40,7 @@ function routeWorks(){
  return active.filter(a=>S.selected.includes(a.id));
 }
 function edges(){return display()?.connections(state.venue)||[]}
-// Approved links produce visitor directions. Research links can only appear as a labelled preview.
+// Approved links are preferred; published map-derived research edges also support suggested visitor routes.
 function route(from,to,preview=false){
  if(!from||!to)return null;
  const rooms=display()?.rooms(state.venue)||[],known=new Set(rooms.map(r=>r.id));
@@ -116,11 +116,11 @@ function adminUI(venue){
  const rooms=display()?.rooms(venue)||[],links=display()?.connections(venue)||[],current=display()?.count(venue)||0;
  const option=rooms.map(r=>'<option value="'+esc(r.id)+'">'+esc(r.label)+' · '+esc(r.wing)+' '+esc(r.floor)+'</option>').join('');
  return '<section class="tn-admin"><div class="t1-overline">MUSEUM FLOOR PLAN & ROUTE NETWORK</div><h3>Assign rooms and connect the route</h3>'+
- '<p>TRACE uses official museum room and gallery labels, but not an imported, metrically accurate indoor navigation system. Administrators choose artworks and review map-researched connections. Only approved, open links can produce directions. Research links show labelled previews, never authoritative navigation.</p>'+
+ '<p>TRACE uses official museum room and gallery labels, but not an imported, metrically accurate indoor navigation system. Administrators choose artworks and review map-researched connections. TRACE uses both the museum floor plan and confirmed connections to suggest visitor routes. Staff can approve specific passages, update entrances, and mark closed links.</p>'+
  '<div class="tn-admin-official"><a href="'+MAPS[venue].url+'" target="_blank" rel="noopener noreferrer">Open official '+(venue==='mmfa'?'MMFA':venue==='pamm'?'PAMM':'MoMA')+' museum floor plan ↗</a><small>'+rooms.length+' room labels loaded · '+links.length+' walkable connections configured</small></div>'+
  '<div class="tn-admin-section"><h4>Add a room or gallery</h4><div class="tn-admin-grid"><label>Room name<input id="tn-new-room-label" placeholder="Gallery A / Exhibit 12"></label><label>Floor<input id="tn-new-room-floor" placeholder="1, 2, S1…"></label><label>Wing or pavilion<input id="tn-new-room-wing" placeholder="Pavilion / area"></label></div><button class="button outline" data-tn-add-room type="button">＋ Add room</button></div>'+
  '<div class="tn-admin-section"><h4>Connect walkable rooms</h4><p>Only connect two rooms when you know visitors can directly travel between them. Connections are bidirectional.</p><div class="tn-admin-grid"><label>From<select id="tn-link-from"><option value="">Choose room</option>'+option+'</select></label><label>To<select id="tn-link-to"><option value="">Choose room</option>'+option+'</select></label><label>Connection type<select id="tn-link-type"><option value="corridor">Corridor / passage</option><option value="elevator">Elevator / step-free access</option><option value="stairs">Stairs</option><option value="outdoor">Outdoor route</option></select></label></div><button class="button outline" data-tn-connect type="button">↔ Connect rooms</button></div>'+
- (links.length?'<details class="tn-admin-section tn-review-list" '+(venue==='mmfa'?'':'open')+'><summary><strong>Connection review & closures</strong> · '+links.length+' links</summary><p>These map-based links are provisional until checked in person. Only approve confirmed entrances, elevators and stairs. Closing an approved link excludes it from visitor directions when published.</p>'+
+ (links.length?'<details class="tn-admin-section tn-review-list" '+(venue==='mmfa'?'':'open')+'><summary><strong>Connection review & closures</strong> · '+links.length+' links</summary><p>Map-derived links already support suggested routes; approving a link documents an in-person confirmation. Closing any link immediately excludes it from visitor directions when published.</p>'+
  links.map(l=>{
   const key=esc(l.from+':'+l.to+':'+l.type),research=l.status==='research',closed=l.closed===true;
   return '<div class="tn-review-link"><div><strong>'+esc(rooms.find(x=>x.id===l.from)?.label||l.from)+' ↔ '+esc(rooms.find(x=>x.id===l.to)?.label||l.to)+'</strong><small>'+esc(l.type)+' · '+(research?'Map research · NOT approved':'Curator approved')+(closed?' · CLOSED':'')+'</small>'+(l.source?'<a href="'+esc(l.source)+'" target="_blank" rel="noopener noreferrer">Map evidence ↗</a>':'')+
