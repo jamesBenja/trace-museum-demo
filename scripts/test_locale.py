@@ -31,7 +31,7 @@ with sync_playwright() as p:
   if museum=='pamm':
    page.locator('#venueSwitcher').click()
    page.locator('#venuePicker [data-venue="pamm"]').click()
-  for lang,nav,route,work in [('fr','QUÊTE','Trouvez votre prochaine découverte.','L’œil géant' if museum=='mmfa' else 'La tour impossible'),('es','MISIÓN','Encuentra tu próximo descubrimiento.','El ojo gigante' if museum=='mmfa' else 'La torre imposible'),('en','QUEST','Find your next discovery.','The Giant Eye' if museum=='mmfa' else 'The Impossible Tower')]:
+  for lang,nav,route,work in [('fr','QUÊTE','Carte','L’œil géant' if museum=='mmfa' else 'La tour impossible'),('es','MISIÓN','Mapa','El ojo gigante' if museum=='mmfa' else 'La torre imposible'),('en','QUEST','Map','The Giant Eye' if museum=='mmfa' else 'The Impossible Tower')]:
    page.locator('[data-trace-lang="'+lang+'"]').click()
    assert page.evaluate('document.documentElement.lang')==lang
    assert page.locator('[data-trace-lang="'+lang+'"]').get_attribute('aria-pressed')=='true'
@@ -39,7 +39,7 @@ with sync_playwright() as p:
    page.evaluate("state.tab='quest';state.stage='hub';render()")
    page.locator('[data-tab="map"]').click()
    page.wait_for_function('(title)=>document.querySelector("#view")?.textContent.includes(title)',arg=route)
-   assert page.locator('.tn-page').count()==1
+   assert page.locator('.wf-page').count()==1
    page.locator('[data-tab="quest"]').click()
    assert page.evaluate("state.stage")=='hub'
    page.evaluate("state.found=A.slice(0,3).map(a=>a.id);save();render()")
