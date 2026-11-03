@@ -100,3 +100,38 @@
 .wf-directions li span:last-child{min-width:0;line-height:1.45}
 .wf-directions strong{font-size:12px;line-height:1.35;color:#253d31;font-weight:750}
 .wf-directions small{font-size:11px;color:#668274;margin-top:4px}
+
+
+/* Indoor map: scaled gallery locations from the museum's published visitor guide.
+   Pins and paths are schematic; they do not assert individual door geometry. */
+.wf-indoor-map{width:100%;min-width:0;padding:12px 11px 8px}
+.wf-indoor-floors{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:0 0 12px}
+.wf-indoor-floors button{min-width:48px;min-height:36px;border-radius:9px;padding:7px 10px;
+ background:#fff;border:1px solid #d3ddd5;color:#5f7466;font-size:12px;font-weight:750}
+.wf-indoor-floors button.selected{color:#fff;background:#245c4c;border-color:#245c4c}
+.wf-indoor-floors button span{display:inline-flex;margin-left:4px;font-size:10px;min-width:16px;height:16px;
+ align-items:center;justify-content:center;border-radius:50%;background:#e0ecdf;color:#245847}
+.wf-indoor-floors button.selected span{background:#fff;color:#245847}
+.wf-indoor-diagram{position:relative;isolation:isolate;overflow:hidden;aspect-ratio:440/300;
+ width:100%;min-height:235px;background:#fff;border:1px solid #e0e7df;border-radius:12px}
+.wf-indoor-corridor{position:absolute;inset:22% 8% 18%;z-index:0;border-radius:50% 18% 29% 24%;
+ transform:rotate(-7deg);border:16px solid #eff4ef;background:#f7faf5}
+.wf-indoor-corridor::after{content:"";position:absolute;inset:26%;border-radius:60%;
+ background:#fff;box-shadow:0 0 0 9px #e9f0e9}
+.wf-indoor-lines{position:absolute;inset:0;z-index:1;width:100%;height:100%;pointer-events:none}
+.wf-indoor-path{fill:none;stroke:#3c8268;stroke-width:5;stroke-linecap:round;stroke-dasharray:10 7;
+ filter:drop-shadow(0 0 2px white)}
+.wf-gallery-room{position:absolute;transform:translate(-50%,-50%);z-index:2;display:flex;align-items:center;
+ justify-content:center;gap:2px;min-width:39px;min-height:34px;padding:4px 6px;border:1px solid #ceddd2;border-radius:8px;
+ background:#e6eee7;color:#335c49;font-size:11px;box-shadow:0 1px 3px #213f2a0d}
+.wf-gallery-room strong{font-size:12px;font-weight:800;line-height:1}
+.wf-gallery-room.wf-hub{border-style:dashed;background:#fff;color:#5b8172}
+.wf-gallery-room.selected{background:#175941;border:2px solid #fff;outline:3px solid #3b936c;
+ color:#fff;box-shadow:0 2px 9px #1b5e4f45;z-index:4}
+.wf-gallery-room.is-start:not(.selected){outline:2px solid #2d7cab;outline-offset:2px}
+.wf-gallery-mystery{font-weight:850;font-size:10px;display:grid;place-items:center;width:15px;height:15px;
+ border-radius:50%;background:#fff;color:#286249}
+.wf-indoor-caption{padding:9px 2px 2px;font-size:11px;color:#566c60;font-weight:700;line-height:1.4}
+@media(max-width:390px){.wf-indoor-map{padding:9px 6px}.wf-gallery-room{min-width:32px;min-height:30px;
+ padding:3px 4px;font-size:10px;border-radius:6px}.wf-gallery-room strong{font-size:10px}
+ .wf-indoor-diagram{min-height:210px}.wf-indoor-floors button{padding:6px 8px;min-width:42px}}
