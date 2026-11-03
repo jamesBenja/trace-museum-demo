@@ -187,6 +187,7 @@ with sync_playwright() as p:
   visitor.wait_for_function("window.TRACE_DISPLAY.count('mmfa')===4")
   assert visitor.evaluate("window.TRACE_DISPLAY.rec('mmfa-eye').room")=="mmfa-garden"
   visitor.locator("[data-tab='map']").click()
+  visitor.locator(".wf-visit summary").click()
   visitor.locator("[data-tn-mode='all']").click()
   assert "Outside" in visitor.locator("#view").inner_text() and visitor.locator('.wf-page').count()==1
   assert visitor.evaluate("window.TRACE_ROUTING.routeWorks().length")==4
