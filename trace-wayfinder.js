@@ -126,7 +126,7 @@ function campus(ctx){
   '<text x="212" y="280">SHERBROOKE ST W</text>'+
   '</svg>'+sections+
   '<button type="button" class="wf-sculptures'+(selected==='outside'?' selected':'')+'" data-wf-zone="outside" aria-label="'+h(t('Outside'))+'">'+
-  '<strong>✦</strong>'+(outside.length?'<span>'+outside.length+'</span>':'')+'</button>'+
+  '<strong>✦</strong><em>'+h(t('Outside'))+'</em>'+(outside.length?'<span>'+outside.length+'</span>':'')+'</button>'+
   '<span class="wf-entrance-label">'+h(t('Main entrance'))+' ↗</span>'+
   '</div>';
 }
