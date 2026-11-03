@@ -59,7 +59,7 @@ const WORDS={
 };
 const h=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
 const R=()=>window.TRACE_ROUTING,D=()=>window.TRACE_DISPLAY;
-let locationInfo=null,centeredKey='';
+let locationInfo=null;
 function tr(key){
  const lang=window.TRACE_I18N?.language||state.lang||'en';
  return lang==='en'?key:(WORDS[key]?.[lang==='fr'?0:1]||key);
@@ -247,14 +247,13 @@ function geoMessage(ctx){
 function render(){
  const ctx=current(),m=R().MAPS[ctx.museum];
  if(ctx.selected){
-  const key=ctx.museum+':'+ctx.selected.id;
-  if(key!==centeredKey){
-   centeredKey=key;
-   requestAnimationFrame(()=>{
-    const box=document.querySelector('.wf-map-scroll'),pin=document.querySelector('.wf-pin.wf-selected');
-    if(box&&pin)box.scrollLeft=Math.max(0,pin.offsetLeft-box.clientWidth/2);
-   });
-  }
+  requestAnimationFrame(()=>{
+   const box=document.querySelector('.wf-map-scroll'),pin=document.querySelector('.wf-pin.wf-selected');
+   if(box&&pin){
+    box.scrollLeft=Math.max(0,pin.offsetLeft-box.clientWidth/2);
+    box.scrollTop=Math.max(0,pin.offsetTop-box.clientHeight/2);
+   }
+  });
  }
  return '<div class="wf-page"><header class="wf-header"><h2>'+h(tr('Map'))+'</h2>'+
   '<a href="'+h(m.url)+'" target="_blank" rel="noopener noreferrer">'+h(tr('Museum plan'))+' ↗</a></header>'+
