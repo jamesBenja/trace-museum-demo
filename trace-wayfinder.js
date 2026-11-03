@@ -63,7 +63,7 @@ const WORDS={
  'Ask museum staff for the floor':['Demandez l’étage au personnel du musée','Pregunta al personal por el piso'],
  'Arrived at the gallery':['Vous êtes à la salle','Has llegado a la galería'],
  'Map-derived walking guide':['Parcours d’après le plan','Ruta basada en el mapa'],
- 'Gallery not confirmed':['Galerie non confirmée','Galería no confirmada'],'Select a floor to see the galleries':['Choisissez un étage pour voir les salles','Elige un piso para ver las galerías']
+ 'Gallery not confirmed':['Galerie non confirmée','Galería no confirmada'],'Gallery location pending':['Emplacement de la salle à confirmer','Ubicación de galería pendiente'],'Select a floor to see the galleries':['Choisissez un étage pour voir les salles','Elige un piso para ver las galerías']
 };
 const h=s=>String(s??'').replace(/[&<>"']/g,k=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[k]));
 function t(s){
@@ -317,7 +317,7 @@ function indoorMap(ctx,plan){
  const startingOnFloor=ctx.start?.floor===floor,selectedOnFloor=ctx.dst?.floor===floor;
  const caption=selectedOnFloor&&ctx.dst?.floor!=='Unconfirmed'?
   t('Find')+': '+(museum==='moma'?(ctx.dst.id==='moma-six'?t('Floor')+' 6':t('Gallery')+' '+ctx.dst.id.replace('moma-','')):ctx.dst.label):
-  ctx.dst?.floor==='Unconfirmed'?t('Gallery not confirmed'):t('Select a floor to see the galleries');
+  ctx.dst?.floor==='Unconfirmed'?t('Gallery location pending'):t('Select a floor to see the galleries');
  return '<div class="wf-indoor-map">'+
   '<div class="wf-indoor-floors" role="group" aria-label="'+h(t('Floor'))+'">'+tabs+'</div>'+
   '<div class="wf-indoor-diagram" role="group" aria-label="'+h(t('Floor')+' '+floor)+'">'+
@@ -341,7 +341,9 @@ function status(ctx,plan){
  const r=ctx.dst,title=workLabel(ctx.chosen,ctx),
   dest=r?zoneName(zone(r,ctx.museum),ctx.museum)+' · '+level(r):t('No room assigned');
  let directions='';
- if(plan){
+ if(ctx.dst?.floor==='Unconfirmed'){
+  directions='<div class="wf-route-message">'+h(t('Gallery location pending'))+'</div>';
+ }else if(plan){
   const steps=suggestedSteps(ctx,plan);
   directions=plan.path.rooms.length===1&&!plan.partial?
     '<div class="wf-route-message">'+h(t('Same gallery'))+'</div>':
