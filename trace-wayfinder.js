@@ -1,6 +1,6 @@
 /* TRACE Wayfinder v5: destination-first pavilion guide.
    The illustrated campus is a simplified orientation diagram based on the MMFA map,
-   never a floor-plan survey. Only curator-approved graph edges generate directions.
+   never a floor-plan survey. Curator-approved and published map-research connections both guide suggested museum visits.
    Optional geolocation is one-shot, outdoors only, local, and never persisted. */
 (function(){
 'use strict';
@@ -23,7 +23,7 @@ const WORDS={
  'Use location':['Me localiser','Usar ubicación'],'Entrance':['Entrée','Entrada'],
  'Outside':['Extérieur','Exterior'],'Pavilion for Peace':['Pavillon pour la paix','Pabellón de la Paz'],'Peace':['Paix','Paz'],
  'Floor':['Étage','Piso'],'Floor unknown':['Étage à confirmer','Piso por confirmar'],
- 'Found':['Trouvée','Encontrada'],'Mystery':['Mystère','Misterio'],'Find':['Trouver','Encontrar'],
+ 'Found':['Trouvée','Encontrada'],'Mystery Work':['Œuvre mystère','Obra misteriosa'],'Mystery':['Mystère','Misterio'],'Find':['Trouver','Encontrar'],
  'View clue':['Voir l’indice','Ver pista'],'No room assigned':['Salle non attribuée','Sala sin asignar'],
  'Display not confirmed':['Exposition non confirmée','Exhibición no confirmada'],
  'Pavilion':['Pavillon','Pabellón'],'Gallery':['Salle','Galería'],
@@ -50,7 +50,19 @@ const WORDS={
  'Museum':['Musée','Museo'],'Select a destination':['Choisissez une œuvre','Selecciona una obra'],
  'No selected works':['Aucune œuvre sélectionnée','Ninguna obra seleccionada'],
  'Current gallery':['Salle actuelle','Galería actual'],
- 'Go to':['Aller à','Ir a'],
+ 'Go to':['Aller à','Ir a'],'Suggested route':['Itinéraire suggéré','Ruta sugerida'],
+ 'Follow the Level 1 passage to the Pavilion for Peace':['Suivez le passage du niveau 1 vers le pavillon pour la Paix','Sigue el pasaje del nivel 1 al Pabellón de la Paz'],
+ 'Enter the S2 underground passage':['Rejoignez le passage souterrain S2','Entra en el pasaje subterráneo S2'],
+ 'Follow the S2 passage to Bourgie':['Suivez le passage S2 vers Bourgie','Sigue el pasaje S2 hacia Bourgie'],
+ 'Walk along Avenue du Musée':['Marchez le long de l’avenue du Musée','Camina por la avenida du Musée'],
+ 'Head outside via the museum entrance':['Sortez par l’entrée du musée','Sal por la entrada del museo'],
+ 'Take the elevator to':['Prenez l’ascenseur vers','Toma el ascensor hasta'],
+ 'Take the stairs to':['Prenez les escaliers vers','Sube o baja las escaleras hasta'],
+ 'Continue to':['Continuez vers','Continúa hacia'],
+ 'Find the gallery':['Rejoignez la salle','Encuentra la galería'],
+ 'Ask museum staff for the floor':['Demandez l’étage au personnel du musée','Pregunta al personal por el piso'],
+ 'Arrived at the gallery':['Vous êtes à la salle','Has llegado a la galería'],
+ 'Map-derived walking guide':['Parcours d’après le plan','Ruta basada en el mapa'],
  'Gallery not confirmed':['Galerie non confirmée','Galería no confirmada']
 };
 const h=s=>String(s??'').replace(/[&<>"']/g,k=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[k]));
@@ -62,6 +74,7 @@ let gps=null,gpsRequest=0;
 function room(a,ctx){return a?ctx.rooms.find(r=>r.id===D().rec(a.id).room)||null:null}
 function zone(r,museum){
  if(!r)return 'unknown';
+ if(r.id==='mmfa-passage')return 'passage';
  if(r.floor==='Outdoor')return r.id==='mmfa-bourgie-front'?'bourgie':'outside';
  if(museum!=='mmfa')return 'museum';
  if(r.id.includes('peace'))return 'peace';
@@ -81,7 +94,7 @@ function level(r){
 }
 function workLabel(a,ctx){
  const n=ctx.works.indexOf(a)+1;
- return state.found.includes(a.id)?a.artist:t('Mystery')+' '+n;
+ return state.found.includes(a.id)?a.artist:t('Mystery Work')+' '+n;
 }
 function context(){
  R().touch();
@@ -95,6 +108,101 @@ function context(){
  const verified=!!rec?.onViewVerified&&!/(not independently confirmed|requires museum confirmation|proposed assignment|reverify|not yet confirmed)/i.test(rec.note||'');
  return {museum,rooms,works,s,chosen,dst,start,verifiedRoute,verified};
 }
+
+/* A research edge is a usable map-derived suggestion. Keep its provenance
+   and the stair filter intact, while giving visitors practical directions. */
+function routePlan(ctx){
+ if(!ctx.start||!ctx.dst)return null;
+ const partial=ctx.museum==='mmfa'&&ctx.dst.floor==='Unconfirmed';
+ const goal=partial?'mmfa-peace-1':ctx.dst.id;
+ const approved=R().route(ctx.start.id,goal,false);
+ const suggested=approved||R().route(ctx.start.id,goal,true);
+ if(!suggested)return null;
+ return {path:suggested,partial,provisional:!approved||suggested.research===true,goal};
+}
+function pathZone(id,ctx){
+ const r=ctx.rooms.find(x=>x.id===id);
+ return r?zone(r,ctx.museum):'unknown';
+}
+function sitePoint(id,ctx){
+ const r=ctx.rooms.find(x=>x.id===id);
+ const z=pathZone(id,ctx);
+ if(id==='mmfa-entrance')return [308,122];
+ if(id==='mmfa-passage')return [230,158];
+ if(id==='mmfa-garden'||id==='mmfa-avenue-du-musee')return [62,74];
+ if(id==='mmfa-bourgie-front')return [164,82];
+ if(z==='outside')return [67,79];
+ const p=PAVILIONS.find(x=>x.id===z);
+ return p?[(p.x+p.w/2)*4.4,(p.y+p.h/2)*3]:null;
+}
+function routeDrawing(ctx,plan){
+ if(ctx.museum!=='mmfa'||!plan)return '';
+ const points=[],zones=[];
+ for(const id of plan.path.rooms){
+  const z=pathZone(id,ctx),last=zones[zones.length-1];
+  if(z!==last||id===plan.path.rooms[plan.path.rooms.length-1]){
+   const p=sitePoint(id,ctx);
+   if(p){points.push(p);zones.push(z)}
+  }
+ }
+ if(points.length<2)return '';
+ const coords=points.map(p=>p.map(v=>Math.round(v)).join(',')).join(' ');
+ const first=points[0],last=points[points.length-1];
+ return '<svg class="wf-route-overlay" viewBox="0 0 440 300" preserveAspectRatio="none" aria-label="'+h(t('Suggested route'))+'">'+
+   '<polyline class="wf-route-halo" points="'+coords+'" />'+
+   '<polyline class="wf-route-stroke" points="'+coords+'" />'+
+   '<circle class="wf-route-from" cx="'+first[0]+'" cy="'+first[1]+'" r="7"/>'+
+   '<circle class="wf-route-to" cx="'+last[0]+'" cy="'+last[1]+'" r="9"/>'+
+   '<circle class="wf-route-to-center" cx="'+last[0]+'" cy="'+last[1]+'" r="3"/>'+
+  '</svg>';
+}
+function suggestedSteps(ctx,plan){
+ if(!plan)return [];
+ const ids=plan.path.rooms,edges=plan.path.edges,byId=id=>ctx.rooms.find(r=>r.id===id);
+ const steps=[];
+ const push=(text,detail='')=>{if(text&&steps[steps.length-1]?.text!==text)steps.push({text,detail})};
+ let i=0;
+ while(i<edges.length){
+  const edge=edges[i],src=byId(ids[i]),dst=byId(ids[i+1]);
+  if(!src||!dst){i++;continue}
+  const srcZone=pathZone(ids[i],ctx),dstZone=pathZone(ids[i+1],ctx);
+  if(edge.type==='elevator'||edge.type==='stairs'){
+   // Merge several connected floors into one instruction, never pretending
+   // a particular elevator door or a measured walking distance is known.
+   let j=i;
+   while(j+1<edges.length&&edges[j+1].type===edge.type&&pathZone(ids[j+1],ctx)===pathZone(ids[j+2],ctx))j++;
+   const end=byId(ids[j+1]);
+   push(t(edge.type==='elevator'?'Take the elevator to':'Take the stairs to')+' '+level(end),
+    zoneName(pathZone(end.id,ctx),ctx.museum));i=j+1;continue;
+  }
+  if(ctx.museum==='mmfa'&&srcZone==='desmarais'&&dstZone==='peace'){
+   push(t('Follow the Level 1 passage to the Pavilion for Peace'));i++;continue;
+  }
+  if(ctx.museum==='mmfa'&&ids[i+1]==='mmfa-passage'){
+   push(t('Enter the S2 underground passage'));i++;continue;
+  }
+  if(ctx.museum==='mmfa'&&ids[i]==='mmfa-passage'&&dstZone==='bourgie'){
+   push(t('Follow the S2 passage to Bourgie'));i++;continue;
+  }
+  if(edge.type==='outdoor'){
+   if(src.floor!=='Outdoor')push(t('Head outside via the museum entrance'));
+   if(ctx.museum==='mmfa')push(t('Walk along Avenue du Musée'),
+    ids[i+1]==='mmfa-bourgie-front'?t('Bourgie'):t('Outside'));
+   else push(t('Outdoor route')+' · '+zoneName(dstZone,ctx.museum));
+   i++;continue;
+  }
+  if(srcZone!==dstZone)push(t('Continue to')+' '+zoneName(dstZone,ctx.museum),level(dst));
+  else if(dst.floor!==src.floor)push(t('Continue to')+' '+level(dst));
+  else if(i===edges.length-1)push(t('Continue to')+' '+dst.label);
+  i++;
+ }
+ if(plan.partial)push(t('Ask museum staff for the floor'),zoneName('peace',ctx.museum));
+ else if(ctx.dst&&ctx.dst.floor!=='Outdoor')
+  push(t('Find the gallery')+': '+ctx.dst.label,level(ctx.dst));
+ else if(ctx.dst)push(t('Find the gallery')+': '+ctx.dst.label,t('Outside'));
+ return steps;
+}
+
 function selectWork(id){
  if(!A.some(a=>a.id===id&&D()?.isActive(id)))return;
  R().state.focus=id;R().saveRoute();state.mapFocusId=null;renderApp();
@@ -107,7 +215,7 @@ function selectPavilion(ctx,z){
  const options=worksIn(ctx,z);
  if(options.length)selectWork(options.find(a=>!state.found.includes(a.id))?.id||options[0].id);
 }
-function campus(ctx){
+function campus(ctx,plan){
  const selected=zone(ctx.dst,ctx.museum);
  const sections=PAVILIONS.map(p=>{
   const list=worksIn(ctx,p.id),isSelected=p.id===selected,origin=ctx.start&&zone(ctx.start,ctx.museum)===p.id;
@@ -124,7 +232,7 @@ function campus(ctx){
   '<path d="M0 93 L194 6 M0 222 L180 105 L440 269 M200 -5 L442 165" stroke="#fff" stroke-width="20" fill="none"/>'+
   '<text x="15" y="72" transform="rotate(-24 15 72)">DU MUSÉE AVE</text>'+
   '<text x="212" y="280">SHERBROOKE ST W</text>'+
-  '</svg>'+sections+
+  '</svg>'+routeDrawing(ctx,plan)+sections+
   '<button type="button" class="wf-sculptures'+(selected==='outside'?' selected':'')+'" data-wf-zone="outside" aria-label="'+h(t('Outside'))+'">'+
   '<strong>✦</strong><em>'+h(t('Outside'))+'</em>'+(outside.length?'<span>'+outside.length+'</span>':'')+'</button>'+
   '<span class="wf-entrance-label">'+h(t('Main entrance'))+' ↗</span>'+
@@ -156,26 +264,25 @@ function floorView(ctx){
   '<div class="wf-floor-works">'+current.map(a=>'<button type="button" data-wf-work="'+h(a.id)+'" class="'+(a.id===ctx.chosen.id?'selected':'')+'" aria-pressed="'+(a.id===ctx.chosen.id)+'">'+
    '<span>'+h(workLabel(a,ctx))+'</span><span aria-hidden="true">'+(state.found.includes(a.id)?'✓':'›')+'</span></button>').join('')+'</div></section>';
 }
-function status(ctx){
+function status(ctx,plan){
  if(!ctx.chosen)return '<div class="wf-route-card wf-empty">'+h(t('No selected works'))+'</div>';
- const r=ctx.dst,route=ctx.verifiedRoute;
- const title=workLabel(ctx.chosen,ctx),dest=r?zoneName(zone(r,ctx.museum),ctx.museum)+' · '+level(r):t('No room assigned');
+ const r=ctx.dst,title=workLabel(ctx.chosen,ctx),
+  dest=r?zoneName(zone(r,ctx.museum),ctx.museum)+' · '+level(r):t('No room assigned');
  let directions='';
- if(route&&route.rooms.length>1){
-  directions='<ol class="wf-directions">'+route.rooms.slice(1).map((id,i)=>{
-   const next=ctx.rooms.find(r=>r.id===id),edge=route.edges[i];
-   const cmd=edge?.type==='stairs'?'Take stairs':edge?.type==='elevator'?'Take elevator':edge?.type==='outdoor'?'Outdoor route':'Continue to';
-   return '<li><span class="wf-step-mark">'+(i+1)+'</span><span><strong>'+h(t(cmd))+' '+h(zoneName(zone(next,ctx.museum),ctx.museum))+'</strong><small>'+h(level(next))+'</small></span></li>';
-  }).join('')+'</ol>';
- }else if(route&&route.rooms.length===1){
-  directions='<div class="wf-route-message">'+h(t('Same gallery'))+'</div>';
+ if(plan){
+  const steps=suggestedSteps(ctx,plan);
+  directions=plan.path.rooms.length===1&&!plan.partial?
+    '<div class="wf-route-message">'+h(t('Same gallery'))+'</div>':
+    '<ol class="wf-directions">'+steps.map((step,i)=>
+      '<li><span class="wf-step-mark">'+(i+1)+'</span><span><strong>'+h(step.text)+'</strong>'+
+      (step.detail?'<small>'+h(step.detail)+'</small>':'')+'</span></li>').join('')+'</ol>';
  }else{
-  directions='<div class="wf-route-message">'+h(t('No indoor route confirmed'))+' · <a href="'+h(R().MAPS[ctx.museum].url)+'" target="_blank" rel="noopener noreferrer">'+
-   h(t('Use signs and the official map.'))+'</a></div>';
+  directions='<div class="wf-route-message">'+h(t('Use signs and the official map.'))+
+    ' <a href="'+h(R().MAPS[ctx.museum].url)+'" target="_blank" rel="noopener noreferrer">'+h(t('Official map'))+' ↗</a></div>';
  }
- return '<section class="wf-route-card"><div class="wf-route-top"><div><span class="wf-kicker">'+h(t('Find'))+'</span>'+
- '<h3>'+h(title)+'</h3><p>'+h(dest)+'</p></div><button class="wf-go" type="button" data-tn-open="'+h(ctx.chosen.id)+'">'+h(t('View clue'))+'</button></div>'+
- (!ctx.verified?'<div class="wf-qualification">'+h(t('Display not confirmed'))+'</div>':'')+directions+'</section>';
+ return '<section class="wf-route-card"><div class="wf-route-top"><div><span class="wf-kicker">'+h(plan?t('Suggested route'):t('Find'))+'</span>'+
+  '<h3>'+h(title)+'</h3><p>'+h(dest)+'</p></div><button class="wf-go" type="button" data-tn-open="'+h(ctx.chosen.id)+'">'+h(t('View clue'))+'</button></div>'+
+  (!ctx.verified?'<div class="wf-qualification">'+h(t('Display not confirmed'))+'</div>':'')+directions+'</section>';
 }
 function selector(ctx){
  return '<label class="wf-field"><span>'+h(t('Where to?'))+'</span><select data-wf-to aria-label="'+h(t('Where to?'))+'">'+
@@ -232,14 +339,14 @@ function locate(){
  },{enableHighAccuracy:false,maximumAge:60000,timeout:10000});
 }
 function render(){
- const ctx=context();
+ const ctx=context(),plan=routePlan(ctx);
  const heading='<div class="wf-header"><h2>'+h(t('Map'))+'</h2><a href="'+h(R().MAPS[ctx.museum].url)+'" target="_blank" rel="noopener noreferrer">'+h(t('Official map'))+' ↗</a></div>';
- const mapMarkup=ctx.museum==='mmfa'?campus(ctx):floorIndex(ctx);
+ const mapMarkup=ctx.museum==='mmfa'?campus(ctx,plan):floorIndex(ctx);
  const a=ctx.chosen?.id;
  return '<main class="wf-page">'+heading+controls(ctx)+geoLine(ctx)+
   '<div class="wf-map-shell"><div class="wf-map-scroll">'+mapMarkup+'</div>'+
   (ctx.museum==='mmfa'?'<div class="wf-map-caption">'+h(t('Pavilion layout · not to scale'))+'</div>':'')+'</div>'+
-  floorView(ctx)+status(ctx)+
+  floorView(ctx)+status(ctx,plan)+
   '<div class="wf-bottom-actions"><button type="button" data-wf-access aria-pressed="'+ctx.s.stepFree+'">'+(ctx.s.stepFree?'✓ ':'')+h(t('Avoid stairs'))+'</button>'+
   '<a href="'+entranceUrl(ctx.museum)+'" target="_blank" rel="noopener noreferrer">'+h(t('Entrance directions'))+' ↗</a></div>'+
   visitPlan(ctx)+'</main>';
@@ -261,5 +368,5 @@ document.addEventListener('change',e=>{
   R().state.start=b.value;R().saveRoute();renderApp();
  }
 },true);
-window.TRACE_WAYFINDER={render,distanceKm,zone,context};
+window.TRACE_WAYFINDER={render,distanceKm,zone,context,routePlan,suggestedSteps,routeDrawing};
 })();
