@@ -15,7 +15,7 @@
 .wf-gps-result a{white-space:nowrap;color:#286a55}
 .wf-map-shell{margin:15px 0 0}
 .wf-map-scroll{height:auto;max-height:none;min-height:0;width:100%;overflow:hidden;border:1px solid #e0e5df;border-radius:15px;background:#f2f5f1;scrollbar-width:none}
-.wf-site-map{position:relative;width:100%;aspect-ratio:440/300;overflow:hidden;isolation:isolate;background:linear-gradient(165deg,#f4f7f3,#edf2ee)}
+.wf-site-map{position:relative;width:100%;aspect-ratio:440/300;min-height:220px;overflow:hidden;isolation:isolate;background:linear-gradient(165deg,#f4f7f3,#edf2ee)}
 .wf-site-streets{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 .wf-site-streets text{font:650 9px 'DM Sans',Arial,sans-serif;letter-spacing:1px;fill:#8d9b91}
 .wf-building{position:absolute;z-index:2;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;padding:9px 10px;text-align:left;color:#1d4548;border:1px solid #4b91b2;border-radius:7px;background:#91cbe6;box-shadow:0 2px 0 #1f665b1a;min-width:0;min-height:0;transition:box-shadow .15s,transform .15s}
