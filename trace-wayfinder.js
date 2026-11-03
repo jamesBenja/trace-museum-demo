@@ -202,7 +202,7 @@ function visitPlan(ctx){
     h(r?zoneName(zone(r,ctx.museum),ctx.museum)+' · '+level(r):t('No room assigned'))+'</small></span><span class="wf-chevron">›</span></button>';
  }).join('');
  const checks=s.mode==='custom'?'<div class="wf-custom">'+ctx.works.map(a=>'<label><input type="checkbox" data-tn-select="'+h(a.id)+'" '+(s.selected.includes(a.id)?'checked':'')+'>'+h(workLabel(a,ctx))+'</label>').join('')+'</div>':'';
- return '<details class="wf-visit"><summary>'+h(t('Plan a visit'))+'</summary><div class="wf-modes">'+buttons+'</div>'+checks+
+ return '<details class="wf-visit" '+(s.expanded?'open':'')+'><summary>'+h(t('Plan a visit'))+'</summary><div class="wf-modes">'+buttons+'</div>'+checks+
  '<div class="wf-stop-list">'+list+'</div></details>';
 }
 function geoLine(ctx){
@@ -252,6 +252,7 @@ document.addEventListener('click',e=>{
  if(b.hasAttribute('data-wf-locate')){locate();return}
  if(b.hasAttribute('data-wf-access')){R().state.stepFree=!R().state.stepFree;R().saveRoute();renderApp()}
 },true);
+document.addEventListener('toggle',e=>{if(e.target.matches?.('.wf-visit')){R().state.expanded=e.target.open;R().saveRoute();}},true);
 document.addEventListener('change',e=>{
  const b=e.target.closest('[data-wf-from],[data-wf-to]');if(!b)return;
  e.stopImmediatePropagation();
