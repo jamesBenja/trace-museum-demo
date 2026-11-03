@@ -21,7 +21,7 @@ const WORDS={
  'Map':['Carte','Mapa'],'Official map':['Plan officiel','Mapa oficial'],
  'Where to?':['Où aller ?','¿Adónde?'],'Start':['Départ','Origen'],
  'Use location':['Me localiser','Usar ubicación'],'Entrance':['Entrée','Entrada'],
- 'Outside':['Extérieur','Exterior'],'Pavilion for Peace':['Pavillon pour la paix','Pabellón de la Paz'],
+ 'Outside':['Extérieur','Exterior'],'Pavilion for Peace':['Pavillon pour la paix','Pabellón de la Paz'],'Peace':['Paix','Paz'],
  'Floor':['Étage','Piso'],'Floor unknown':['Étage à confirmer','Piso por confirmar'],
  'Found':['Trouvée','Encontrada'],'Mystery':['Mystère','Misterio'],'Find':['Trouver','Encontrar'],
  'View clue':['Voir l’indice','Ver pista'],'No room assigned':['Salle non attribuée','Sala sin asignar'],
@@ -114,7 +114,7 @@ function campus(ctx){
   return '<button type="button" data-wf-zone="'+p.id+'" class="wf-building wf-'+p.id+(isSelected?' selected':'')+'" '+
     'style="left:'+p.x+'%;top:'+p.y+'%;width:'+p.w+'%;height:'+p.h+'%" '+
     'aria-pressed="'+isSelected+'" aria-label="'+h(t(p.title))+'">'+
-    '<strong>'+h(t(p.title))+'</strong>'+(list.length?'<span>'+list.length+'</span>':'')+
+    '<strong>'+h(t(p.id==='peace'?'Peace':p.title))+'</strong>'+(list.length?'<span>'+list.length+'</span>':'')+
     (origin?'<i aria-label="'+h(t('Start'))+'"></i>':'')+'</button>';
  }).join('');
  const outside=worksIn(ctx,'outside');
