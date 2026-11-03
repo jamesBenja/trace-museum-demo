@@ -31,7 +31,7 @@
 .wf-peace{background:#c0ade6;border-color:#9788c6;color:#3f315a}
 .wf-peace strong{font-size:10px}
 .wf-sculptures{position:absolute;left:3%;top:7%;width:12%;height:18%;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:1px dashed #a3baa8;border-radius:9px;background:#ffffffb5;color:#43624f;font-size:10px}
-.wf-sculptures strong{font-size:19px}.wf-sculptures span{font-weight:800;font-size:10px}
+.wf-sculptures strong{font-size:17px}.wf-sculptures em{font-size:9px;font-style:normal;font-weight:800;line-height:1}.wf-sculptures span{font-weight:800;font-size:10px}
 .wf-sculptures.selected{outline:3px solid #204f43;outline-offset:3px}
 .wf-entrance-label{position:absolute;left:56%;top:16%;z-index:3;padding:4px 6px;background:#fff;color:#6b4740;border-radius:6px;font-size:9px;font-weight:850;box-shadow:0 1px 5px #11201814;max-width:115px;line-height:1.25}
 .wf-map-caption{font-size:10px;color:#8d9890;text-align:right;padding:6px 2px 0}
