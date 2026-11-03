@@ -127,6 +127,24 @@
         "label": "Hornstein Pavilion · Level 1",
         "wing": "Michal and Renata Hornstein",
         "floor": "1"
+      },
+      {
+        "id": "mmfa-bourgie-front",
+        "label": "Outside, in front of the Bourgie Pavilion",
+        "wing": "Claire and Marc Bourgie · exterior",
+        "floor": "Outdoor"
+      },
+      {
+        "id": "mmfa-avenue-du-musee",
+        "label": "Avenue du Musée · outdoor sculptures",
+        "wing": "Museum exterior · Avenue du Musée",
+        "floor": "Outdoor"
+      },
+      {
+        "id": "mmfa-peace-floor-unconfirmed",
+        "label": "Hornstein Pavilion for Peace · exact floor to confirm",
+        "wing": "Hornstein Pavilion for Peace",
+        "floor": "Unconfirmed"
       }
     ],
     "pamm": [
@@ -1015,16 +1033,16 @@
     ]
   },
   "mode": "independent-pitch-demo",
-  "updatedAt": "2026-10-30T14:45:58.823Z",
+  "updatedAt": "2026-11-03T19:22:26.942Z",
   "description": "Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.",
   "works": {
     "mmfa-marrel": {
       "active": true,
       "onViewVerified": true,
-      "room": "mmfa-peace-2",
-      "startDate": "2026-10-29",
+      "room": "mmfa-peace-3",
+      "startDate": "",
       "endDate": "",
-      "note": "Original pitch demo work; current display status not independently confirmed."
+      "note": "MMFA Archives, Audrey Marcoux, email 2026-11-03: on display, Hornstein Pavilion for Peace, 3rd floor."
     },
     "mmfa-witte": {
       "active": true,
@@ -1032,55 +1050,55 @@
       "room": "mmfa-peace-3",
       "startDate": "",
       "endDate": "",
-      "note": "Original pitch demo work; current display status not independently confirmed."
+      "note": "MMFA Archives, Audrey Marcoux, email 2026-11-03: on display, Hornstein Pavilion for Peace, 3rd floor."
     },
     "mmfa-fortin": {
-      "active": true,
-      "onViewVerified": true,
-      "room": "mmfa-bourgie-4",
-      "startDate": "",
-      "endDate": "",
-      "note": "Original pitch demo work; current display status not independently confirmed."
-    },
-    "mmfa-eye": {
-      "active": true,
-      "onViewVerified": true,
-      "room": "mmfa-garden",
-      "startDate": "",
-      "endDate": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    },
-    "mmfa-frink": {
-      "active": true,
-      "onViewVerified": true,
-      "room": "mmfa-garden",
-      "startDate": "",
-      "endDate": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    },
-    "mmfa-riopelle": {
-      "active": true,
-      "onViewVerified": true,
-      "room": "mmfa-bourgie-3",
-      "startDate": "",
-      "endDate": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
-    },
-    "mmfa-rodin": {
       "active": true,
       "onViewVerified": true,
       "room": "mmfa-bourgie-1",
       "startDate": "",
       "endDate": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+      "note": "MMFA Archives, Audrey Marcoux, email 2026-11-03: on display, Bourgie Pavilion, 1st floor."
     },
-    "mmfa-cragg": {
+    "mmfa-eye": {
       "active": true,
       "onViewVerified": true,
-      "room": "mmfa-bourgie-2",
+      "room": "mmfa-bourgie-front",
       "startDate": "",
       "endDate": "",
-      "note": "Expansion candidate; requires museum confirmation before use in a physical tour."
+      "note": "MMFA Archives, Audrey Marcoux, email 2026-11-03: on display outside, in front of the Bourgie Pavilion."
+    },
+    "mmfa-frink": {
+      "active": true,
+      "onViewVerified": true,
+      "room": "mmfa-avenue-du-musee",
+      "startDate": "",
+      "endDate": "",
+      "note": "MMFA Archives, Audrey Marcoux, email 2026-11-03: In memoriam I and II on display along Avenue du Musée."
+    },
+    "mmfa-riopelle": {
+      "active": true,
+      "onViewVerified": true,
+      "room": "mmfa-bourgie-s2",
+      "startDate": "",
+      "endDate": "",
+      "note": "MMFA Archives, Audrey Marcoux, email 2026-11-03: on display, Bourgie Pavilion, 2nd basement (S2)."
+    },
+    "mmfa-rodin": {
+      "active": true,
+      "onViewVerified": true,
+      "room": "mmfa-peace-floor-unconfirmed",
+      "startDate": "",
+      "endDate": "",
+      "note": "MMFA Archives, Audrey Marcoux, email 2026-11-03: The Thinker on display in Hornstein Pavilion for Peace; exact floor/room was NOT specified. Do not infer a floor or verified indoor route."
+    },
+    "mmfa-cragg": {
+      "active": false,
+      "onViewVerified": false,
+      "room": "",
+      "startDate": "",
+      "endDate": "",
+      "note": "MMFA Archives, Audrey Marcoux, email 2026-11-03: Sharing is in storage, not on public display. Removed from playable visitor route."
     },
     "pamm-masks": {
       "active": true,
