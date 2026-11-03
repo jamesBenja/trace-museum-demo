@@ -243,33 +243,41 @@ function campus(ctx,plan){
    All coordinates are presentation-only; the shared room graph owns directions. */
 const INDOOR={
  moma:{
-  '1':{'moma-entry':[210,180]},
+  '1':{'moma-entry':[215,310]},
   '4':{
-    'moma-f4-landing':[403,148],'moma-400':[366,88],'moma-401':[318,72],
-    'moma-402':[272,48],'moma-405':[175,75],'moma-407':[140,125],
-    'moma-408':[145,195],'moma-410':[219,224],'moma-412':[295,214],
-    'moma-413':[358,220],'moma-414':[389,245]
+    'moma-f4-landing':[402,375],'moma-400':[326,359],
+    'moma-401':[329,309],'moma-402':[390,303],
+    'moma-405':[309,210],'moma-407':[381,178],
+    'moma-408':[377,122],'moma-410':[287,119],
+    'moma-412':[197,82],'moma-413':[64,49],'moma-414':[200,137]
   },
   '5':{
-    'moma-f5-landing':[408,152],'moma-500':[376,93],'moma-501':[298,76],
-    'moma-502':[229,48],'moma-503':[180,48],'moma-506':[181,138],
-    'moma-517':[187,231],'moma-515':[69,233],'moma-523':[336,235]
+    'moma-f5-landing':[393,373],'moma-500':[329,365],
+    'moma-501':[320,293],'moma-502':[387,311],
+    'moma-503':[391,234],'moma-506':[231,213],
+    'moma-517':[96,217],'moma-515':[52,57],
+    'moma-523':[151,347]
   },
-  '6':{'moma-f6-landing':[394,152],'moma-six':[202,140]}
+  '6':{'moma-f6-landing':[393,323],'moma-six':[208,168]}
  },
  pamm:{
   '1':{
-    'pamm-1':[232,246],'pamm-2':[214,183],'pamm-3':[105,185],
-    'pamm-4':[125,116],'pamm-5':[317,165],'pamm-7':[205,115],
-    'pamm-8':[115,50],'pamm-18':[376,48]
+    'pamm-1':[134,242],'pamm-2':[106,188],
+    'pamm-3':[55,242],'pamm-4':[48,139],
+    'pamm-5':[96,139],'pamm-7':[167,80],
+    'pamm-8':[148,140],'pamm-18':[400,26]
   },
   '2':{
-    'pamm-f2-landing':[220,168],'pamm-f2-1':[96,30],'pamm-f2-2':[215,75],
-    'pamm-f2-3':[107,92],'pamm-f2-4':[91,158],'pamm-f2-5':[90,226],
-    'pamm-f2-6':[153,226],'pamm-f2-7':[157,102],'pamm-f2-8':[269,102],
-    'pamm-f2-9':[322,59],'pamm-f2-10':[354,106],'pamm-f2-11':[360,160],
-    'pamm-f2-12':[363,216],'pamm-f2-13':[291,226],'pamm-f2-14':[231,234],
-    'pamm-f2-15':[290,49],'pamm-f2-16':[45,268],'pamm-f2-17':[410,262]
+    'pamm-f2-landing':[254,197],
+    'pamm-f2-1':[260,123],'pamm-f2-2':[309,122],
+    'pamm-f2-3':[360,54],'pamm-f2-4':[265,56],
+    'pamm-f2-5':[187,86],'pamm-f2-6':[184,160],
+    'pamm-f2-7':[103,127],'pamm-f2-8':[103,172],
+    'pamm-f2-9':[64,208],'pamm-f2-10':[38,261],
+    'pamm-f2-11':[106,258],'pamm-f2-12':[185,254],
+    'pamm-f2-13':[281,254],'pamm-f2-14':[361,255],
+    'pamm-f2-15':[307,191],'pamm-f2-16':[370,162],
+    'pamm-f2-17':[314,140]
   },
   Outdoor:{'pamm-18':[218,145]}
  }
@@ -292,7 +300,7 @@ function drawIndoorLine(ctx,plan,floor,positions){
  for(let i=1;i<pts.length;i++){
   const p=pts[i-1],q=pts[i];pieces.push('<path d="M'+p[0]+' '+p[1]+' L'+q[0]+' '+q[1]+'" class="wf-indoor-path"/>');
  }
- return '<svg class="wf-indoor-lines" viewBox="0 0 440 300" aria-hidden="true">'+pieces.join('')+'</svg>';
+ return '<svg class="wf-indoor-lines" viewBox="0 0 440 '+(ctx.museum==='moma'?'400':'300')+'" aria-hidden="true">'+pieces.join('')+'</svg>';
 }
 function indoorMap(ctx,plan){
  const museum=ctx.museum,layouts=INDOOR[museum],floor=defaultMapFloor(ctx),positions=layouts[floor]||{};
@@ -309,7 +317,7 @@ function indoorMap(ctx,plan){
   const n=museum==='moma'?id==="moma-six"?"6":id.replace(/.*-/,''):id==="pamm-18"?'✦':id==="pamm-1"?'i':id==="pamm-2"?'⌂':id==="pamm-7"||id==="pamm-f2-2"?'↕':id.replace(/.*-/,'');
   const name=matches.length?matches.map(a=>workLabel(a,ctx)).join(', '):r.label;
   return '<button type="button" class="wf-gallery-room'+(chosen?' selected':'')+(start?' is-start':'')+(land||entry?' wf-hub':'')+'" '+
-   'style="left:'+(p[0]/4.4)+'%;top:'+(p[1]/3)+'%" '+
+   'style="left:'+(p[0]/4.4)+'%;top:'+(p[1]/(museum==='moma'?4:3))+'%" '+
    (matches.length?'data-wf-work="'+h(matches[0].id)+'"':'data-wf-map-start="'+h(id)+'"')+
    ' aria-label="'+h(name)+'" title="'+h(name)+'"><strong>'+h(land?'↕':n)+'</strong>'+
    (matches.length?'<span class="wf-gallery-mystery">'+h(state.found.includes(matches[0].id)?'✓':'?')+'</span>':'')+'</button>';
@@ -320,7 +328,7 @@ function indoorMap(ctx,plan){
   ctx.dst?.floor==='Unconfirmed'?t('Gallery location pending'):t('Select a floor to see the galleries');
  return '<div class="wf-indoor-map">'+
   '<div class="wf-indoor-floors" role="group" aria-label="'+h(t('Floor'))+'">'+tabs+'</div>'+
-  '<div class="wf-indoor-diagram" role="group" aria-label="'+h(t('Floor')+' '+floor)+'">'+
+  '<div class="wf-indoor-diagram '+(museum==='moma'?'wf-moma-plan':'wf-pamm-plan')+'" role="group" aria-label="'+h(t('Floor')+' '+floor)+'">'+
   '<div class="wf-indoor-corridor"></div>'+drawIndoorLine(ctx,plan,floor,positions)+nodes+'</div>'+
   '<div class="wf-indoor-caption">'+h(caption)+'</div></div>';
 }
