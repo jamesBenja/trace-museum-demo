@@ -180,25 +180,25 @@
       },
       {
         "id": "pamm-3",
-        "label": "Gallery 3",
+        "label": "3 · Papper Family Project Gallery",
         "wing": "Galleries",
         "floor": "1"
       },
       {
         "id": "pamm-4",
-        "label": "Gallery 4",
+        "label": "4 · Nedra and Mark Oren Collection Gallery",
         "wing": "Galleries",
         "floor": "1"
       },
       {
         "id": "pamm-5",
-        "label": "Gallery 5",
+        "label": "5 · Bank of America Project Gallery",
         "wing": "Galleries",
         "floor": "1"
       },
       {
         "id": "pamm-8",
-        "label": "Gallery 8",
+        "label": "8 · Lori and Milton Ferrell Collection Gallery",
         "wing": "Galleries",
         "floor": "1"
       },
@@ -294,7 +294,7 @@
       },
       {
         "id": "pamm-f2-14",
-        "label": "14 · Greene Gallery",
+        "label": "14 · Rose Ellen Meyerhoff Greene and Gerald Greene Exhibition Gallery",
         "wing": "Floor 2",
         "floor": "2"
       },
@@ -1451,7 +1451,7 @@
     ]
   },
   "mode": "independent-pitch-demo",
-  "updatedAt": "2026-11-03T23:38:00.000Z",
+  "updatedAt": "2026-11-03T23:48:00.000Z",
   "description": "Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.",
   "works": {
     "mmfa-marrel": {
