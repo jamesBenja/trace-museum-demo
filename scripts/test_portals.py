@@ -188,7 +188,7 @@ with sync_playwright() as p:
   assert visitor.evaluate("window.TRACE_DISPLAY.rec('mmfa-eye').room")=="mmfa-garden"
   visitor.locator("[data-tab='map']").click()
   visitor.locator("[data-tn-mode='all']").click()
-  assert "Sculpture Garden" in visitor.locator("#view").inner_text()
+  assert "Outside" in visitor.locator("#view").inner_text() and visitor.locator('.wf-page').count()==1
   assert visitor.evaluate("window.TRACE_ROUTING.routeWorks().length")==4
  # The combined publish must update PAMM for both visitors without changing their MMFA settings.
  for visitor in [v1,v2]:
@@ -237,6 +237,4 @@ with sync_playwright() as p:
  browser.close()
 print("ALL SHARED PORTAL TESTS PASSED",flush=True)
 
-# Run navigation v3 assertions alongside established multi-user publishing regression.
-import runpy
-runpy.run_path("scripts/test_wayfinder.py",run_name="__main__")
+# Navigation v4 has its own browser regression run in the validation workflow.
