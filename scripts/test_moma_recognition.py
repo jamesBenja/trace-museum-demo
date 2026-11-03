@@ -1,12 +1,22 @@
 """Require real browser-loadable image references before offering automatic MoMA scan.
 Measure each own-image match and wrong-art rejection without presenting a fabricated match.
 """
-import os
+import os,json
+from pathlib import Path
 from playwright.sync_api import sync_playwright
 URL=os.getenv("TRACE_TEST_URL","http://127.0.0.1:8765/?v=27")
 with sync_playwright() as p:
  browser=p.chromium.launch(headless=True,args=["--no-sandbox"])
  page=browser.new_page(viewport={"width":390,"height":844})
+ # The recognition unit test validates all eight authored references, even if
+ # one work is temporarily off display in the published museum catalogue.
+ manifest=json.loads((Path(__file__).resolve().parents[1]/'display-status.json').read_text())
+ for key,item in manifest['works'].items():
+  if key.startswith('moma-'):item['active']=True
+ def activate_game_fixture(route):
+  route.fulfill(status=200,content_type='application/json',
+    headers={'Access-Control-Allow-Origin':'*'},body=json.dumps(manifest))
+ page.route('https://raw.githubusercontent.com/**/display-status.json*',activate_game_fixture)
  page.goto(URL,wait_until="domcontentloaded",timeout=45000)
  page.wait_for_function("typeof moma !== 'undefined' && window.TRACE_DISPLAY && !window.TRACE_DISPLAY.loading",timeout=45000)
  page.wait_for_function("moma.every(a=>a.reference || window.__traceRefsFinished)",timeout=70000)
