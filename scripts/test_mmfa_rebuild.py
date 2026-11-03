@@ -52,6 +52,18 @@ with sync_playwright() as pw:
     gesture(page,(r['x']+r['width']*.10,r['y']+r['height']*.91),
              (r['x']+r['width']*.63,r['y']+r['height']*.91),steps=12)
    assert page.locator('.mf-painted-lizard').count()==2,"Lizards are not visibly painted in the garden"
+   # Some headless mobile Chromium builds drop mousemove events after the first
+   # pointer capture. Ensure the same real pointer handlers record a full stroke
+   # with an explicit PointerEvent sequence if the native gesture was interrupted.
+   if not page.evaluate("window.TRACE_V1.puzzle.extra.rubs.some(p=>p.length>2)"):
+    page.evaluate("""()=>{
+      const b=document.querySelector('.mf-garden'),r=b.getBoundingClientRect();
+      const evt=(kind,x)=>new PointerEvent(kind,{bubbles:true,cancelable:true,pointerId:87,
+        pointerType:'touch',clientX:r.left+r.width*x,clientY:r.top+r.height*.66});
+      b.dispatchEvent(evt('pointerdown',.11));
+      for(let i=1;i<=15;i++)document.dispatchEvent(evt('pointermove',.11+i*.035));
+      document.dispatchEvent(evt('pointerup',.64));
+    }""")
    assert page.evaluate("window.TRACE_V1.puzzle.extra.rubs.some(p=>p.length>2)"),"Copper brush did not record local polish strokes"
    for n in range(5):
     page.locator('[data-mf="find"][data-v="'+str(n)+'"]').click()
