@@ -841,9 +841,9 @@
         "status": "research",
         "confidence": "low",
         "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/",
-        "closed": false,
+        "closed": true,
         "cost": 5,
-        "note": "Conceptual open-air connection between Bourgie pavilion ground level and nearby sculpture garden. Not an approved direct gallery door."
+        "note": "The public MMFA map locates the Bourgie Pavilion and Sculpture Garden near each other but does not identify a direct visitor door between this gallery and the garden. Do not route through a hypothetical door."
       },
       {
         "from": "mmfa-entrance",
@@ -855,6 +855,39 @@
         "closed": false,
         "cost": 9,
         "note": "Outdoor public route near Sherbrooke Street and Du Musée Avenue. Street crossing, route and public opening require onsite confirmation."
+      },
+      {
+        "from": "mmfa-entrance",
+        "to": "mmfa-avenue-du-musee",
+        "type": "outdoor",
+        "cost": 5,
+        "confidence": "moderate",
+        "note": "Suggested exterior pedestrian connection from the museum's Sherbrooke main entrance toward Avenue du Musée as located on the MMFA official map. Exact sidewalk turns are not shown.",
+        "status": "research",
+        "closed": false,
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/"
+      },
+      {
+        "from": "mmfa-avenue-du-musee",
+        "to": "mmfa-garden",
+        "type": "outdoor",
+        "cost": 1,
+        "confidence": "high",
+        "note": "Official map identifies the sculpture garden alongside Avenue du Musée.",
+        "status": "research",
+        "closed": false,
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/"
+      },
+      {
+        "from": "mmfa-avenue-du-musee",
+        "to": "mmfa-bourgie-front",
+        "type": "outdoor",
+        "cost": 2,
+        "confidence": "moderate",
+        "note": "Exterior approach along Avenue du Musée toward the facade of Bourgie Pavilion, as shown on the public MMFA map.",
+        "status": "research",
+        "closed": false,
+        "source": "https://www.mbam.qc.ca/en/mmfa-museum-map/"
       }
     ],
     "pamm": [
@@ -1033,7 +1066,7 @@
     ]
   },
   "mode": "independent-pitch-demo",
-  "updatedAt": "2026-11-03T19:22:26.942Z",
+  "updatedAt": "2026-11-03T22:20:01.555Z",
   "description": "Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.",
   "works": {
     "mmfa-marrel": {
