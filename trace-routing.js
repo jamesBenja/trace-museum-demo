@@ -1,5 +1,6 @@
-/* TRACE navigator v3.1, source-graded connected visit planner.
-   Exact turns and walking times are never inferred: connections must be entered by staff.
+/* TRACE route graph: approved and map-derived (research) connections.
+   Visitors use accessible map-derived routes via route(start, end, true).
+   Keep source/confidence metadata and avoid claiming measured distances or precise doors.
    Routes and preferences are saved on this device only. */
 (function(){
 'use strict';
