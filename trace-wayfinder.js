@@ -94,7 +94,7 @@ function level(r){
 }
 function workLabel(a,ctx){
  const n=ctx.works.indexOf(a)+1;
- return state.found.includes(a.id)?a.artist:t('Mystery Work')+' '+n;
+ return state.found.includes(a.id)?a.name:t('Mystery Work')+' '+n;
 }
 function context(){
  R().touch();
@@ -114,7 +114,7 @@ function context(){
 function routePlan(ctx){
  if(!ctx.start||!ctx.dst)return null;
  const partial=ctx.museum==='mmfa'&&ctx.dst.floor==='Unconfirmed';
- const goal=partial?'mmfa-peace-1':ctx.dst.id;
+ const goal=partial&&(zone(ctx.start,ctx.museum)==='peace')?ctx.start.id:partial?'mmfa-peace-1':ctx.dst.id;
  const approved=R().route(ctx.start.id,goal,false);
  const suggested=approved||R().route(ctx.start.id,goal,true);
  if(!suggested)return null;
