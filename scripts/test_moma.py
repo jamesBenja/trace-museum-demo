@@ -136,9 +136,11 @@ with sync_playwright() as q:
  assert page.evaluate("window.TRACE_DISPLAY.isVerified('moma-starry')")==False
  assert page.evaluate("window.TRACE_ROUTING.MAPS.moma.url")=="https://www.moma.org/visit/guide/map"
  page.locator('[data-tab="map"]').click()
- assert 'MoMA official visitor map' in page.locator('#view').inner_text()
- assert 'Gallery 501' in page.locator('#view').inner_text()
- assert 'SUGGESTED GALLERY ORDER' in page.locator('#view').inner_text(), 'No invented walking turns'
+ assert page.locator('.wf-page').count()==1
+ assert page.locator('.wf-header a[href*="moma.org/visit/guide/map"]').count()==1
+ assert page.evaluate("TRACE_DISPLAY.rec('moma-starry').room")=='moma-501'
+ assert page.locator('.wf-route-card').count()==1
+ assert page.locator('.wf-verified-path').count()==0, 'No fabricated museum-approved route'
  page.locator('[data-tab="quest"]').click()
  page.evaluate("state.tab='quest';state.stage='intro';render()")
  for lang in ['en','fr','es']:
