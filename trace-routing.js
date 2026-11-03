@@ -135,7 +135,7 @@ document.addEventListener('click',ev=>{
  const b=ev.target.closest('[data-tn-mode],[data-tn-focus],[data-tn-open],[data-tn-add-room],[data-tn-connect],[data-tn-remove-room],[data-tn-unlink],[data-tn-approve],[data-tn-propose],[data-tn-closure]');
  if(!b)return;
  ev.preventDefault();ev.stopImmediatePropagation();const d=b.dataset;
- if(d.tnMode!==undefined){S.mode=d.tnMode;touch();saveRoute();reRender();return}
+ if(d.tnMode!==undefined){S.mode=d.tnMode;S.expanded=true;touch();saveRoute();reRender();return}
  if(d.tnFocus!==undefined){S.focus=d.tnFocus;saveRoute();reRender();return}
  if(d.tnOpen!==undefined){
   const a=A.find(x=>x.id===d.tnOpen);
