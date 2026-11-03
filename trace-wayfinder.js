@@ -349,7 +349,7 @@ function status(ctx,plan){
  const r=ctx.dst,title=workLabel(ctx.chosen,ctx),
   dest=r?zoneName(zone(r,ctx.museum),ctx.museum)+' · '+level(r):t('No room assigned');
  let directions='';
- if(ctx.dst?.floor==='Unconfirmed'){
+ if(ctx.museum==='pamm'&&ctx.dst?.floor==='Unconfirmed'){
   directions='<div class="wf-route-message">'+h(t('Gallery location pending'))+'</div>';
  }else if(plan){
   const steps=suggestedSteps(ctx,plan);
