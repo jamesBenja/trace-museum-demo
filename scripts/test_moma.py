@@ -219,7 +219,8 @@ with sync_playwright() as q:
   assert ({'fr':'TIRER LE LEVIER','es':'TIRA DE LA PALANCA'}[lang]) in page.locator('.mg-slot').inner_text()
   page.evaluate("state.stage='hub';render()")
   page.locator('[data-tab="map"]').click()
-  assert {'fr':'Plan officiel du MoMA','es':'Plano oficial del MoMA'}[lang] in page.locator('#view').inner_text()
+  assert page.locator('.wf-header h2').inner_text()=={'fr':'Carte','es':'Mapa'}[lang]
+  assert page.locator('.wf-header a[href*="moma.org/visit/guide/map"]').count()==1
   page.locator('[data-tab="quest"]').click()
  assert not errors,errors
  print('ALL MOMA THIRD MUSEUM END-TO-END TESTS PASSED',flush=True)
