@@ -1451,7 +1451,7 @@
     ]
   },
   "mode": "independent-pitch-demo",
-  "updatedAt": "2026-11-03T23:48:00.000Z",
+  "updatedAt": "2026-11-04T17:02:00-05:00",
   "description": "Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.",
   "works": {
     "mmfa-marrel": {
@@ -1524,7 +1524,7 @@
       "room": "pamm-gallery-unconfirmed",
       "startDate": "",
       "endDate": "",
-      "note": "PAMM owns the work, but no current public gallery/floor placement or display confirmation was found on its collection record as of 2026-11-03. The original TRACE gallery number was a demo assignment and must not be used as an actual visitor direction. Await PAMM's response."
+      "note": "Online exhibition lead (reviewed 2026-11-04): current Picasso–Klee–Matisse exhibition includes works by Joaquín Torres-García, but specifically published related works do not establish that Construcción con dos máscaras is included. Current gallery/on-view status remains unconfirmed. https://www.pamm.org/en/exhibition/picasso-klee-matisse-masterpieces-from-the-museum-berggruen/ ; https://www.pamm.org/en/artwork/2012.107"
     },
     "pamm-delano": {
       "active": true,
@@ -1548,7 +1548,7 @@
       "room": "pamm-18",
       "startDate": "",
       "endDate": "",
-      "note": "PAMM official collection page describes Chaos SAS as an outdoor sculpture. The sculpture-garden area is a map-derived orientation, not a confirmed precise installation point or live display check. https://www.pamm.org/en/artwork/2013.2"
+      "note": "Online location evidence (reviewed 2026-11-04): PAMM's ongoing Sculpture Garden page lists Jedd Novatt; PAMM's Jedd Novatt exhibition guide specifically identifies Chaos SAS outdoors in the sculpture garden, visible outside the Spencer gallery window. Exhibition guide dates to 2021–22, so live presence and precise pin still require checking. Sources: https://www.pamm.org/en/exhibition/sculpture-garden/ ; https://www.pamm.org/en/guide/jedd-novatt-monotypes-and-more/ ."
     },
     "pamm-fonseca": {
       "active": true,
@@ -1556,7 +1556,7 @@
       "room": "pamm-gallery-unconfirmed",
       "startDate": "",
       "endDate": "",
-      "note": "PAMM owns the work, but no current public gallery/floor placement or display confirmation was found on its collection record as of 2026-11-03. The original TRACE gallery number was a demo assignment and must not be used as an actual visitor direction. Await PAMM's response."
+      "note": "Online partial location lead (reviewed 2026-11-04): PAMM's Ongoing Sculpture Garden page lists Gonzalo Fonseca among represented artists, but does not identify Column with Objects specifically. This artwork's current placement remains unconfirmed; do not assume the sculpture is outdoors. Sources: https://www.pamm.org/en/exhibition/sculpture-garden/ ; https://www.pamm.org/en/artwork/2012.47"
     },
     "pamm-yanko": {
       "active": true,
@@ -1580,7 +1580,7 @@
       "room": "pamm-gallery-unconfirmed",
       "startDate": "",
       "endDate": "",
-      "note": "PAMM owns the work, but no current public gallery/floor placement or display confirmation was found on its collection record as of 2026-11-03. The original TRACE gallery number was a demo assignment and must not be used as an actual visitor direction. Await PAMM's response."
+      "note": "Online exhibition evidence (reviewed 2026-11-04): the exact Theresa Chromati work appears as item 4 in PAMM's Ongoing Permanent Collection digital guide. This is strong evidence of an interpretive display, but no current gallery/floor number is published in the guide; do not assign a fictional room. https://www.pamm.org/en/guide/permanent-collection/"
     },
     "moma-starry": {
       "active": true,
