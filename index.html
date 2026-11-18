@@ -533,6 +533,8 @@ const pamm=[
  {"id":"pamm-chromati","museum":"pamm","name":"The Bull Is Out and My Foot Is in My Mouth (Are We Staying or Leaving)?","artist":"Theresa Chromati","year":"2019","medium":"Acrylic, gouache, and glitter on canvas","url":"https://www.pamm.org/en/artwork/2019.182","source":"https://livepammdotorg.imgix.net/wp-content/uploads/2025/03/260320251743002724.jpg","rights":"© Theresa Chromati; courtesy Kravets Wehby Gallery. Clearance required.","chapter":"The Glittering Inner World","clue":"Find a richly coloured artwork with a dancing figure, swirling shapes, and glitter.","hint":"Theresa Chromati uses acrylic, gouache and glitter in a lively figurative composition.","focus":"50% 50%","story":"Theresa Chromati creates vivid inner worlds with acrylic, gouache, and glitter. Forms and colours overlap with expressive gestures. The artist explores the difference between how people appear to others and how they feel inside.","quiz":"Which extra material adds sparkle to the canvas?","opts":["Glitter","Bronze","Marble"],"correct":0,"power":"EXPRESSION","kind":"mixed media","challenge":"layers","previewOnly":true}
 ];
 const moma=window.TRACE_MOMA_DATA||[];const MUSEUMS={mmfa,pamm,moma};const ALL=[...mmfa,...pamm,...moma];let A=mmfa;
+const scanReferenceAvailable=a=>!!(a&&(a.reference||a.referenceViews?.length||window.TRACE_GALLERY_SIGNATURES?.[a.id]?.length));
+window.TRACE_SCAN_AVAILABLE=id=>scanReferenceAvailable(ALL.find(a=>a.id===id));
 const themes={moma:{tag:'NEW YORK · MUSEUM OF MODERN ART',title:'The Moving\nImagination',intro:'Art can change how we see movement, objects, and everyday life.',description:'Follow Mica into modern art’s surprising experiments with rhythm, colour, materials, and imagination.'},mmfa:{tag:'MONTRÉAL · MUSEUM OF FINE ARTS',title:'The Lost\nColours',intro:'Find what others miss. Follow three details through centuries of art.',description:'A mysterious Storykeeper has hidden three artistic powers in real works from the MMFA collection. Look closely, scan a work, and unlock its story.'},pamm:{tag:'MIAMI · PÉREZ ART MUSEUM',title:'The Hidden\nSignals',intro:'Three secret visual codes are waiting inside art.',description:'A message is travelling through colour, memory and symbols. Follow the clues through actual artworks from PAMM’s published collection.'}};
 const STORAGE='trace-real-art-v03';let saved={};try{saved=JSON.parse(localStorage.getItem(STORAGE)||'{}')}catch(e){}
 const state={venue:MUSEUMS[saved.venue]?saved.venue:'mmfa',current:0,stage:'intro',found:[],photos:{},hints:[],quizError:false,tab:'quest',scanImage:null,result:null,lang:saved.lang||'en',puzzleChoice:-1,museumConfig:saved.museumConfig||{},rooms:saved.rooms||{},mapFocusId:null,reviewId:null,reviewFrom:'album',reviewAnswer:null,showDemoTools:false};
@@ -547,7 +549,7 @@ const photoInput=(dark=false)=>`<label class="fileTrigger ${dark?'dark':''}">�
 const img=a=>a.asset||a.source;
 const LOCAL_ART={'mmfa-marrel':'artworks/mmfa-marrel.jpg','mmfa-witte':'artworks/mmfa-witte.jpg','pamm-masks':'artworks/pamm-masks.jpg','pamm-delano':'artworks/pamm-delano.jpg','pamm-grid':'artworks/pamm-grid.jpg'};
 const missingImage=event=>{const image=event.target;image.onerror=null;image.style.display='none';const area=image.parentElement;if(area && !area.querySelector('.missing-image')){const p=document.createElement('div');p.className='missing-image';p.textContent='Image reference unavailable · open the museum record';area.prepend(p)}};
-const referenceStatus=a=>a.reference?'SCANNABLE':'REFERENCE NOT READY';
+const referenceStatus=a=>scanReferenceAvailable(a)?'SCANNABLE':'REFERENCE NOT READY';
 function sampleWall(){return `<div class="sampleWall">${A.map((a,i)=>`<div class="sample"><img src="${escapeHTML(img(a))}" alt="${escapeHTML(a.name)}" onerror="this.style.display='none'"><div>0${i+1} · ${escapeHTML(a.artist)}</div><button data-sample="${a.id}" ${a.reference?'':'disabled'}>Test photo match →</button><a target="_blank" rel="noopener" href="${a.url}" class="sourceLink">Museum record ↗</a></div>`).join('')}</div>`}
 function updateMuseumSwitcher(){
  const b=el('venueSwitcher');if(!b)return;
@@ -933,7 +935,7 @@ async function liveScanFrame(token){
 async function startCamera(){
  const a=A[state.current];
  if(!a||!window.TRACE_DISPLAY?.isActive(a.id))return;
- if(!ready||!a.reference){stopCamera();state.stage='photoquest';render();return}
+ if(!ready||!scanReferenceAvailable(a)){stopCamera();state.stage='photoquest';render();return}
  stopCamera();state.stage='scan';render();
  const video=el('cameraVideo');
  if(!navigator.mediaDevices?.getUserMedia){
@@ -1031,7 +1033,7 @@ async function loadReference(a){
 let rebuildSequence=0;
 async function rebuild(){
  const generation=++rebuildSequence;
- const refs=ALL.filter(a=>a.reference&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(a.id)));
+ const refs=ALL.filter(a=>scanReferenceAvailable(a)&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(a.id)));
  if(!refs.length){ready=false;el('status').textContent='IMPORT ARTWORK IMAGES';return}
  try{
   // Build in a local array. Concurrent boot/catalogue refreshes must never
