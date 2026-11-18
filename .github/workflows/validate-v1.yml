@@ -64,6 +64,7 @@ on:
       - "index.html"
       - "scripts/test_gallery_scanner.py"
       - "scripts/test_sculpture_scanner.py"
+      - "scripts/test_gallery_phone_references.py"
       - "trace-gallery-signatures.js"
       - "scripts/test_v1.py"
       - ".github/workflows/validate-v1.yml"
@@ -112,6 +113,7 @@ jobs:
           node --check trace-gallery-signatures.js
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=40 python scripts/test_gallery_scanner.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=52 python scripts/test_sculpture_scanner.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=60 python scripts/test_gallery_phone_references.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=40 python scripts/test_wayfinder_v7.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_detail_reveal.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_moma_recognition.py
