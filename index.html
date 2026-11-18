@@ -425,13 +425,27 @@ async function recognize(src){
  // Match all published camera views, but compare recognition against OTHER
  // artworks, never against alternate views of the same work.
  const color=compareColor(query,refs);
- const bestViews=new Map();
- for(const row of color)if(!bestViews.has(row.id))bestViews.set(row.id,refs.find(r=>r.id===row.id&&r.view===row.view));
- for(const [id,ref] of bestViews){
-  if(!ref)continue;
-  const matches=getMatches(query,ref.features),geo=consensus(matches);
-  results.push({id,view:ref.view,inliers:geo.inliers,matches:matches.length,
-   score:geo.inliers*2+Math.min(geo.inliers,matches.length)*.2});
+ const geometryViews=new Map();
+ // Fingerprints have colour/layout pixels but no complete geometric features.
+ // Never allow them to hide the reference image's useful geometric matches.
+ for(const ref of refs){
+  if(!ref.features.features.length)continue;
+  const current=geometryViews.get(ref.id)||[];
+  current.push(ref);geometryViews.set(ref.id,current);
+ }
+ for(const [id,views] of geometryViews){
+  const sorted=views.map(ref=>({ref,colour:color.find(c=>c.id===id&&c.view===ref.view)?.colorScore??-1}))
+    .sort((a,b)=>b.colour-a.colour).slice(0,id===expected?3:1);
+  if(views.some(r=>r.view===0)&&!sorted.some(x=>x.ref.view===0)){
+   sorted.push({ref:views.find(r=>r.view===0)});
+  }
+  let best={id,inliers:0,matches:0,score:0,view:null};
+  for(const item of sorted){
+   const matches=getMatches(query,item.ref.features),geo=consensus(matches);
+   const score=geo.inliers*2+Math.min(geo.inliers,matches.length)*.2;
+   if(score>best.score)best={id,view:item.ref.view,inliers:geo.inliers,matches:matches.length,score};
+  }
+  results.push(best);
   await new Promise(r=>setTimeout(r,0));
  }
  results.sort((a,b)=>b.score-a.score);
@@ -451,7 +465,7 @@ async function recognize(src){
  }
  color.sort((a,b)=>b.colorScore-a.colorScore);
  const targetColor=color.find(r=>r.id===expected);
- const targetGeo=results.find(r=>r.id===expected);
+ const targetGeo=results.find(r=>r.id===expected)||{id:expected,inliers:0,matches:0,score:0};
  const runnerColor=Math.max(-1,...color.filter(r=>r.id!==expected).map(r=>r.colorScore));
  const runnerGeo=Math.max(0,...results.filter(r=>r.id!==expected).map(r=>r.inliers));
  const currentArtwork=typeof A!=='undefined'?A.find(a=>a.id===expected):null;
@@ -478,7 +492,7 @@ async function recognize(src){
    if(!recognized&&targetColor.box&&targetColor.colorScore>=.16){
     const ref=refs.find(r=>r.id===expected&&r.view===targetColor.view);
     const box=targetColor.box;
-    if(ref&&box.width>=.13&&box.height>=.23){
+    if(ref?.features?.features?.length&&box.width>=.13&&box.height>=.23){
      const sw=src.videoWidth||src.naturalWidth||src.width;
      const sh=src.videoHeight||src.naturalHeight||src.height;
      if(sw&&sh){
