@@ -62,6 +62,7 @@ on:
       - "trace-coop.css"
       - "trace-v1.css"
       - "index.html"
+      - "scripts/test_gallery_scanner.py"
       - "scripts/test_v1.py"
       - ".github/workflows/validate-v1.yml"
 permissions:
@@ -106,6 +107,7 @@ jobs:
           python scripts/check_syntax.py
           python -m json.tool display-status.json >/dev/null
           python -m http.server 8765 --bind 127.0.0.1 >/tmp/trace-local-http.log 2>&1 &
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=40 python scripts/test_gallery_scanner.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=40 python scripts/test_wayfinder_v7.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_detail_reveal.py
           TRACE_TEST_URL=http://127.0.0.1:8765/?v=28 python scripts/test_moma_recognition.py
