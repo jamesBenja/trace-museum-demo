@@ -386,7 +386,7 @@ async function prepareLibrary(items){
  return nextLibrary;
 }
 async function recognize(src){
- if(!library.length)throw Error('Matcher is not initialized');
+ // The active museum may be indexed lazily after asynchronous reference loading.
  const expected=typeof A!=='undefined'&&typeof state!=='undefined'&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(A[state.current]?.id))?A[state.current]?.id:null;
  // The recognition candidate set must be the CURRENT museum, not all three
  // museums. Cross-museum feature collisions previously raised the geometric
