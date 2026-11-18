@@ -7,12 +7,21 @@
 const URL='https://raw.githubusercontent.com/jamesBenja/trace-museum-demo/main/display-status.json',STORE='trace-display-admin-draft-v1';
 const ORIGINAL=['mmfa-marrel','mmfa-witte','mmfa-fortin','pamm-masks','pamm-delano','pamm-grid'];
 let published={schemaVersion:1,mode:'independent-pitch-demo',updatedAt:'',works:{}};
-let draft=null,loading=true,error='',syncError='',publishStatus='',publishing=false,lastSync=0;
+let draft=null,loading=true,error='',syncError='',publishStatus='',publishing=false,lastSync=0,referenceBusy=false,referenceMessage='';
 const admin=()=>window.TRACE_AUTH?.isAdmin()===true;
 const h=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const sourceWorks=()=>[...mmfa,...pamm,...moma];
 const validWork=id=>sourceWorks().some(a=>a.id===id);
-const defaultRec=id=>({active:ORIGINAL.includes(id),onViewVerified:false,room:'',startDate:'',endDate:'',note:''});
+const defaultRec=id=>({active:ORIGINAL.includes(id),onViewVerified:false,room:'',startDate:'',endDate:'',note:'',referenceViews:[]});
+const validReferencePath=(id,p)=>typeof p==='string'&&new RegExp('^artworks/references/'+id.replace(/[-]/g,'\\-')+'-[a-z0-9-]+\\.jpg$').test(p);
+function referencePaths(id,list){
+ const unique=new Set();
+ for(const p of Array.isArray(list)?list:[]){
+  if(validReferencePath(id,p))unique.add(p);
+  if(unique.size>=8)break;
+ }
+ return [...unique];
+}
 function clean(input){
  const rows={};
  for(const a of sourceWorks()){
@@ -23,7 +32,8 @@ function clean(input){
    room:String(r.room||'').slice(0,100),
    startDate:/^\d{4}-\d{2}-\d{2}$/.test(r.startDate||'')?r.startDate:'',
    endDate:/^\d{4}-\d{2}-\d{2}$/.test(r.endDate||'')?r.endDate:'',
-   note:String(r.note||'').slice(0,500)
+   note:String(r.note||'').slice(0,500),
+   referenceViews:referencePaths(a.id,r.referenceViews)
   };
  }
  const rooms={mmfa:[],pamm:[],moma:[]},connections={mmfa:[],pamm:[],moma:[]};
@@ -76,6 +86,7 @@ function isActive(id){
 }
 function activeWorks(venue){return (MUSEUMS[venue]||[]).filter(a=>isActive(a.id))}
 function isVerified(id){return rec(id).onViewVerified===true}
+function referenceViews(id){return rec(id).referenceViews||[]}
 function room(id){return rec(id).room||''}
 function isDraft(){return draft!==null}
 function renderApp(){if(typeof window.__traceAppRender==='function')window.__traceAppRender()}
@@ -165,7 +176,13 @@ function adminUI(){
   '<div class="td-fields"><label>Gallery / room <select data-td-room="'+a.id+'"><option value="">Not assigned</option>'+rooms(venue).map(x=>'<option value="'+h(x.id)+'" '+(x.id===r.room?'selected':'')+'>'+h(x.label)+(x.floor?' · '+h(x.floor):'')+'</option>').join('')+'</select></label>'+
   '<label>Show from<input type="date" data-td-start="'+a.id+'" value="'+h(r.startDate)+'"></label>'+
   '<label>Show through<input type="date" data-td-end="'+a.id+'" value="'+h(r.endDate)+'"></label></div>'+
-  '<p class="td-origin">Collection record: <a href="'+h(a.url)+'" target="_blank" rel="noopener noreferrer">View source ↗</a> · '+(a.previewOnly?'New candidate':'Original demo work')+'</p></article>';
+  '<div class="td-refs"><strong>Recognition photos · '+r.referenceViews.length+' added</strong>'+
+ '<p>Use actual front and side views. Each uploaded photo is resized and stripped of location/EXIF data, then stored in the public TRACE repository.</p>'+
+ '<label class="td-ref-upload">Add camera reference photos<input type="file" accept="image/*" multiple data-td-reference-upload="'+h(a.id)+'" '+(referenceBusy?'disabled':'')+'></label>'+
+ (r.referenceViews.length?'<div class="td-ref-thumbs">'+r.referenceViews.map((path,i)=>'<div class="td-ref-thumb"><img loading="lazy" src="'+h(path)+'" alt="Camera reference view '+(i+1)+'">'+
+ '<button type="button" data-td-ref-remove="'+h(a.id)+'" data-td-ref-index="'+i+'">Remove</button></div>').join('')+'</div>':'')+
+ '</div>'+
+ '<p class="td-origin">Collection record: <a href="'+h(a.url)+'" target="_blank" rel="noopener noreferrer">View source ↗</a></p></article>';
  }).join('');
  return '<div class="td-screen"><div class="t1-overline">TRACE · MUSEUM ADMINISTRATOR PREVIEW</div><h2>Manage works on display</h2>'+
  (window.TRACE_AUTH?.adminControls()||'')+
@@ -180,7 +197,7 @@ function adminUI(){
  '<div class="td-kpis"><div><b>'+count(venue)+' / '+arts.length+'</b><span>Playable in this preview</span></div><div><b>'+arts.filter(a=>isActive(a.id)&&isVerified(a.id)).length+'</b><span>Marked display-confirmed</span></div></div>'+
  '<div class="td-mode '+(draft?'td-draft':'')+'">'+(draft?'<strong>UNPUBLISHED ADMIN DRAFT</strong><p>Your edits are visible only in this administrator preview until you select Publish changes for all visitors.</p>':
  '<strong>SHARED PUBLISHED CATALOGUE</strong><p>Visitors are reading this same public catalogue. Last publication: '+h(published.updatedAt)+'</p>')+'</div>'+
- '<div class="td-caution">Museum staff must confirm current artwork installations and gallery room locations before marking them verified. TRACE is an independent prototype, not an official museum display listing.</div>'+
+ '<div class="td-caution">Museum staff must confirm current artwork installations and gallery room locations before marking them verified. Camera reference photos are PUBLIC after upload; avoid people, labels, and sensitive information.</div>'+
  (window.TRACE_ROUTING?.adminUI(venue)||'')+
  '<div class="td-work-head"><h3>'+h(({mmfa:'MMFA · Montréal',pamm:'PAMM · Miami',moma:'MoMA · New York'})[venue]||venue)+' artworks</h3><p>Toggle immediately to preview what visitors would see on this device.</p></div>'+
  '<div class="td-work-list">'+rows+'</div>'+
@@ -188,7 +205,7 @@ function adminUI(){
  '<div class="td-publish-actions"><button class="button" type="button" data-td-publish '+(!draft||publishing?'disabled':'')+'>'+(publishing?'Publishing to GitHub…':draft?'✓ Publish changes for all visitors':'Everything published')+'</button>'+
  '<button class="button outline" type="button" data-td-export>Download JSON backup</button>'+
  '<button class="button ghost" type="button" data-td-reset>Discard unpublished draft</button></div>'+
- '<p class="td-small" role="status" aria-live="polite">'+h(publishStatus||error||(draft?'Unpublished changes on this device. Visitors cannot see them yet.':'Last shared publication: '+published.updatedAt))+'</p></div>'+
+ '<p class="td-small" role="status" aria-live="polite">'+h(referenceMessage||publishStatus||error||(draft?'Unpublished changes on this device. Visitors cannot see them yet.':'Last shared publication: '+published.updatedAt))+'</p></div>'+
  '<button class="button ghost" data-action="quest">← Back to visitor adventure</button></div>';
 }
 function visitorNotice(id){
@@ -256,8 +273,42 @@ function download(){
  const a=document.createElement('a');a.download='display-status.json';a.href=url;
  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000);
 }
+async function addReferencePhotos(id,files){
+ if(!admin()||referenceBusy||!validWork(id)||!files.length)return;
+ if(files.length+referenceViews(id).length>8){referenceMessage='Maximum 8 camera photos per artwork';renderApp();return}
+ referenceBusy=true;referenceMessage='Uploading reference photographs…';renderApp();
+ let savedCount=0;
+ try{
+  const draftManifest=setDraft();
+  for(const file of files){
+   const path=await window.TRACE_AUTH.publishReferencePhoto(id,file);
+   const row=draftManifest.works[id];
+   if(!row.referenceViews.includes(path))row.referenceViews.push(path);
+   draftManifest.updatedAt=new Date().toISOString();savedCount++;
+   localStorage.setItem(STORE,JSON.stringify(draftManifest));
+  }
+  referenceMessage='✓ '+savedCount+' photo(s) uploaded. Publish changes for all visitors to activate them.';
+ }catch(err){
+  referenceMessage='Upload stopped: '+String(err.message||err)+'. '+savedCount+' prior photo(s) retained in your draft.';
+ }finally{referenceBusy=false;afterUpdate()}
+}
+function removeReferencePhoto(id,index){
+ if(!admin()||!validWork(id))return;
+ const x=setDraft(),refs=x.works[id].referenceViews;
+ if(!Number.isInteger(index)||index<0||index>=refs.length)return;
+ refs.splice(index,1);x.updatedAt=new Date().toISOString();
+ try{localStorage.setItem(STORE,JSON.stringify(x))}catch(err){}
+ referenceMessage='Reference removed from draft; publish to update visitors.';
+ afterUpdate();
+}
 document.addEventListener('change',ev=>{
- const el=ev.target,ids=['td-active','td-verified','td-room','td-start','td-end'];
+ const el=ev.target;
+ if(el.hasAttribute('data-td-reference-upload')){
+  const files=Array.from(el.files||[]);
+  addReferencePhotos(el.getAttribute('data-td-reference-upload'),files);
+  return;
+ }
+ const ids=['td-active','td-verified','td-room','td-start','td-end'];
  for(const f of ids)if(el.hasAttribute('data-'+f)){
   const field={'td-active':'active','td-verified':'onViewVerified','td-room':'room','td-start':'startDate','td-end':'endDate'}[f];
   const view=document.getElementById('view'),previous=view?.scrollTop||0;
@@ -267,10 +318,11 @@ document.addEventListener('change',ev=>{
  }
 });
 document.addEventListener('click',ev=>{
- const button=ev.target.closest('[data-td-publish],[data-td-export],[data-td-copy],[data-td-reset]');
+ const button=ev.target.closest('[data-td-publish],[data-td-export],[data-td-copy],[data-td-reset],[data-td-ref-remove]');
  if(!button)return;
  if(button.tagName==='A'&&button.dataset.tdExport!==undefined)return;
  ev.stopImmediatePropagation();ev.preventDefault();
+ if(button.dataset.tdRefRemove!==undefined){removeReferencePhoto(button.dataset.tdRefRemove,Number(button.dataset.tdRefIndex));return}
  if(button.dataset.tdPublish!==undefined){publish();return}
  if(button.dataset.tdExport!==undefined){download();return}
  if(button.dataset.tdCopy!==undefined){
@@ -285,7 +337,7 @@ document.addEventListener('click',ev=>{
   afterUpdate();
  }
 },true);
-window.TRACE_DISPLAY={isActive,activeWorks,count,isVerified,room,rooms,connections,alterRooms,rec,adminUI,visitorNotice,setField,statusLabel,load,publish,exportJSON,get draft(){return draft},get published(){return published},get loading(){return loading},get error(){return error},get syncError(){return syncError},get publishing(){return publishing}};
+window.TRACE_DISPLAY={isActive,activeWorks,count,isVerified,referenceViews,room,rooms,connections,alterRooms,rec,adminUI,visitorNotice,setField,statusLabel,load,publish,exportJSON,get draft(){return draft},get published(){return published},get loading(){return loading},get error(){return error},get syncError(){return syncError},get publishing(){return publishing}};
 load();
 setInterval(()=>{if((!draft||!admin())&&!document.hidden&&Date.now()-lastSync>45000)load()},60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&(!draft||!admin())&&Date.now()-lastSync>30000)load()});
