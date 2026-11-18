@@ -392,8 +392,21 @@ async function recognize(src){
  // museums. Cross-museum feature collisions previously raised the geometric
  // runner-up threshold and made correct gallery photos fail unnecessarily.
  const museumIds=new Set((typeof A!=='undefined'?A:[]).filter(x=>!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(x.id)).map(x=>x.id));
- const refs=library.filter(r=>museumIds.has(r.id));
- if(!refs.length)throw Error('No image references for this museum');
+ let refs=library.filter(r=>museumIds.has(r.id));
+ if(!refs.length){
+  // Museum switch / manifest refresh can arrive before the global index has
+  // finished rebuilding. Rebuild this museum's ready source images on demand
+  // rather than permanently failing a valid visitor scan.
+  const available=ALL.filter(a=>museumIds.has(a.id)&&a.reference);
+  if(available.length){
+   const localRefs=await prepareLibrary(available);
+   if(localRefs.length){
+    library=[...library.filter(r=>!museumIds.has(r.id)),...localRefs];
+    refs=localRefs;
+   }
+  }
+ }
+ if(!refs.length)throw Error('This museum is still preparing its image references');
  const query=featureData(src),results=[];
  // Match all published camera views, but compare recognition against OTHER
  // artworks, never against alternate views of the same work.
