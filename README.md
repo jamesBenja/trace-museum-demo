@@ -10,6 +10,16 @@
 
 TRACE is an independent pilot concept with **eight real collection artworks each from MMFA, PAMM and MoMA**, including paintings, photography, sculpture and mixed media. Neither museum has commissioned, endorsed or approved this app. A work belonging to a museum **does not imply that it is physically on view**.
 
+## On-site reference views and sculpture recognition (November 2026)
+
+TRACE's camera matcher now accepts multiple reference views of each work. The catalogue source is retained, and the museum administrator can attach up to eight additional JPEG camera views to each artwork. Reference paths are stored in the shared museum manifest, and all visitor devices load them into the local image-matching library. In the administrator portal, open **MUSEUM**, choose the work, use **Add camera reference photos**, then **Publish changes for all visitors**. Uploaded images are resized, JPEG-re-encoded and stripped of the original image metadata before being committed to the **public** repository. Upload only photos that you intend to publish.
+
+Two 16×20 colour/layout signatures cropped from actual on-site iPhone photographs of Emanuel de Witte's *Interior with a Woman Playing a Virginal* are included in `trace-gallery-signatures.js`. These signatures supplement the official MMFA collection image without exposing the complete uploaded phone photos or EXIF/location data. They are used in live and still-image recognition and must be validated with additional real-world scans.
+
+For sculptures, TRACE now attempts automatic matching when it can decode a legitimate reference image, rather than unconditionally excluding all sculpture chapters. Sculpture matches use stricter confidence and competing-artwork requirements than paintings. Multi-angle staff/visitor reference photos are important: a single front-view photograph cannot guarantee recognition from the sides or back, and a flat reference matcher is **not** a true 3D scanner. Where no readable reference is available, the app retains honestly labelled visual self-confirmation instead of pretending to have recognized the object.
+
+Continuous camera scanning requires two consistent frames before marking a discovery. Recognition remains on device. Validation must include photographs at realistic gallery distances, multiple viewing angles and unrelated works to measure false positives as well as missed matches.
+
 ## Recognition and accessible visual confirmation
 
 For paintings and photographs with calibrated image references, the camera scan remains the primary matching method. After requesting a hint, **Compare visually with museum reference** becomes available for every artwork. The same option appears if an automatic scan fails or the camera is unavailable. Sculptures and newer works without validated reference images use **visitor self-confirmation** from the beginning. This is always labelled clearly and never presented as automatic verification.
