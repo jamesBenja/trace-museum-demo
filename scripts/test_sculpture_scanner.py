@@ -16,7 +16,7 @@ with sync_playwright() as p:
  page.wait_for_function("""()=>
   library.filter(r=>r.id==='mmfa-eye'&&r.view>=100).length===6 &&
   library.filter(r=>r.id==='mmfa-frink'&&r.view>=100).length===4 &&
-  library.filter(r=>r.id==='mmfa-witte'&&r.view>=100).length===2
+  library.filter(r=>r.id==='mmfa-witte'&&r.view>=100).length===3
  """,timeout=65000)
  counts=page.evaluate("""()=>({
   eye:library.filter(r=>r.id==='mmfa-eye'&&r.view>=100).length,
@@ -26,7 +26,7 @@ with sync_playwright() as p:
   privatePhotosPublished:document.documentElement.outerHTML.includes('IMG_1373')
  })""")
  print('IPHONE SCULPTURE REFERENCES',counts,flush=True)
- assert counts['frink']==4 and counts['eye']==6 and counts['witte']==2 and counts['hearts']==2,counts
+ assert counts['frink']==4 and counts['eye']==6 and counts['witte']==3 and counts['hearts']==2,counts
  assert not counts['privatePhotosPublished']
  results=page.evaluate("""async()=>{
   const saved=state.current;
