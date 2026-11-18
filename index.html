@@ -1000,7 +1000,7 @@ async function rebuild(){
   const built=await prepareLibrary(refs);
   if(generation!==rebuildSequence)return;
   library=built;loaded=refs;ready=true;
-  el('status').textContent=`SCAN READY · ${built.length} REFERENCE VIEWS · ${ALL.length} WORKS`;
+  el('status').textContent=`SCAN READY · ${built.length} IMAGE REFERENCES · ${ALL.length} WORKS`;
   el('status').classList.add('ready');
  }catch(e){
   if(generation!==rebuildSequence)return;
