@@ -360,12 +360,12 @@ function consensus(ms){if(ms.length<3)return {inliers:0,error:Infinity};
 }
 let library=[];
 async function prepareLibrary(items){
- library=[];
+ const nextLibrary=[];
  for(const it of items){
   const images=[it.reference,...(it.referenceViews||[])].filter(Boolean);
   for(let view=0;view<images.length;view++){
    const feats=featureData(images[view]);
-   library.push({id:it.id,view,w:feats.w,h:feats.h,features:feats,
+   nextLibrary.push({id:it.id,view,w:feats.w,h:feats.h,features:feats,
     color:colorDescriptor(feats),coarseColor:colorDescriptor(feats,0,0,1,1,7,9)});
    await new Promise(r=>setTimeout(r,0));
   }
@@ -378,12 +378,12 @@ async function prepareLibrary(items){
    const rgb=new Uint8Array(binary.length);
    for(let j=0;j<binary.length;j++)rgb[j]=binary.charCodeAt(j);
    const pixels={w:ref.cols,h:ref.rows,rgb};
-   library.push({id:it.id,view:100+i,w:ref.w,h:ref.h,
+   nextLibrary.push({id:it.id,view:100+i,w:ref.w,h:ref.h,
     features:{w:ref.w,h:ref.h,features:[],corners:0},
     color:colorDescriptor(pixels),coarseColor:colorDescriptor(pixels,0,0,1,1,7,9)});
   }
  }
- return library.map(r=>({id:r.id,view:r.view,corners:r.features.corners}));
+ return nextLibrary;
 }
 async function recognize(src){
  if(!library.length)throw Error('Matcher is not initialized');
@@ -989,7 +989,24 @@ async function loadReference(a){
  // Never pretend a missing cross-origin reference can validate a scan.
  a.asset=a.source;referenceErrors.push(a.id+' '+errors.join('; '));return false;
 }
-async function rebuild(){const refs=ALL.filter(a=>a.reference&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(a.id)));if(!refs.length){ready=false;el('status').textContent='IMPORT ARTWORK IMAGES';return}try{await prepareLibrary(refs);loaded=refs;ready=true;el('status').textContent=`SCAN READY · ${refs.length} IMAGE REFERENCES · ${ALL.length} WORKS`;el('status').classList.add('ready')}catch(e){ready=false;el('status').textContent='MATCHER ERROR';console.error(e)}}
+let rebuildSequence=0;
+async function rebuild(){
+ const generation=++rebuildSequence;
+ const refs=ALL.filter(a=>a.reference&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(a.id)));
+ if(!refs.length){ready=false;el('status').textContent='IMPORT ARTWORK IMAGES';return}
+ try{
+  // Build in a local array. Concurrent boot/catalogue refreshes must never
+  // clear a live scanner's reference library halfway through recognition.
+  const built=await prepareLibrary(refs);
+  if(generation!==rebuildSequence)return;
+  library=built;loaded=refs;ready=true;
+  el('status').textContent=`SCAN READY · ${built.length} REFERENCE VIEWS · ${ALL.length} WORKS`;
+  el('status').classList.add('ready');
+ }catch(e){
+  if(generation!==rebuildSequence)return;
+  ready=false;el('status').textContent='MATCHER ERROR';console.error(e);
+ }
+}
 async function ensureActiveReferences(){
  const wanted=ALL.filter(a=>window.TRACE_DISPLAY?.isActive(a.id)&&
   (!a.reference||a.referenceViewSignature!==(window.TRACE_DISPLAY?.referenceViews?.(a.id)||[]).join('|')));
