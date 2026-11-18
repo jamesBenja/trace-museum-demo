@@ -31,7 +31,7 @@ with sync_playwright() as p:
   if museum=='pamm':
    page.locator('#venueSwitcher').click()
    page.locator('#venuePicker [data-venue="pamm"]').click()
-  for lang,nav,route,work in [('fr','QUÊTE','Carte','L’œil géant' if museum=='mmfa' else 'La tour impossible'),('es','MISIÓN','Mapa','El ojo gigante' if museum=='mmfa' else 'La torre imposible'),('en','QUEST','Map','The Giant Eye' if museum=='mmfa' else 'The Impossible Tower')]:
+  for lang,nav,route,work in [('fr','QUÊTE','Carte','Le mystère ailé' if museum=='mmfa' else 'La tour impossible'),('es','MISIÓN','Mapa','El misterio alado' if museum=='mmfa' else 'La torre imposible'),('en','QUEST','Map','The Winged Mystery' if museum=='mmfa' else 'The Impossible Tower')]:
    page.locator('[data-trace-lang="'+lang+'"]').click()
    assert page.evaluate('document.documentElement.lang')==lang
    assert page.locator('[data-trace-lang="'+lang+'"]').get_attribute('aria-pressed')=='true'
