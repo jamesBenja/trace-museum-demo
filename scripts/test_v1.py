@@ -209,6 +209,29 @@ with sync_playwright() as p:
             page.locator('[data-c2-next]').click()
             page.locator('[data-c2-choice="1"]').click()
             assert page.evaluate("(id)=>window.TRACE_COOP.savedChoice(id)",art)==0
+            if museum=='mmfa' and art=='mmfa-marrel':
+                # Test a smaller framed painting in a phone-style landscape shot.
+                # Historical tests only photographed the reference itself; that
+                # missed real gallery failure when the painting occupies a subset
+                # of a wall-filled camera frame.
+                gallery=page.evaluate("""async () => {
+                  const ref=ALL.find(x=>x.id==='mmfa-marrel').reference;
+                  const c=document.createElement('canvas');c.width=960;c.height=720;
+                  const g=c.getContext('2d');
+                  g.fillStyle='#c8c5bd';g.fillRect(0,0,960,720);
+                  const height=485,width=height*ref.naturalWidth/ref.naturalHeight;
+                  const x=(960-width)/2,y=(720-height)/2;
+                  g.fillStyle='#453a30';g.fillRect(x-13,y-13,width+26,height+26);
+                  g.save();g.filter='brightness(.88) contrast(.92) saturate(.88) blur(.4px)';
+                  g.drawImage(ref,x,y,width,height);g.restore();
+                  const photo=new Image();photo.src=c.toDataURL('image/jpeg',.72);
+                  await photo.decode();
+                  const r=await recognize(photo);
+                  return {recognized:r.recognized,id:r.id,method:r.method,cropInliers:r.cropInliers,
+                    color:r.color.find(x=>x.id==='mmfa-marrel')?.colorScore};
+                }""")
+                print('GALLERY-FRAME MARREL',gallery,flush=True)
+                assert gallery['recognized'] and gallery['id']=='mmfa-marrel',gallery
             page.locator('details summary').click()
             page.locator('[data-action="sample:'+art+'"]').click()
             page.locator('.scanResult').wait_for(timeout=120000)
