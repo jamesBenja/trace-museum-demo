@@ -123,8 +123,8 @@ function clue(){
  '<div class="t1-team t1-word-clue"><div class="t1-overline">'+esc(t.first)+'</div><h3>'+esc(a.chapter)+'</h3><p class="t1-small">'+description+'</p></div>'+
  '<p class="t1-small">'+esc(txt)+'</p>'+
  '<section class="t1-detail-section" aria-label="'+esc(t.second)+'"><div class="t1-overline">'+esc(t.second)+'</div>'+detail+'</section>'+roleMessage()+
- (a.previewOnly?'<div class="te-notice"><strong>Photo-first discovery</strong><p>Photograph your best guess before seeing the museum reference. Automatic recognition is not yet calibrated for this work, so the final comparison will be yours to confirm. The artwork might not be on display.</p></div>': '')+
- (a.reference?btn('⌾ Scan artwork with camera','scan'):btn('⌾ Photograph my guess','photo-quest'))+
+ (a.previewOnly&&!window.TRACE_SCAN_AVAILABLE?.(a.id)?'<div class="te-notice"><strong>Photo-first discovery</strong><p>Automatic recognition is not available for this artwork yet. Capture a photo, then compare it with the museum reference.</p></div>':'')+
+ (window.TRACE_SCAN_AVAILABLE?.(a.id)?btn('⌾ Scan artwork with camera','scan'):btn('⌾ Photograph my guess','photo-quest'))+
  btn('⌖ Help me find the gallery','map','outline')+
  (state.hints.includes(a.id)?'<div class="t1-task">✧ '+esc(a.hint)+'</div>'+
  btn('👁 Camera not working? Compare visually','manual-review','outline'):btn('✧ Ask Mica for a hint','hint','ghost'))+
