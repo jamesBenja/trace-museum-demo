@@ -50,6 +50,13 @@ with sync_playwright() as p:
    results.push({art:'mmfa-witte',height,
       positive:correct.recognized,id:correct.id,method:correct.method,
       cropInliers:correct.cropInliers,color:correct.color.find(x=>x.id==='mmfa-witte')?.colorScore,
+      colorBox:correct.color.find(x=>x.id==='mmfa-witte')?.box,
+      runner:correct.color.filter(x=>x.id!=='mmfa-witte').slice(0,2).map(x=>({id:x.id,score:x.colorScore})),
+      exact:colorScore(library.find(x=>x.id==='mmfa-witte').color,colorDescriptor(featureData(photo),
+       (1152-(height*ALL.find(x=>x.id==='mmfa-witte').reference.naturalWidth/ALL.find(x=>x.id==='mmfa-witte').reference.naturalHeight))/2304,
+       (height<600?355:285)/1536,
+       (height*ALL.find(x=>x.id==='mmfa-witte').reference.naturalWidth/ALL.find(x=>x.id==='mmfa-witte').reference.naturalHeight)/1152,
+       height/1536)),
       wrong:wrong.recognized,wrongId:wrong.id});
   }
   state.current=1;
