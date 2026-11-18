@@ -44,6 +44,33 @@ async function publishFile(contents,sha){
   body:JSON.stringify({message:'TRACE admin: publish museum display and room assignments',
    content:encodeBase64(contents),branch:'main',sha})});
 }
+// Store reference photographs without EXIF or precise location metadata.
+// The administrator explicitly chooses to publish these to the PUBLIC repository.
+async function publishReferencePhoto(id,file){
+ if(!isAdmin())throw Error('Administrator sign-in required');
+ if(!/^(mmfa|pamm|moma)-[a-z0-9-]+$/.test(id))throw Error('Invalid artwork');
+ if(!(file instanceof Blob)||file.size>30000000)throw Error('Use an image smaller than 30 MB');
+ const image=new Image(),objectUrl=globalThis.URL.createObjectURL(file);
+ try{
+  image.src=objectUrl;await image.decode();
+  const srcW=image.naturalWidth,srcH=image.naturalHeight;
+  if(!srcW||!srcH)throw Error('Could not decode image');
+  const scale=Math.min(1,1100/Math.max(srcW,srcH));
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.max(1,Math.round(srcW*scale));canvas.height=Math.max(1,Math.round(srcH*scale));
+  canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+  const dataUrl=canvas.toDataURL('image/jpeg',.76);
+  const bytes=dataUrl.slice(dataUrl.indexOf(',')+1);
+  if(!bytes||bytes.length>1900000)throw Error('Compressed image is too large');
+  const filename=id+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7)+'.jpg';
+  const path='artworks/references/'+filename;
+  await api(API+'/repos/jamesBenja/trace-museum-demo/contents/'+path,{
+   method:'PUT',headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({message:'TRACE: add camera reference for '+id,content:bytes,branch:'main'})
+  });
+  return path;
+ }finally{globalThis.URL.revokeObjectURL(objectUrl)}
+}
 function gate(){
  return '<div class="ta-mask" role="dialog" aria-modal="true" aria-labelledby="traceAdminTitle"><div class="ta-gate">'+
  '<div class="ta-brand">TRACE<span>.</span> / MUSEUM ADMIN</div><h1 id="traceAdminTitle">Manage what visitors see.</h1>'+
@@ -102,7 +129,7 @@ function adminControls(){
  '<button type="button" data-trace-logout>Sign out</button><a href="./visit.html" target="_blank" rel="noopener noreferrer">Visitor preview ↗</a></div>';
 }
 document.addEventListener('click',ev=>{const b=ev.target.closest('[data-trace-logout]');if(!b)return;ev.preventDefault();ev.stopImmediatePropagation();logout()},true);
-window.TRACE_AUTH={portal,isAdmin,adminControls,getFile,publishFile};
+window.TRACE_AUTH={portal,isAdmin,adminControls,getFile,publishFile,publishReferencePhoto};
 document.body.dataset.tracePortal=portal;
 if(portal==='admin')showLogin();
 else document.querySelector('[data-tab="museum"]')?.setAttribute('hidden','');
