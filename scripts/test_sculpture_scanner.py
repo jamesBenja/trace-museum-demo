@@ -11,6 +11,13 @@ with sync_playwright() as p:
  page=browser.new_page(viewport={'width':390,'height':844})
  page.goto(URL,wait_until='domcontentloaded',timeout=45000)
  page.wait_for_function("window.__traceRefsFinished && window.TRACE_DISPLAY && !TRACE_DISPLAY.loading",timeout=65000)
+ # Shared display catalogue and the image-reference builder initialize
+ # asynchronously. Do not inspect an in-progress scanner index.
+ page.wait_for_function("""()=>
+  library.filter(r=>r.id==='mmfa-eye'&&r.view>=100).length===6 &&
+  library.filter(r=>r.id==='mmfa-frink'&&r.view>=100).length===4 &&
+  library.filter(r=>r.id==='mmfa-witte'&&r.view>=100).length===2
+ """,timeout=65000)
  counts=page.evaluate("""()=>({
   eye:library.filter(r=>r.id==='mmfa-eye'&&r.view>=100).length,
   frink:library.filter(r=>r.id==='mmfa-frink'&&r.view>=100).length,
