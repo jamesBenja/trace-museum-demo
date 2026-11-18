@@ -409,7 +409,8 @@ async function recognize(src){
  }
  results.sort((a,b)=>b.score-a.score);
  const targetEntries=color.filter(r=>r.id===expected);
- const prioritized=targetEntries.slice(0,Math.min(2,targetEntries.length));
+ const official=targetEntries.find(r=>r.view===0);
+ const prioritized=[...(official?[official]:[]),...targetEntries.slice(0,2)].filter((r,i,all)=>all.findIndex(t=>t.view===r.view)===i);
  // Coarse-to-fine artwork localization is expensive; only investigate the
  // strongest two reference views, not every photo in the multi-view set.
  for(const entry of prioritized){
