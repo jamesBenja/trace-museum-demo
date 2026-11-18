@@ -391,7 +391,9 @@ async function recognize(src){
  // The recognition candidate set must be the CURRENT museum, not all three
  // museums. Cross-museum feature collisions previously raised the geometric
  // runner-up threshold and made correct gallery photos fail unnecessarily.
- const museumIds=new Set((typeof A!=='undefined'?A:[]).filter(x=>!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(x.id)).map(x=>x.id));
+ const museumCandidates=typeof A!=='undefined'?A:[];
+ const activeMuseumIds=museumCandidates.filter(x=>!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(x.id)).map(x=>x.id);
+ const museumIds=new Set(activeMuseumIds.length?activeMuseumIds:museumCandidates.map(x=>x.id));
  let refs=library.filter(r=>museumIds.has(r.id));
  if(!refs.length){
   // Museum switch / manifest refresh can arrive before the global index has
