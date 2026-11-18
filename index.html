@@ -236,7 +236,7 @@ function compareColor(query,refs=library){
  for(const ref of refs){
   let best=-100,bestBox=null;
   // Preserve the reference artwork's aspect ratio as the camera frame changes.
-  for(const ht of [.39,.47,.55,.63,.71,.79,.87,.95,1]){
+  for(const ht of [.26,.32,.37,.43,.49,.57,.65,.75,.86,.95,1]){
    const wd=ht * (query.h/query.w) * (ref.w/ref.h);
    if(wd<.18||wd>1.002)continue;
    const width=Math.min(1,wd),height=ht;
@@ -256,7 +256,7 @@ function compareColor(query,refs=library){
     const cx=previous.x+previous.width/2,cy=previous.y+previous.height/2;
     for(const dh of [-step,0,step]){
      const height=previous.height+dh,width=height*ratio;
-     if(height<.3||height>1||width<.16||width>1)continue;
+     if(height<.23||height>1||width<.13||width>1)continue;
      for(const xx of [-step,0,step])for(const yy of [-step,0,step]){
       const x=cx+xx-width/2,y=cy+yy-height/2;
       if(x<0||y<0||x+width>1.001||y+height>1.001)continue;
@@ -270,7 +270,7 @@ function compareColor(query,refs=library){
  }
  return records.sort((a,b)=>b.colorScore-a.colorScore);
 }
-function getMatches(query,ref){const matches=[];
+function getMatches(query,ref,loose=false){const matches=[];
  // Match query features with candidate reference descriptors; use quick confidence cutoff and ratio test.
  for(let i=0;i<query.features.length;i++){
   const a=query.features[i];let best=192,second=192,idx=-1;
@@ -278,7 +278,7 @@ function getMatches(query,ref){const matches=[];
    const b=ref.features[j];const d=distance(a.bits,b.bits,Math.min(second,96));
    if(d<best){second=best;best=d;idx=j}else if(d<second && Math.hypot(a.x-b.x,a.y-b.y)>0)second=d;
   }
-  if(best<=57 && best<second*.83){const b=ref.features[idx];matches.push({qx:a.x,qy:a.y,rx:b.x,ry:b.y,d:best})}
+  if(best<=(loose?67:57) && best<second*(loose?.91:.83)){const b=ref.features[idx];matches.push({qx:a.x,qy:a.y,rx:b.x,ry:b.y,d:best})}
  }
  // 3 different descriptor scales can produce multiple matches for one point.
  matches.sort((a,b)=>a.d-b.d);const unique=[],qIds=new Set(),rIds=new Set();
@@ -341,10 +341,10 @@ async function recognize(src){
    // resolution, leaving too few usable painting features. When confidence is
    // insufficient, enlarge the best aspect-ratio-constrained painting region
    // and run geometric matching a second time against ONLY this chapter.
-   if(!recognized&&targetColor.box&&targetColor.colorScore>=.22){
+   if(!recognized&&targetColor.box&&targetColor.colorScore>=.16){
     const ref=refs.find(r=>r.id===expected);
     const box=targetColor.box;
-    if(ref&&box.width>=.16&&box.height>=.3){
+    if(ref&&box.width>=.13&&box.height>=.23){
      const sw=src.videoWidth||src.naturalWidth||src.width;
      const sh=src.videoHeight||src.naturalHeight||src.height;
      if(sw&&sh){
@@ -354,11 +354,11 @@ async function recognize(src){
       cv.height=Math.max(1,Math.round(ref.h*scale));
       cv.getContext('2d').drawImage(src,box.x*sw,box.y*sh,box.width*sw,box.height*sh,0,0,cv.width,cv.height);
       const cropped=featureData(cv);
-      const matches=getMatches(cropped,ref.features);
+      const matches=getMatches(cropped,ref.features,true);
       cropInliers=consensus(matches).inliers;
-      if(cropInliers>=7 &&
-         targetColor.colorScore>=.30 &&
-         targetColor.colorScore-runnerColor>=.055){
+      if(cropInliers>=10 &&
+         targetColor.colorScore>=.24 &&
+         targetColor.colorScore-runnerColor>=.045){
        recognized=true;id=expected;method='framed artwork geometric match';
       }
      }
