@@ -207,14 +207,14 @@ function featureData(src){const {w,h,g,rgb}=canvasData(src),gx=new Float32Array(
 function distance(a,b,abort=192){let n=0;for(let i=0;i<6;i++){n+=bitcount(a[i]^b[i]);if(n>abort)return n}return n}
 // Compare the ARTWORK region, not a square crop of the entire camera frame.
 // A phone photo often contains wall/mat/screen around a tall or wide painting.
-function colorDescriptor(src,x=0,y=0,cropW=1,cropH=cropW){
- const W=src.w,H=src.h,C=src.rgb,values=[new Float32Array(500),new Float32Array(500),new Float32Array(500)];
+function colorDescriptor(src,x=0,y=0,cropW=1,cropH=cropW,cols=20,rows=25){
+ const W=src.w,H=src.h,C=src.rgb,n=cols*rows,values=[new Float32Array(n),new Float32Array(n),new Float32Array(n)];
  if(!C)return null;let means=[0,0,0];
- for(let yy=0;yy<25;yy++)for(let xx=0;xx<20;xx++){
-  const i=yy*20+xx;
+ for(let yy=0;yy<rows;yy++)for(let xx=0;xx<cols;xx++){
+  const i=yy*cols+xx;
   for(let sy=0;sy<2;sy++)for(let sx=0;sx<2;sx++){
-   const px=Math.min(W-1,Math.max(0,Math.floor((x+(xx+(sx+.5)/2)*cropW/20)*W)));
-   const py=Math.min(H-1,Math.max(0,Math.floor((y+(yy+(sy+.5)/2)*cropH/25)*H)));
+   const px=Math.min(W-1,Math.max(0,Math.floor((x+(xx+(sx+.5)/2)*cropW/cols)*W)));
+   const py=Math.min(H-1,Math.max(0,Math.floor((y+(yy+(sy+.5)/2)*cropH/rows)*H)));
    const k=(py*W+px)*3;
    for(let ch=0;ch<3;ch++)values[ch][i]+=C[k+ch]/4;
   }
@@ -222,12 +222,12 @@ function colorDescriptor(src,x=0,y=0,cropW=1,cropH=cropW){
  }
  const chroma=means.map(m=>m/(means[0]+means[1]+means[2]+1e-6));
  for(let ch=0;ch<3;ch++){
-  let norm=0;for(let i=0;i<500;i++){values[ch][i]-=means[ch]/500;norm+=values[ch][i]**2}
-  norm=Math.sqrt(norm)||1;for(let i=0;i<500;i++)values[ch][i]/=norm;
+  let norm=0;for(let i=0;i<n;i++){values[ch][i]-=means[ch]/n;norm+=values[ch][i]**2}
+  norm=Math.sqrt(norm)||1;for(let i=0;i<n;i++)values[ch][i]/=norm;
  }return {values,chroma};
 }
 function colorScore(ref,q){if(!ref||!q)return -1;let corr=0;for(let ch=0;ch<3;ch++){
- const r=ref.values[ch],a=q.values[ch];for(let i=0;i<500;i++)corr+=r[i]*a[i];
+ const r=ref.values[ch],a=q.values[ch];if(r.length!==a.length)return -1;for(let i=0;i<r.length;i++)corr+=r[i]*a[i];
  }corr/=3;let diff=0;for(let ch=0;ch<3;ch++)diff+=Math.abs(q.chroma[ch]-ref.chroma[ch]);
  return corr-2*diff;
 }
@@ -270,6 +270,64 @@ function compareColor(query,refs=library){
  }
  return records.sort((a,b)=>b.colorScore-a.colorScore);
 }
+// Gallery photographs often place a small painting in a large camera frame.
+// First search low-frequency composition, then refine plausible rectangles at
+// the full reference resolution. A sparse fine-detail search cannot converge.
+function searchGalleryArtwork(query,ref){
+ const aspect=(ref.w/ref.h)*(query.h/query.w);
+ const coarseRef=ref.coarseColor||colorDescriptor(ref.features,0,0,1,1,7,9);
+ const coarse=(b)=>colorScore(coarseRef,colorDescriptor(query,b.x,b.y,b.width,b.height,7,9));
+ const proposals=[];
+ for(const height of [.23,.27,.31,.35,.39,.44,.49,.55,.62,.7,.79,.89,.98]){
+  const width=height*aspect;
+  if(width<.13||width>1)continue;
+  for(let iy=0;iy<=8;iy++)for(let ix=0;ix<=8;ix++){
+   const b={x:(1-width)*ix/8,y:(1-height)*iy/8,width,height};
+   proposals.push({box:b,score:coarse(b)});
+  }
+ }
+ proposals.sort((a,b)=>b.score-a.score);
+ let best=-100,bestBox=null;
+ for(const proposal of proposals.slice(0,16)){
+  let box=proposal.box;
+  for(const step of [.028,.011,.004]){
+   const cx=box.x+box.width/2,cy=box.y+box.height/2;
+   let next=box,top=coarse(box);
+   for(const dh of [-step,0,step]){
+    const height=box.height+dh,width=height*aspect;
+    if(height<.2||height>1||width<.12||width>1)continue;
+    for(const dx of [-step,0,step])for(const dy of [-step,0,step]){
+     const b={x:cx+dx-width/2,y:cy+dy-height/2,width,height};
+     if(b.x<0||b.y<0||b.x+width>1||b.y+height>1)continue;
+     const score=coarse(b);
+     if(score>top){top=score;next=b}
+    }
+   }
+   box=next;
+  }
+  const full=(b)=>colorScore(ref.color,colorDescriptor(query,b.x,b.y,b.width,b.height));
+  let localScore=full(box);
+  for(const step of [.012,.004,.0015]){
+   const cx=box.x+box.width/2,cy=box.y+box.height/2;
+   let next=box;
+   for(const dh of [-step,0,step]){
+    const height=box.height+dh,width=height*aspect;
+    if(height<.2||height>1||width<.12||width>1)continue;
+    for(const dx of [-step,0,step])for(const dy of [-step,0,step]){
+     const b={x:cx+dx-width/2,y:cy+dy-height/2,width,height};
+     if(b.x<0||b.y<0||b.x+width>1||b.y+height>1)continue;
+     const score=full(b);
+     if(score>localScore){localScore=score;next=b}
+    }
+   }
+   box=next;
+  }
+  if(localScore>best){best=localScore;bestBox=box}
+  if(best>=.8)break;
+ }
+ return {id:ref.id,colorScore:best,box:bestBox};
+}
+
 function getMatches(query,ref,loose=false){const matches=[];
  // Match query features with candidate reference descriptors; use quick confidence cutoff and ratio test.
  for(let i=0;i<query.features.length;i++){
@@ -301,7 +359,7 @@ function consensus(ms){if(ms.length<3)return {inliers:0,error:Infinity};
  return {inliers:top,error:err};
 }
 let library=[];
-async function prepareLibrary(items){library=[];for(const it of items){const image=it.reference || new Image();if(!it.reference){image.crossOrigin="anonymous";image.src=it.asset;await image.decode()}const feats=featureData(image);library.push({id:it.id,w:feats.w,h:feats.h,features:feats,color:colorDescriptor(feats)});await new Promise(r=>setTimeout(r,0))}return library.map(r=>({id:r.id,corners:r.features.corners}))}
+async function prepareLibrary(items){library=[];for(const it of items){const image=it.reference || new Image();if(!it.reference){image.crossOrigin="anonymous";image.src=it.asset;await image.decode()}const feats=featureData(image);library.push({id:it.id,w:feats.w,h:feats.h,features:feats,color:colorDescriptor(feats),coarseColor:colorDescriptor(feats,0,0,1,1,7,9)});await new Promise(r=>setTimeout(r,0))}return library.map(r=>({id:r.id,corners:r.features.corners}))}
 async function recognize(src){
  if(!library.length)throw Error('Matcher is not initialized');
  const expected=typeof A!=='undefined'&&typeof state!=='undefined'&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(A[state.current]?.id))?A[state.current]?.id:null;
@@ -319,7 +377,15 @@ async function recognize(src){
  }
  results.sort((a,b)=>b.score-a.score);
  const color=compareColor(query,refs);
- const targetColor=color.find(r=>r.id===expected);
+ const target=color.find(r=>r.id===expected),expectedRef=refs.find(r=>r.id===expected);
+ if(target&&expectedRef){
+  const refined=searchGalleryArtwork(query,expectedRef);
+  if(refined.colorScore>target.colorScore){
+   target.colorScore=refined.colorScore;target.box=refined.box;
+   color.sort((a,b)=>b.colorScore-a.colorScore);
+  }
+ }
+ const targetColor=target;
  const targetGeo=results.find(r=>r.id===expected);
  const runnerColor=Math.max(-1,...color.filter(r=>r.id!==expected).map(r=>r.colorScore));
  const runnerGeo=Math.max(0,...results.filter(r=>r.id!==expected).map(r=>r.inliers));
@@ -368,7 +434,7 @@ async function recognize(src){
  return {recognized,id,method,confidence:recognized?'Matched':'Not confident',results,color,cropInliers,corners:query.corners};
 }
 
-function prepareLibraryForTesting(items){library=items.map(it=>{const feats=featureData(it);return {id:it.id,w:feats.w,h:feats.h,features:feats,color:colorDescriptor(feats)}})}
+function prepareLibraryForTesting(items){library=items.map(it=>{const feats=featureData(it);return {id:it.id,w:feats.w,h:feats.h,features:feats,color:colorDescriptor(feats),coarseColor:colorDescriptor(feats,0,0,1,1,7,9)}})}
 
 
 /* TRACE v0.3 - two real museum collection sample adventures.
