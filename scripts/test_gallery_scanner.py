@@ -81,7 +81,18 @@ with sync_playwright() as p:
  page.evaluate("startCamera()")
  page.wait_for_function("state.stage==='scan' && document.querySelector('#cameraVideo')?.videoWidth>0",timeout=15000)
  assert 'automatically' in page.locator('#cameraAlert').inner_text().lower()
- page.wait_for_function("state.stage==='scanresult' && state.result?.id==='mmfa-witte' && state.scanImage",timeout=20000)
+ try:
+  page.wait_for_function("state.stage==='scanresult' && state.result?.id==='mmfa-witte' && state.scanImage",timeout=24000)
+ except Exception:
+  print('LIVE CAMERA DIAGNOSTIC',page.evaluate("""()=>({
+   stage:state.stage,hits:liveScanHits,busy:liveScanBusy,
+   stream:!!stream,token:liveScanToken,timer:!!liveScanTimer,
+   videoReady:document.querySelector('#cameraVideo')?.readyState,
+   videoWidth:document.querySelector('#cameraVideo')?.videoWidth,
+   attached:document.querySelector('#cameraVideo')?.srcObject===stream,
+   alert:document.querySelector('#cameraAlert')?.textContent
+  })"""),flush=True)
+  raise
  assert page.locator('.resultStamp').inner_text()=='ARTWORK VERIFIED'
  assert not errors,"Browser JS errors: "+str(errors)
  context.close();browser.close()
