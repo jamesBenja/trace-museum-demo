@@ -374,9 +374,21 @@ async function prepareLibrary(items){
   const snapshots=window.TRACE_GALLERY_SIGNATURES?.[it.id]||[];
   for(let i=0;i<snapshots.length;i++){
    const ref=snapshots[i],binary=atob(ref.rgb);
-   if(binary.length!==ref.cols*ref.rows*3)continue;
-   const rgb=new Uint8Array(binary.length);
-   for(let j=0;j<binary.length;j++)rgb[j]=binary.charCodeAt(j);
+   const size=ref.cols*ref.rows;
+   const rgb=new Uint8Array(size*3);
+   if(ref.format==='rgb444'){
+    // Packed 12-bit RGB (two pixels / three bytes) removes the need to
+    // publish children's camera photographs or background metadata.
+    if(size%2!==0||binary.length!==(size*3)/2)continue;
+    for(let j=0,k=0;j<binary.length;j+=3,k+=6){
+     const b0=binary.charCodeAt(j),b1=binary.charCodeAt(j+1),b2=binary.charCodeAt(j+2);
+     rgb[k]=(b0>>>4)*17;rgb[k+1]=(b0&15)*17;rgb[k+2]=(b1>>>4)*17;
+     rgb[k+3]=(b1&15)*17;rgb[k+4]=(b2>>>4)*17;rgb[k+5]=(b2&15)*17;
+    }
+   }else{
+    if(binary.length!==size*3)continue;
+    for(let j=0;j<binary.length;j++)rgb[j]=binary.charCodeAt(j);
+   }
    const pixels={w:ref.cols,h:ref.rows,rgb};
    nextLibrary.push({id:it.id,view:100+i,w:ref.w,h:ref.h,
     features:{w:ref.w,h:ref.h,features:[],corners:0},
@@ -454,7 +466,8 @@ async function recognize(src){
       targetColor.colorScore>(isSculpture?.25:.04);
    const artLayoutMatch=targetColor.colorScore>=(isSculpture?.78:.49) &&
       targetColor.colorScore-runnerColor>=(isSculpture?.18:.085) &&
-      (targetGeo.inliers>=(isSculpture?4:2)||targetColor.colorScore>=(isSculpture?.89:.64));
+      (targetGeo.inliers>=(isSculpture?4:2)||
+       targetColor.colorScore>=(isSculpture?(targetColor.view>=100?.84:.89):.64));
    if(spatialMatch){recognized=true;id=expected;method='geometric and artwork consistency'}
    else if(artLayoutMatch){recognized=true;id=expected;method='chapter artwork colour and layout'}
    // Gallery photos may contain a large mat, wall or picture frame. The
