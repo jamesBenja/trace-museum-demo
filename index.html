@@ -266,7 +266,7 @@ function compareColor(query,refs=library){
     }
    }
   }
-  records.push({id:ref.id,colorScore:best,box:bestBox});
+  records.push({id:ref.id,view:ref.view,colorScore:best,box:bestBox});
  }
  return records.sort((a,b)=>b.colorScore-a.colorScore);
 }
@@ -359,7 +359,19 @@ function consensus(ms){if(ms.length<3)return {inliers:0,error:Infinity};
  return {inliers:top,error:err};
 }
 let library=[];
-async function prepareLibrary(items){library=[];for(const it of items){const image=it.reference || new Image();if(!it.reference){image.crossOrigin="anonymous";image.src=it.asset;await image.decode()}const feats=featureData(image);library.push({id:it.id,w:feats.w,h:feats.h,features:feats,color:colorDescriptor(feats),coarseColor:colorDescriptor(feats,0,0,1,1,7,9)});await new Promise(r=>setTimeout(r,0))}return library.map(r=>({id:r.id,corners:r.features.corners}))}
+async function prepareLibrary(items){
+ library=[];
+ for(const it of items){
+  const images=[it.reference,...(it.referenceViews||[])].filter(Boolean);
+  for(let view=0;view<images.length;view++){
+   const feats=featureData(images[view]);
+   library.push({id:it.id,view,w:feats.w,h:feats.h,features:feats,
+    color:colorDescriptor(feats),coarseColor:colorDescriptor(feats,0,0,1,1,7,9)});
+   await new Promise(r=>setTimeout(r,0));
+  }
+ }
+ return library.map(r=>({id:r.id,view:r.view,corners:r.features.corners}));
+}
 async function recognize(src){
  if(!library.length)throw Error('Matcher is not initialized');
  const expected=typeof A!=='undefined'&&typeof state!=='undefined'&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(A[state.current]?.id))?A[state.current]?.id:null;
@@ -370,36 +382,50 @@ async function recognize(src){
  const refs=library.filter(r=>museumIds.has(r.id));
  if(!refs.length)throw Error('No image references for this museum');
  const query=featureData(src),results=[];
- for(const ref of refs){
+ // Match all published camera views, but compare recognition against OTHER
+ // artworks, never against alternate views of the same work.
+ const color=compareColor(query,refs);
+ const bestViews=new Map();
+ for(const row of color)if(!bestViews.has(row.id))bestViews.set(row.id,refs.find(r=>r.id===row.id&&r.view===row.view));
+ for(const [id,ref] of bestViews){
+  if(!ref)continue;
   const matches=getMatches(query,ref.features),geo=consensus(matches);
-  results.push({id:ref.id,inliers:geo.inliers,matches:matches.length,score:geo.inliers*2+Math.min(geo.inliers,matches.length)*.2});
+  results.push({id,view:ref.view,inliers:geo.inliers,matches:matches.length,
+   score:geo.inliers*2+Math.min(geo.inliers,matches.length)*.2});
   await new Promise(r=>setTimeout(r,0));
  }
  results.sort((a,b)=>b.score-a.score);
- const color=compareColor(query,refs);
- const target=color.find(r=>r.id===expected),expectedRef=refs.find(r=>r.id===expected);
- if(target&&expectedRef){
-  const refined=searchGalleryArtwork(query,expectedRef);
-  if(refined.colorScore>target.colorScore){
-   target.colorScore=refined.colorScore;target.box=refined.box;
-   color.sort((a,b)=>b.colorScore-a.colorScore);
+ const targetEntries=color.filter(r=>r.id===expected);
+ const prioritized=targetEntries.slice(0,Math.min(2,targetEntries.length));
+ // Coarse-to-fine artwork localization is expensive; only investigate the
+ // strongest two reference views, not every photo in the multi-view set.
+ for(const entry of prioritized){
+  if(entry.colorScore>=.84)break;
+  const ref=refs.find(r=>r.id===expected&&r.view===entry.view);
+  if(!ref)continue;
+  const refined=searchGalleryArtwork(query,ref);
+  if(refined.colorScore>entry.colorScore){
+   entry.colorScore=refined.colorScore;entry.box=refined.box;
   }
  }
- const targetColor=target;
+ color.sort((a,b)=>b.colorScore-a.colorScore);
+ const targetColor=color.find(r=>r.id===expected);
  const targetGeo=results.find(r=>r.id===expected);
  const runnerColor=Math.max(-1,...color.filter(r=>r.id!==expected).map(r=>r.colorScore));
  const runnerGeo=Math.max(0,...results.filter(r=>r.id!==expected).map(r=>r.inliers));
+ const currentArtwork=typeof A!=='undefined'?A.find(a=>a.id===expected):null;
+ const isSculpture=!!currentArtwork&&/sculpture/i.test((currentArtwork.kind||'')+' '+(currentArtwork.medium||''));
  let recognized=false,id=null,method=null,cropInliers=0;
  // Chapter-specific verification: never approve a different artwork just
  // because it resembles the reference in colour.
  if(expected&&targetGeo&&targetColor){
-   const spatialMatch=targetGeo.inliers>=7 &&
-      targetGeo.inliers>=runnerGeo+4 &&
+   const spatialMatch=targetGeo.inliers>=(isSculpture?10:7) &&
+      targetGeo.inliers>=runnerGeo+(isSculpture?6:4) &&
       targetGeo.inliers>=Math.max(7,Math.ceil(runnerGeo*1.5)) &&
-      targetColor.colorScore>.04;
-   const artLayoutMatch=targetColor.colorScore>=.49 &&
-      targetColor.colorScore-runnerColor>=.085 &&
-      (targetGeo.inliers>=2||targetColor.colorScore>=.64);
+      targetColor.colorScore>(isSculpture?.25:.04);
+   const artLayoutMatch=targetColor.colorScore>=(isSculpture?.78:.49) &&
+      targetColor.colorScore-runnerColor>=(isSculpture?.18:.085) &&
+      (targetGeo.inliers>=(isSculpture?4:2)||targetColor.colorScore>=(isSculpture?.89:.64));
    if(spatialMatch){recognized=true;id=expected;method='geometric and artwork consistency'}
    else if(artLayoutMatch){recognized=true;id=expected;method='chapter artwork colour and layout'}
    // Gallery photos may contain a large mat, wall or picture frame. The
@@ -408,7 +434,7 @@ async function recognize(src){
    // insufficient, enlarge the best aspect-ratio-constrained painting region
    // and run geometric matching a second time against ONLY this chapter.
    if(!recognized&&targetColor.box&&targetColor.colorScore>=.16){
-    const ref=refs.find(r=>r.id===expected);
+    const ref=refs.find(r=>r.id===expected&&r.view===targetColor.view);
     const box=targetColor.box;
     if(ref&&box.width>=.13&&box.height>=.23){
      const sw=src.videoWidth||src.naturalWidth||src.width;
@@ -422,9 +448,9 @@ async function recognize(src){
       const cropped=featureData(cv);
       const matches=getMatches(cropped,ref.features,true);
       cropInliers=consensus(matches).inliers;
-      if(cropInliers>=10 &&
-         targetColor.colorScore>=.24 &&
-         targetColor.colorScore-runnerColor>=.045){
+      if(cropInliers>=(isSculpture?13:10) &&
+         targetColor.colorScore>=(isSculpture?.52:.24) &&
+         targetColor.colorScore-runnerColor>=(isSculpture?.14:.045)){
        recognized=true;id=expected;method='framed artwork geometric match';
       }
      }
@@ -841,7 +867,7 @@ async function liveScanFrame(token){
    if(el('cameraAlert'))el('cameraAlert').textContent='Possible match — hold steady…';
   }else{
    liveScanHits=0;
-   if(el('cameraAlert'))el('cameraAlert').textContent='Looking for the painting… Move closer or adjust the angle.';
+   if(el('cameraAlert'))el('cameraAlert').textContent='Looking for the artwork… Move closer or adjust the angle.';
   }
  }catch(e){
   liveScanHits=0;
@@ -905,31 +931,56 @@ function action(key){if(key.startsWith('sample:')){if(window.TRACE_DISPLAY&&!win
 document.addEventListener('click',e=>{const review=e.target.closest('[data-review-work]'),reviewAnswer=e.target.closest('[data-review-answer]');if(review){v9OpenReview(review.dataset.reviewWork);return}if(reviewAnswer){v9ReviewAnswer(Number(reviewAnswer.dataset.reviewAnswer));return}const map=e.target.closest('[data-map-choice]');if(map){state.mapFocusId=map.dataset.mapChoice;render();return}const p=e.target.closest('[data-v7puzzle]'),lang=e.target.closest('[data-lang]'),toggle=e.target.closest('[data-museum-toggle]');if(p){v7SelectPuzzle(Number(p.dataset.v7puzzle));return}if(lang){if(window.TRACE_I18N)window.TRACE_I18N.setLanguage(lang.dataset.lang);else{state.lang=lang.dataset.lang;save();render()}return}if(toggle){const id=toggle.dataset.museumToggle;state.museumConfig[id]=state.museumConfig[id]===false?true:false;save();render();return}const v=e.target.closest('[data-venue]'),s=e.target.closest('[data-sample]'),a=e.target.closest('[data-answer]'),t=e.target.closest('[data-tab]'),b=e.target.closest('[data-action]');if(v)setVenue(v.dataset.venue);else if(s)sample(s.dataset.sample);else if(a)answer(Number(a.dataset.answer));else if(t)tab(t.dataset.tab);else if(b)action(b.dataset.action)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&el('venuePicker')&&!el('venuePicker').hidden)showMuseumPicker(false)});
 document.addEventListener('change',e=>{if(e.target.id==='scanUpload')upload(e.target.files?.[0],image=>scan(image));else if(e.target.hasAttribute('data-guess-photo')){const artwork=A[state.current]?.id;if(state.stage==='photoquest'&&window.TRACE_DISPLAY?.isActive(artwork))upload(e.target.files?.[0],image=>{if(state.stage!=='photoquest'||A[state.current]?.id!==artwork)return;state.scanImage=thumb(image);render()})}else if(e.target.hasAttribute('data-compare-photo')){const artwork=A[state.current]?.id;if(state.stage==='manualreview'&&window.TRACE_DISPLAY?.isActive(artwork))upload(e.target.files?.[0],image=>{if(state.stage!=='manualreview'||A[state.current]?.id!==artwork)return;state.scanImage=thumb(image);render()})}else if(e.target.dataset.refupload)importReference(e.target.dataset.refupload,e.target.files?.[0]);else if(e.target.dataset.mapRoom){state.rooms[e.target.dataset.mapRoom]=e.target.value.trim().slice(0,60);save()}});
+async function readableImage(candidate,timeout=4800){
+ const image=new Image();
+ if(candidate.startsWith('http')){image.crossOrigin='anonymous';image.referrerPolicy='no-referrer'}
+ image.src=candidate;
+ await Promise.race([image.decode(),new Promise((_,reject)=>setTimeout(()=>reject(Error('timeout')),timeout))]);
+ const c=document.createElement('canvas');c.width=2;c.height=2;
+ c.getContext('2d').drawImage(image,0,0,2,2);
+ c.getContext('2d').getImageData(0,0,1,1);
+ return image;
+}
 async function loadReference(a){
-  if(a.previewOnly&&a.museum!=='moma'){a.asset=a.source;return false}
-  // References stored in this GitHub Pages repo are same-origin; canvas pixel access cannot be blocked by CORS.
-  // Explicitly fallback to external original sources while licensing is reviewed; some may fail.
+ const paths=window.TRACE_DISPLAY?.referenceViews?.(a.id)||[];
+ const signature=paths.join('|');
+ if(a.reference&&a.referenceViewSignature===signature)return true;
+ let errors=[];
+ if(!a.reference){
   const local=LOCAL_ART[a.id];
-  const candidates=[...(local?[local]:[]),mk(a.source),a.source];
-  let errors=[];
-  for(const candidate of candidates){
-    try{
-      const image=new Image();
-      if(candidate.startsWith('http')){image.crossOrigin='anonymous';image.referrerPolicy='no-referrer'}
-      image.src=candidate;
-      await Promise.race([image.decode(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('timeout')),candidate===local?2800:4800))]);
-      const c=document.createElement('canvas');c.width=2;c.height=2;
-      c.getContext('2d').drawImage(image,0,0,2,2);
-      c.getContext('2d').getImageData(0,0,1,1);
-      a.reference=image;a.asset=candidate;a.referenceOrigin=candidate===local?'same-origin':'external';if(a.museum==='moma')a.previewOnly=false;
-      return true;
-    }catch(e){errors.push(candidate+': '+String(e))}
+  for(const candidate of [...(local?[local]:[]),mk(a.source),a.source]){
+   try{
+    a.reference=await readableImage(candidate,candidate===local?3500:4800);
+    a.asset=candidate;a.referenceOrigin=candidate===local?'same-origin':'external';
+    break;
+   }catch(e){errors.push(candidate+': '+String(e))}
   }
-  // Show only the externally-hosted source as an optional preview; recognition is disabled for missing references.
-  a.asset=a.source;referenceErrors.push(a.id+' '+errors.join('; '));return false
+ }
+ const extras=[];
+ for(const path of paths.slice(0,8)){
+  let loaded=null;
+  const urls=[path,'https://raw.githubusercontent.com/jamesBenja/trace-museum-demo/main/'+path];
+  for(const url of urls){
+   try{loaded=await readableImage(url,4200);break}catch(e){errors.push(url+': '+String(e))}
+  }
+  if(loaded)extras.push(loaded);
+ }
+ a.referenceViews=extras;
+ a.referenceViewSignature=signature;
+ if(!a.reference&&extras.length){a.reference=extras.shift();a.referenceOrigin='museum-camera';a.referenceViews=extras}
+ if(a.reference){
+  a.previewOnly=false;
+  return true;
+ }
+ // Never pretend a missing cross-origin reference can validate a scan.
+ a.asset=a.source;referenceErrors.push(a.id+' '+errors.join('; '));return false;
 }
 async function rebuild(){const refs=ALL.filter(a=>a.reference&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(a.id)));if(!refs.length){ready=false;el('status').textContent='IMPORT ARTWORK IMAGES';return}try{await prepareLibrary(refs);loaded=refs;ready=true;el('status').textContent=`SCAN READY · ${refs.length} IMAGE REFERENCES · ${ALL.length} WORKS`;el('status').classList.add('ready')}catch(e){ready=false;el('status').textContent='MATCHER ERROR';console.error(e)}}
-async function ensureActiveReferences(){const wanted=ALL.filter(a=>window.TRACE_DISPLAY?.isActive(a.id)&&!a.reference);await Promise.all(wanted.map(loadReference));await rebuild();render()}
+async function ensureActiveReferences(){
+ const wanted=ALL.filter(a=>window.TRACE_DISPLAY?.isActive(a.id)&&
+  (!a.reference||a.referenceViewSignature!==(window.TRACE_DISPLAY?.referenceViews?.(a.id)||[]).join('|')));
+ await Promise.all(wanted.map(loadReference));await rebuild();render();
+}
 async function boot(){render();el('status').textContent='LOADING ARTWORK REFERENCES…';await Promise.all(ALL.filter(a=>!a.previewOnly||a.museum==='moma').map(loadReference));await rebuild();window.__traceRefsFinished=true;render()}
 window.TRACE_LOAD_ACTIVE=ensureActiveReferences;
 window.__traceAppRender=render;
