@@ -98,6 +98,7 @@ with sync_playwright() as p:
    page.locator('#venueSwitcher').click()
    page.locator('#venuePicker [data-venue="pamm"]').click()
   page.wait_for_function("window.TRACE_DISPLAY && !window.TRACE_DISPLAY.loading",timeout=12000)
+  page.wait_for_function("window.__traceRefsFinished && ready",timeout=65000)
   assert len(ids)==5
   page.evaluate("""(items)=>{for(const id of items)window.TRACE_DISPLAY.setField(id,'active',true)}""",ids)
   assert page.evaluate('window.TRACE_DISPLAY.activeWorks(state.venue).length')==8
