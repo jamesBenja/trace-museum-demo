@@ -50,7 +50,7 @@ with sync_playwright() as p:
    # readable catalogue/reference image is available; self-confirmation remains
    # an honest fallback when the image cannot be read.
    assert page.locator('.v7-fragment img').count()==0
-   if page.evaluate("!!A[state.current].reference"):
+   if page.evaluate("window.TRACE_SCAN_AVAILABLE?.(A[state.current].id) && ready"):
     page.locator('[data-action="scan"]').first.click()
     assert page.evaluate("state.stage")=='scan'
    else:
