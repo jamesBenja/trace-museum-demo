@@ -28,6 +28,7 @@ with sync_playwright() as p:
   page.route('https://raw.githubusercontent.com/**',intercept)
   page.goto(URL,wait_until='domcontentloaded',timeout=45000)
   page.wait_for_function('window.TRACE_I18N && window.TRACE_I18N.size > 250 && window.TRACE_V1 && window.TRACE_ROUTING && window.TRACE_DISPLAY && !window.TRACE_DISPLAY.loading',timeout=40000)
+  page.wait_for_function("window.__traceRefsFinished && ready",timeout=65000)
   if museum=='pamm':
    page.locator('#venueSwitcher').click()
    page.locator('#venuePicker [data-venue="pamm"]').click()
