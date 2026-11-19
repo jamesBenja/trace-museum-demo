@@ -70,6 +70,28 @@ with sync_playwright() as p:
   assert row['positive'] and row['id']=='mmfa-witte',"Missed gallery photo: "+str(row)
   assert not row['wrong'],"False match to Marrel: "+str(row)
  assert not outcomes[2]['wrong'],"Wrong painting was accepted: "+str(outcomes[2])
+ # On iPhone, capture="environment" forces a new camera photograph and
+ # prevents selecting an existing photo. Explicitly test both independent
+ # actions and exercise the real upload-to-recognition pipeline.
+ page.evaluate("""()=>{
+  state.current=A.findIndex(x=>x.id==='mmfa-witte');
+  state.tab='quest';state.stage='scan';render();
+ }""")
+ assert page.locator('#scanUpload').count()==1
+ assert page.locator('#scanUpload').get_attribute('capture') is None,"Existing photo action forces camera"
+ assert page.locator('#scanCamera').get_attribute('capture')=='environment'
+ assert 'Choose Existing Photo' in page.locator('.scanPhotoActions').inner_text()
+ assert 'Take Photo' in page.locator('.scanPhotoActions').inner_text()
+ page.locator('#scanUpload').set_input_files('artworks/mmfa-witte.jpg')
+ page.wait_for_function("state.stage==='scanresult' && state.result?.recognized && state.result?.id==='mmfa-witte' && !!state.scanImage",timeout=50000)
+ print("IPHONE EXISTING PHOTO UPLOAD AUTOMATIC MATCH PASSED",flush=True)
+ page.evaluate("""()=>{
+  state.stage='photoquest';state.scanImage=null;render();
+ }""")
+ inputs=page.locator('[data-guess-photo]')
+ assert inputs.count()==2
+ assert sum(1 for i in range(inputs.count()) if inputs.nth(i).get_attribute('capture') is None)==1
+ assert sum(1 for i in range(inputs.count()) if inputs.nth(i).get_attribute('capture')=='environment')==1
  # Verify the live preview recognizes two distinct camera frames without a
  # shutter press. Stub ONLY the recognition decision for this UI integration
  # test; the actual matcher is tested above against real reference pixels.
