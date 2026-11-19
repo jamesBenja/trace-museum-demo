@@ -111,7 +111,7 @@ with sync_playwright() as p:
    assert page.evaluate('A[state.current].id')==ident
    assert page.locator('.v7-fragment img').count()==0, 'Clue revealed artwork before scan'
    assert page.locator('[data-action="multi-view"]').count()==0
-   if page.evaluate("!!A[state.current].reference"):
+   if page.evaluate("window.TRACE_SCAN_AVAILABLE?.(A[state.current].id) && ready"):
     # If published reference pixels are readable, sculptures use the same
     # automatic scan interface as paintings, with stricter verification.
     assert page.locator('[data-action="scan"]').count()==1
@@ -128,7 +128,7 @@ with sync_playwright() as p:
     if ident in ('mmfa-eye','pamm-chaos','pamm-chromati'):
      import base64
      png=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAJ/q7UcAAAAASUVORK5CYII=')
-     page.locator('[data-guess-photo]').set_input_files({'name':'artwork.png','mimeType':'image/png','buffer':png})
+     page.locator('[data-guess-photo]').first.set_input_files({'name':'artwork.png','mimeType':'image/png','buffer':png})
      page.wait_for_function("state.scanImage?.startsWith('data:image/jpeg;')")
      assert page.locator('.tq-capture-zone img').count()==1
      assert page.locator('.tv-compare-pair img').count()==0
