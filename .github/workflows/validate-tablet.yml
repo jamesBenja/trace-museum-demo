@@ -1,0 +1,29 @@
+name: Validate TRACE iPad layouts
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "trace-tablet.css"
+      - "scripts/test_tablet.py"
+      - ".github/workflows/validate-tablet.yml"
+permissions:
+  contents: read
+jobs:
+  tablet:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Playwright Chromium
+        run: |
+          python -m pip install --disable-pip-version-check playwright
+          python -m playwright install chromium
+      - name: Check iPad, phone and desktop layouts and controls
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/trace-tablet-http.log 2>&1 &
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=tablet1 python scripts/test_tablet.py
