@@ -79,9 +79,16 @@ with sync_playwright() as playwright:
                 assert page.locator("#scanUpload").get_attribute("capture") is None, name
                 assert page.locator("#scanCamera").get_attribute("capture") == "environment", name
                 assert page.locator(".scanPhotoActions > label").count() == 2, name
-                assert page.locator(".scanPhotoActions > label").first.evaluate(
-                    "(el) => el.getBoundingClientRect().height >= 44"
-                ), name
+                label_metrics = page.locator(".scanPhotoActions > label").first.evaluate(
+                    """(el) => ({
+                        height: el.getBoundingClientRect().height,
+                        minHeight: getComputedStyle(el).minHeight,
+                        display: getComputedStyle(el).display,
+                        parentHeight: el.parentElement.getBoundingClientRect().height,
+                        parentWidth: el.parentElement.getBoundingClientRect().width
+                    })"""
+                )
+                assert label_metrics["height"] >= 44, (name, label_metrics)
                 assert page.locator(".scanViewport").evaluate(
                     "(el) => el.getBoundingClientRect().height >= 210"
                 ), name
