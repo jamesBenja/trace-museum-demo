@@ -79,19 +79,22 @@ with sync_playwright() as playwright:
                 assert page.locator("#scanUpload").get_attribute("capture") is None, name
                 assert page.locator("#scanCamera").get_attribute("capture") == "environment", name
                 assert page.locator(".scanPhotoActions > label").count() == 2, name
-                label_metrics = page.locator(".scanPhotoActions > label").first.evaluate(
-                    """(el) => ({
+                # Measure in one synchronous evaluation. Reference rebuilds after a
+                # museum switch can legitimately re-render the scan screen, which
+                # would detach an element between a locator lookup and evaluate().
+                page.wait_for_function("document.querySelector('.scanPhotoActions > label')?.getBoundingClientRect().height > 0", timeout=10000)
+                label_metrics = page.evaluate(
+                    """() => { const el = document.querySelector('.scanPhotoActions > label'); return {
                         height: el.getBoundingClientRect().height,
                         minHeight: getComputedStyle(el).minHeight,
                         display: getComputedStyle(el).display,
                         parentHeight: el.parentElement.getBoundingClientRect().height,
-                        parentWidth: el.parentElement.getBoundingClientRect().width
-                    })"""
+                        parentWidth: el.parentElement.getBoundingClientRect().width,
+                        viewport: document.querySelector('.scanViewport').getBoundingClientRect().height
+                    }}"""
                 )
                 assert label_metrics["height"] >= 44, (name, label_metrics)
-                assert page.locator(".scanViewport").evaluate(
-                    "(el) => el.getBoundingClientRect().height >= 210"
-                ), name
+                assert label_metrics["viewport"] >= 210, (name, label_metrics)
         assert not errors, (name, errors)
         print("TABLET RESPONSIVE PASS", name, layout["viewport"], flush=True)
         context.close()
