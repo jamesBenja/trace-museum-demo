@@ -141,9 +141,21 @@ Content can then be written in the established format in about 30 minutes per wo
 
 ## 5. Test results (local Chromium, this branch)
 
-| Suite | Result |
-|---|---|
-| See the final run in the PR / session report | — |
+Final run on this branch, after the museum image hosts were allowed: **19 of 19 browser suites pass.**
+
+| Area | Suites | Result |
+|---|---|---|
+| Artwork recognition | `test_gallery_scanner`, `test_sculpture_scanner` (was failing on main), `test_gallery_phone_references`, `test_moma_recognition` | ✅ |
+| Recognition robustness | `test_recognition_robustness`: paintings 79/81 (98%), sculptures 65/81 (80%), **0 wrong-work acceptances** across every pair | ✅ |
+| Navigation | `test_wayfinder_v7`; explorer trail, legs and honest-location checks in `test_explorer` | ✅ |
+| Game completion | `test_mmfa_rebuild` (new Fortin section; Marrel flake hardened, 3/3 reruns), `test_pamm_rebuild`, `test_moma`, `test_oppenheim_materials`, `test_expansion`, `test_bonus` | ✅ |
+| Persistence, quest reset, museum switching | `test_explorer`, `test_v1`, `test_portals` | ✅ |
+| Mobile and iPad layouts | `test_tablet` (race fixed, 3/3 reruns); `test_explorer` at 320, 390, 768 and 1024 px | ✅ |
+| Age-specific content | `test_explorer` (Little Explorers / Art Detectives / Curious Minds, EN/FR/ES); `test_detail_reveal`, `test_locale` | ✅ |
+| Accessibility | `test_explorer`: touch targets ≥ 44 px, narration buttons, screen-reader heading kept, reduced motion | ✅ |
+| Existing experiences | `test_welcome`, `test_mica_accessories`, `test_v1` (MMFA + PAMM), `test_moma`, `test_portals` (admin and publication) | ✅ |
+
+These are simulated Chromium checks. They do not replace on-site testing with real devices, gallery lighting and children.
 
 ---
 
