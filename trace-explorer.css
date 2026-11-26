@@ -215,3 +215,4 @@ body.ex-tier-little .ex-success .t1-complete>.t1-small,body.ex-tier-little .ex-s
 .ex-mode.selected{border-color:var(--ex-forest);background:#e6f2ea}
 .ex-screen details>summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
 .ex-venues button,.ex-grownups .t1-choose button{min-height:48px}
+@media (min-width:700px){body.ex-on #view .t1-screen.ex-screen,body.ex-on #view .v7-panel.ex-found,body.ex-on #view .v7-panel:has(.ex-shelf){max-width:820px;margin-left:auto;margin-right:auto}}

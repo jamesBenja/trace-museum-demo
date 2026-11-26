@@ -10,6 +10,20 @@
 
 TRACE is an independent pilot concept with **eight real collection artworks each from MMFA, PAMM and MoMA**, including paintings, photography, sculpture and mixed media. Neither museum has commissioned, endorsed or approved this app. A work belonging to a museum **does not imply that it is physically on view**.
 
+## Explorer cycle (November 2026): child-first MMFA
+
+The MMFA adventure is now built around one benchmark: **a six-year-old can lead their family through the museum.** Full audit, plan, verification requirements and the field-test plan: [docs/explorer-cycle-2026-11.md](docs/explorer-cycle-2026-11.md).
+
+- **Three audience tiers** on one catalogue: Little Explorers 5–7 (the default), Art Detectives 8–12 and Curious Minds 13+. Content lives in `trace-explorer-content.js`, in EN/FR/ES.
+- **Mica leads every screen**, and every line has an optional on-device read-aloud button. There is one big primary action per screen.
+- **I-spy observation checklists and body challenges.** Mica also remembers earlier discoveries and links works through shared themes.
+- **Treasure trail** grouped by room, with mystery and discovered markers, room completion and picture directions taken from the museum room graph. It never claims to know the visitor's live position.
+- **Next treasure** prefers the same room, then follows the gallery order.
+- **The Fortin game is now "Paint the light over Hochelaga":** a continuous sunrise → midday → sunset → night transformation of a painted landscape.
+- **Recognition:** the Altmejd self-match regression is fixed, and there is a new distance/angle/lighting/blur robustness matrix with all-pairs wrong-work rejection (`scripts/test_recognition_robustness.py`).
+
+The layer is `trace-explorer.js` / `trace-explorer.css`. It wraps `render()` and changes only what is shown. Scanning, games, admin, the map data, PAMM and MoMA are unchanged.
+
 ## On-site reference views and sculpture recognition (November 2026)
 
 TRACE's camera matcher now accepts multiple reference views of each work. The catalogue source is retained, and the museum administrator can attach up to eight additional JPEG camera views to each artwork. Reference paths are stored in the shared museum manifest, and all visitor devices load them into the local image-matching library. In the administrator portal, open **MUSEUM**, choose the work, use **Add camera reference photos**, then **Publish changes for all visitors**. Uploaded images are resized, JPEG-re-encoded and stripped of the original image metadata before being committed to the **public** repository. Upload only photos that you intend to publish.
