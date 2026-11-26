@@ -1,0 +1,32 @@
+name: Validate TRACE recognition robustness
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "trace-gallery-signatures.js"
+      - "display-status.json"
+      - "scripts/test_recognition_robustness.py"
+      - "scripts/test_sculpture_scanner.py"
+      - ".github/workflows/validate-recognition-robustness.yml"
+permissions:
+  contents: read
+jobs:
+  robustness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Playwright Chromium
+        run: |
+          python -m pip install --disable-pip-version-check playwright
+          python -m playwright install chromium
+      - name: Distance, angle, lighting and blur matrix with wrong-work rejection
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/trace-robust-http.log 2>&1 &
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=robust python scripts/test_sculpture_scanner.py
+          TRACE_TEST_URL=http://127.0.0.1:8765/?v=robust python scripts/test_recognition_robustness.py

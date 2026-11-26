@@ -397,7 +397,26 @@ async function prepareLibrary(items){
  }
  return nextLibrary;
 }
-async function recognize(src){
+// Gallery lighting (tungsten spots, warm evening sky light) can tint a whole
+// photo. When a confident match is not found and the frame has a strong colour
+// cast, retry once on a grey-world white-balanced copy using the SAME strict
+// acceptance rules. Wrong-work rejection is unchanged (see
+// scripts/test_recognition_robustness.py).
+function colourCastBalanced(src){
+ const w=src.videoWidth||src.naturalWidth||src.width,h=src.videoHeight||src.naturalHeight||src.height;
+ if(!w||!h)return null;
+ const scale=Math.min(1,640/Math.max(w,h)),c=document.createElement('canvas');
+ c.width=Math.max(1,Math.round(w*scale));c.height=Math.max(1,Math.round(h*scale));
+ const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(src,0,0,c.width,c.height);
+ const img=x.getImageData(0,0,c.width,c.height),d=img.data;let r=0,g=0,b=0;
+ for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2]}
+ const n=d.length/4;r/=n;g/=n;b/=n;const grey=(r+g+b)/3;
+ if(!grey||Math.max(r,g,b)/Math.max(1,Math.min(r,g,b))<1.12)return null;
+ const kr=grey/Math.max(1,r),kg=grey/Math.max(1,g),kb=grey/Math.max(1,b);
+ for(let i=0;i<d.length;i+=4){d[i]=Math.min(255,d[i]*kr);d[i+1]=Math.min(255,d[i+1]*kg);d[i+2]=Math.min(255,d[i+2]*kb)}
+ x.putImageData(img,0,0);return c;
+}
+async function recognize(src,options={}){
  // The active museum may be indexed lazily after asynchronous reference loading.
  const expected=typeof A!=='undefined'&&typeof state!=='undefined'&&(!window.TRACE_DISPLAY||window.TRACE_DISPLAY.isActive(A[state.current]?.id))?A[state.current]?.id:null;
  // The recognition candidate set must be the CURRENT museum, not all three
@@ -482,8 +501,15 @@ async function recognize(src){
       targetColor.colorScore-runnerColor>=(isSculpture?.18:.085) &&
       (targetGeo.inliers>=(isSculpture?4:2)||
        targetColor.colorScore>=(isSculpture?(targetColor.view>=100?.84:.89):.64));
+   // Ratio test for near-identical layouts. An absolute margin alone rejects a
+   // 0.985 self-match when an unrelated work happens to share a dark-ground /
+   // bright-sky silhouette (Altmejd outdoors vs Fortin's storm, 0.815). A
+   // different artwork never reaches 0.95, so this does not loosen rejection.
+   const nearIdenticalLayout=targetColor.colorScore>=.95 &&
+      (1-runnerColor)>=(1-targetColor.colorScore)*8 &&
+      targetColor.colorScore-runnerColor>=.14;
    if(spatialMatch){recognized=true;id=expected;method='geometric and artwork consistency'}
-   else if(artLayoutMatch){recognized=true;id=expected;method='chapter artwork colour and layout'}
+   else if(artLayoutMatch||nearIdenticalLayout){recognized=true;id=expected;method='chapter artwork colour and layout'}
    // Gallery photos may contain a large mat, wall or picture frame. The
    // original feature matcher samples the entire camera image at a fixed
    // resolution, leaving too few usable painting features. When confidence is
@@ -512,6 +538,13 @@ async function recognize(src){
      }
     }
    }
+ }
+ if(!recognized&&expected&&!options.balanced){
+  const balanced=colourCastBalanced(src);
+  if(balanced){
+   const retry=await recognize(balanced,{balanced:true});
+   if(retry.recognized&&retry.id===expected)return {...retry,method:retry.method+' (lighting corrected)'};
+  }
  }
  return {recognized,id,method,confidence:recognized?'Matched':'Not confident',results,color,cropInliers,corners:query.corners};
 }
