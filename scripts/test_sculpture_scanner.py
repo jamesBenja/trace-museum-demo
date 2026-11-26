@@ -14,19 +14,21 @@ with sync_playwright() as p:
  # Shared display catalogue and the image-reference builder initialize
  # asynchronously. Do not inspect an in-progress scanner index.
  page.wait_for_function("""()=>
-  library.filter(r=>r.id==='mmfa-eye'&&r.view>=100).length===6 &&
+  library.filter(r=>r.id==='mmfa-eye'&&r.view>=100).length===11 &&
+  library.filter(r=>r.id==='mmfa-rodin'&&r.view>=100).length===5 &&
   library.filter(r=>r.id==='mmfa-frink'&&r.view>=100).length===4 &&
   library.filter(r=>r.id==='mmfa-witte'&&r.view>=100).length===3
  """,timeout=65000)
  counts=page.evaluate("""()=>({
   eye:library.filter(r=>r.id==='mmfa-eye'&&r.view>=100).length,
+  rodin:library.filter(r=>r.id==='mmfa-rodin'&&r.view>=100).length,
   frink:library.filter(r=>r.id==='mmfa-frink'&&r.view>=100).length,
   witte:library.filter(r=>r.id==='mmfa-witte'&&r.view>=100).length,
   hearts:window.TRACE_GALLERY_SIGNATURES?.['mmfa-hearts']?.length,
   privatePhotosPublished:document.documentElement.outerHTML.includes('IMG_1373')
  })""")
  print('IPHONE SCULPTURE REFERENCES',counts,flush=True)
- assert counts['frink']==4 and counts['eye']==6 and counts['witte']==3 and counts['hearts']==2,counts
+ assert counts['frink']==4 and counts['eye']==11 and counts['rodin']==5 and counts['witte']==3 and counts['hearts']==2,counts
  assert not counts['privatePhotosPublished']
  results=page.evaluate("""async()=>{
   const saved=state.current;
@@ -50,7 +52,8 @@ with sync_playwright() as p:
   };
   for(const [id,other,views] of [
     ['mmfa-frink','mmfa-eye',[0,2]],
-    ['mmfa-eye','mmfa-frink',[0,2,4]]
+    ['mmfa-eye','mmfa-frink',[0,2,4,6,7,8,9,10]],
+    ['mmfa-rodin','mmfa-frink',[0,1,2,3,4]]
    ]){
    for(const view of views){
     const canvas=sourceFor(id,view);

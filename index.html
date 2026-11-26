@@ -156,7 +156,7 @@
 </div><div class="panel" id="view"><div class="loading"><div class="spinner"></div><h2>Preparing the collection...</h2><p>All artwork matching happens privately on your device.</p></div></div><nav class="tabs"><button data-tab="quest" class="selected"><span>✧</span>QUEST</button><button data-tab="map"><span>⌖</span>MAP</button><button data-tab="album"><span>▦</span>MY FINDS</button><button data-tab="guide"><span>ⓘ</span>GUIDE</button><button data-tab="museum"><span>▤</span>MUSEUM</button></nav></main>
   <aside class="right"><div class="eyebrow">SCAN IT FOR REAL</div><h2>From painting<br>to portal.</h2><p>This demo does not simulate scan success. It compares the image you photograph or upload with the sample collection using on-device visual feature matching.</p><div class="sideCard"><strong>Test it in two ways</strong><p><b>One device:</b> Open a sample artwork and select “Test recognition.”</p><p><b>Two devices:</b> Open the <button class="sideLink" data-action="targets">artwork reference gallery</button> on a second screen, or print it, then scan with your phone.</p></div><p class="fine">A live camera needs HTTPS and browser permission. Upload / Take Photo is available as a fallback. The scan library uses actual collection artwork reference images when those sources load. Rights clearance and on-site validation are still required.</p></aside>
 </div>
-<script src="trace-moma-data.js?v=1"></script><script src="trace-gallery-signatures.js?v=3"></script><script>/* TRACE artwork recognition proof of concept. Runs entirely in the browser.
+<script src="trace-moma-data.js?v=1"></script><script src="trace-gallery-signatures.js?v=4"></script><script>/* TRACE artwork recognition proof of concept. Runs entirely in the browser.
  * Harris-style local interest points + orientation-normalized binary comparisons,
  * nearest-neighbor Hamming matching + scale/rotation consensus (similarity RANSAC).
  * Closed-set only: museum collection images available in the current demo. Not arbitrary art.
@@ -411,7 +411,7 @@ async function recognize(src){
   // Museum switch / manifest refresh can arrive before the global index has
   // finished rebuilding. Rebuild this museum's ready source images on demand
   // rather than permanently failing a valid visitor scan.
-  const available=ALL.filter(a=>museumIds.has(a.id)&&a.reference);
+  const available=ALL.filter(a=>museumIds.has(a.id)&&scanReferenceAvailable(a));
   if(available.length){
    const localRefs=await prepareLibrary(available);
    if(localRefs.length){
