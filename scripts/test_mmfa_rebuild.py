@@ -55,7 +55,10 @@ with sync_playwright() as pw:
    # Some headless mobile Chromium builds drop mousemove events after the first
    # pointer capture. Ensure the same real pointer handlers record a full stroke
    # with an explicit PointerEvent sequence if the native gesture was interrupted.
-   if not page.evaluate("window.TRACE_V1.puzzle.extra.rubs.some(p=>p.length>2)"):
+   # Also covers partially dropped gestures: repeat (bounded) until the real
+   # handlers have recorded enough polishing distance.
+   for _attempt in range(4):
+    if page.evaluate("window.TRACE_V1.puzzle.extra.rubs.some(p=>p.length>2) && window.TRACE_V1.puzzle.extra.sweep>=90"):break
     page.evaluate("""()=>{
       const b=document.querySelector('.mf-garden'),r=b.getBoundingClientRect();
       const evt=(kind,x)=>new PointerEvent(kind,{bubbles:true,cancelable:true,pointerId:87,
