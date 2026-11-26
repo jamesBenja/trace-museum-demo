@@ -23,6 +23,7 @@ with sync_playwright() as p:
  for museum in ['mmfa','pamm']:
   context=browser.new_context(viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
   page=context.new_page()
+  page.add_init_script("try{const k='trace-v1-play',s=JSON.parse(localStorage.getItem(k)||'{}');if(!s.age)localStorage.setItem(k,JSON.stringify({...s,age:'8-12'}))}catch(e){}")  # pin Art Detective (8-12) copy under test
   errors=[]
   page.on('pageerror',lambda e:errors.append(str(e)))
   page.route('https://raw.githubusercontent.com/**',intercept)

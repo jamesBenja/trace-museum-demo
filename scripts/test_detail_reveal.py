@@ -22,6 +22,7 @@ LANG={
 with sync_playwright() as p:
  browser=p.chromium.launch(headless=True,args=['--no-sandbox'])
  page=browser.new_page(viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
+ page.add_init_script("try{const k='trace-v1-play',s=JSON.parse(localStorage.getItem(k)||'{}');if(!s.age)localStorage.setItem(k,JSON.stringify({...s,age:'8-12'}))}catch(e){}")  # pin Art Detective (8-12) copy under test
  errors=[]
  page.on('pageerror',lambda exc:errors.append(str(exc)))
  def route(r):

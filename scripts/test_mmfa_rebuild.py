@@ -78,19 +78,36 @@ with sync_playwright() as pw:
    assert page.evaluate('window.TRACE_V1.puzzle.extra.doors.length')==3
    assert 40<=page.evaluate('window.TRACE_V1.puzzle.extra.point.x')<=60
   elif name=='fortin':
-   board=page.locator('.mf-storm')
-   board.scroll_into_view_if_needed()
-   r=board.evaluate("""e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}""")
-   for n in range(3):
-    x=r['x']+r['width']*.23
-    y=r['y']+r['height']*(.25+n*.11)
-    gesture(page,(x,y),(x+r['width']*.36,y+12),steps=11)
-   assert page.locator('.mf-storm-stroke').count()==3
-   sun=page.locator('.mf-sun-handle')
-   sun.scroll_into_view_if_needed()
-   r=board.evaluate("""e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}""")
-   drag(page,sun,(r['x']+r['width']*.91,r['y']+25))
-   assert page.evaluate('window.TRACE_V1.puzzle.extra.sun')>=.7
+   # "Paint the light over Hochelaga": one continuous time-of-day drag repaints
+   # sky, sun/moon, stars, windows and shadows. Visit all four moments.
+   page.evaluate("document.querySelector('.fx-track').scrollIntoView({block:'center'})")
+   readings={}
+   for moment,frac in [('night',.02),('sunrise',.25),('day',.5),('sunset',.75)]:
+    tr=page.locator('.fx-track').evaluate("""e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}""")
+    y=tr['y']+tr['height']/2
+    gesture(page,(tr['x']+tr['width']*.5,y),(tr['x']+tr['width']*frac,y),steps=10)
+    if page.evaluate("Math.abs(window.TRACE_V1.puzzle.extra.time-%s)>.06"%frac):
+     # Headless mobile Chromium can drop pointermove after capture; use the
+     # same pointer handlers with an explicit PointerEvent sequence.
+     page.evaluate("""(f)=>{const n=document.querySelector('.fx-track'),r=n.getBoundingClientRect();
+       const e=(k,x)=>new PointerEvent(k,{bubbles:true,cancelable:true,pointerId:91,pointerType:'touch',clientX:r.left+r.width*x,clientY:r.top+r.height/2});
+       n.dispatchEvent(e('pointerdown',.5));for(let i=1;i<=8;i++)document.dispatchEvent(e('pointermove',.5+(f-.5)*i/8));document.dispatchEvent(e('pointerup',f));}""",frac)
+    readings[moment]=page.evaluate("""()=>({stars:+document.querySelector('[data-fx="stars"]').getAttribute('opacity'),
+      sun:document.querySelector('[data-fx="sun"]').getAttribute('opacity'),
+      win:+document.querySelector('[data-fx="win"]').getAttribute('opacity'),
+      sky:document.querySelector('[data-fx="s0"]').getAttribute('stop-color'),
+      caption:document.querySelector('.fx-caption').textContent})""")
+   print('FORTIN LIGHT',readings,flush=True)
+   assert sorted(page.evaluate('window.TRACE_V1.puzzle.extra.moments'))==['day','night','sunrise','sunset']
+   assert readings['night']['stars']>.8 and readings['day']['stars']<.05,'Stars must appear only at night'
+   assert readings['night']['win']>.8 and readings['day']['win']<.1,'Windows must light up at night'
+   assert readings['day']['sun']=='1' and readings['night']['sun']=='0','Sun must set at night'
+   assert len({r['sky'] for r in readings.values()})==4,'Each moment must repaint the sky'
+   assert 'Sunset' in readings['sunset']['caption'] and 'Night' in readings['night']['caption']
+   # Non-drag alternative: the four moment buttons reach the same states.
+   page.evaluate("window.TRACE_V1.puzzle.extra.moments=[];window.__traceAppRender()")
+   for k in ['sunrise','day','sunset','night']:page.locator('[data-mf="moment"][data-v="'+k+'"]').click()
+   assert len(page.evaluate('window.TRACE_V1.puzzle.extra.moments'))==4
   elif name=='eye':
    size=page.locator('.mf-size-handle')
    size.scroll_into_view_if_needed()

@@ -43,6 +43,9 @@ with sync_playwright() as p:
    assert page.evaluate("state.stage")=="hub"
    assert page.locator('[data-t1-replay]').count()==1
    # Replay preserves the same visitor language and museum.
+   # The child-first MMFA hub keeps replay under "For grown-ups".
+   if page.locator('.ex-grownups:not([open]) [data-t1-replay]').count():
+    page.locator('.ex-grownups > summary').click()
    page.locator('[data-t1-replay]').click()
    assert page.evaluate("window.TRACE_WELCOME.scene")==0
    assert page.locator('.tw-screen').get_attribute("lang")==lang

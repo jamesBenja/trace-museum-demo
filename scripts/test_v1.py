@@ -75,6 +75,7 @@ with sync_playwright() as p:
     browser=p.chromium.launch(headless=True,args=['--no-sandbox'])
     for museum,arts in SETS.items():
         page=browser.new_page(viewport={'width':390,'height':844},accept_downloads=True)
+        page.add_init_script("try{const k='trace-v1-play',s=JSON.parse(localStorage.getItem(k)||'{}');if(!s.age)localStorage.setItem(k,JSON.stringify({...s,age:'8-12'}))}catch(e){}")  # pin Art Detective (8-12) copy under test
         errs=[]
         page.on('pageerror',lambda e: errs.append(str(e)))
         page.set_default_timeout(12000)
@@ -85,6 +86,8 @@ with sync_playwright() as p:
         print('BROWSER DIAG',page.evaluate("({title:document.title,status:document.querySelector('#status')?.textContent,script:typeof window.TRACE_V1,scripts:Array.from(document.scripts).map(x=>x.src)})"),'JS ERRORS',errs,flush=True)
         page.wait_for_function("window.TRACE_V1 && document.querySelector('#status')?.textContent.includes('SCAN READY')",timeout=12000)
         if museum=='pamm':
+            if page.locator('#view .ex-grownups:not([open]) [data-venue="pamm"]').count():
+             page.locator('#view .ex-grownups > summary').first.click()  # child-first start screen
             page.locator('#view [data-venue="pamm"]').first.click()
         # Top museum switcher is always accessible and allows round-trip changes.
         assert page.locator('#venueSwitcher').is_visible()

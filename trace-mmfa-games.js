@@ -6,7 +6,7 @@ const E={
 en:{
 marrel:{title:'The secret copper garden',intro:'A flower painting is a tiny world. Brush away the copper shimmer, then uncover five creatures and details hiding among the petals.',hint:'Sweep your finger across the garden and tap the sparkling hidden details.',lesson:'Marrel painted flowers and tiny visitors on a smooth copper panel. The insects and lizard reward close looking: botanical beauty becomes a whole living world.',count:'Secrets discovered',sweep:'Copper revealed'},
 witte:{title:'A room beyond the room',intro:'Pull the vanishing point into the far doorway, then open all three receding doors. Watch the floor and walls pull your eye into depth.',hint:'Drag the golden point into the small green doorway. Tap every numbered door.',lesson:'De Witte used doors, floor tiles and a vanishing point to turn a flat canvas into a deep interior. Your eyes follow the geometry as if you could walk inside.',count:'Doors discovered',point:'Vanishing point'},
-fortin:{title:'Paint the arriving storm',intro:'Drag across the sky to add three luminous strokes, then move the sun toward the horizon. Let the buildings stay dark and the clouds glow.',hint:'Paint three gestures through the clouds, then drag the glowing sun rightward.',lesson:'Fortin heightened the contrast between dark Montréal buildings and a brilliant storm sky. By painting light against dark, he made the landscape feel dramatic.',count:'Sky brushstrokes',light:'Sky light'},
+fortin:{title:'Paint the light over Hochelaga',intro:'Drag the sun across the sky. The whole painting changes, from sunrise to night!',hint:'Find all four moments: sunrise, midday, sunset and night. Drag the sun, or tap a moment.',lesson:'The houses never moved. Only the light changed, and every colour changed with it! Low morning and evening light makes long shadows and golden clouds. At night, the windows glow. Marc-Aurèle Fortin painted the dark town first and the glowing sky last, so the light seems to shine out of his painting.',count:'Moments found',light:'Time of day',names:{sunrise:'Sunrise',day:'Midday',sunset:'Sunset',night:'Night'},moments:{sunrise:'Sunrise: pink and gold light. Long shadows stretch across the fields.',day:'Midday: the sun is high. Shadows are short and colours are bright.',sunset:'Sunset: orange light glows on the clouds. Windows begin to light up.',night:'Night: stars and the moon come out. Houses become dark shapes with glowing windows.'},between:'Keep moving the sun… watch the colours change.'},
 eye:{title:'Make an eye monumental',intro:'Pull the glowing size handle to enlarge a familiar eye above Montréal. Then compare its scale from two different viewpoints.',hint:'Drag the size handle outward and explore both viewpoints.',lesson:'When an ordinary eye becomes larger than a building, its meaning changes. Monumental scale makes us aware of how public sculpture addresses the people around it.',count:'Viewpoints explored',scale:'Sculpture scale',viewsText:['Street level','Across the square']},
 frink:{title:'A conversation in the courtyard',intro:'Place two guardians in separate spots, then turn each to face the other. See how their shadows and the space between them begin to speak.',hint:'Choose two courtyard positions, then turn both guardians inward.',lesson:'Elisabeth Frink gave her figures presence through pose, placement and distance. Two statues can seem to communicate even when nothing physically connects them.',count:'Guardians facing',turn:'Turn guardian',move:'Move guardian'},
 riopelle:{title:'Build an assemblage',intro:'Choose a wood platform and join three different found objects: wire, fabric, wheel, metal or bark. Decide which piece gives your sculpture its balance.',hint:'Choose a base, attach three different pieces, then choose your anchor.',lesson:'Assemblage gives discarded materials a second life. Riopelle combined textures and objects so their relationships, not a single perfect material, give the sculpture character.',count:'Found materials',anchor:'Anchor the sculpture'},
@@ -17,7 +17,7 @@ common:{mica:'MICA’S DISCOVERY',complete:'Collect your discovery ✦',locked:'
 fr:{
 marrel:{title:'Le jardin secret sur cuivre',intro:'Un tableau de fleurs cache un petit monde. Brosse les reflets du cuivre, puis découvre cinq créatures et détails parmi les pétales.',hint:'Balaye le jardin du doigt et touche les détails scintillants.',lesson:'Marrel peignait des fleurs et de minuscules visiteurs sur du cuivre lisse. Les insectes et le lézard récompensent une observation attentive.',count:'Secrets découverts',sweep:'Cuivre révélé'},
 witte:{title:'Une pièce derrière la pièce',intro:'Déplace le point de fuite vers la porte du fond, puis ouvre trois portes successives. Observe la profondeur créée par les lignes.',hint:'Glisse le point doré vers la porte verte et touche les trois portes numérotées.',lesson:'De Witte utilisait les portes, les carreaux et un point de fuite pour donner de la profondeur à une toile plate. Notre regard suit cette géométrie.',count:'Portes découvertes',point:'Point de fuite'},
-fortin:{title:'Peins l’orage qui approche',intro:'Dessine trois grands coups de pinceau lumineux dans le ciel, puis fais glisser le soleil vers l’horizon. Laisse les bâtiments dans l’ombre.',hint:'Trace trois gestes dans le ciel, puis déplace le soleil vers la droite.',lesson:'Fortin accentuait le contraste entre les bâtiments sombres de Montréal et un ciel d’orage éclatant. La lumière rend le paysage dramatique.',count:'Coups de pinceau',light:'Lumière du ciel'},
+fortin:{title:'Peins la lumière sur Hochelaga',intro:'Fais glisser le soleil dans le ciel. Tout le tableau change, du lever du soleil à la nuit !',hint:'Trouve les quatre moments : lever du soleil, midi, coucher du soleil et nuit. Glisse le soleil ou touche un moment.',lesson:'Les maisons n’ont pas bougé. Seule la lumière a changé, et toutes les couleurs avec elle ! La lumière basse du matin et du soir fait de longues ombres et des nuages dorés. La nuit, les fenêtres brillent. Marc-Aurèle Fortin peignait d’abord la ville sombre et le ciel lumineux en dernier : la lumière semble sortir du tableau.',count:'Moments trouvés',light:'Heure du jour',names:{sunrise:'Lever du soleil',day:'Midi',sunset:'Coucher du soleil',night:'Nuit'},moments:{sunrise:'Lever du soleil : lumière rose et dorée. De longues ombres s’étirent sur les champs.',day:'Midi : le soleil est haut. Les ombres sont courtes et les couleurs vives.',sunset:'Coucher du soleil : une lumière orange brille sur les nuages. Les fenêtres s’allument.',night:'Nuit : les étoiles et la lune apparaissent. Les maisons deviennent sombres, avec des fenêtres lumineuses.'},between:'Continue à déplacer le soleil… regarde les couleurs changer.'},
 eye:{title:'Un œil monumental',intro:'Étire la poignée pour agrandir un œil familier au-dessus de Montréal. Compare son échelle depuis deux points de vue.',hint:'Tire la poignée de taille vers l’extérieur et explore les deux points de vue.',lesson:'Un œil plus grand qu’un bâtiment change de signification. L’échelle monumentale transforme notre rapport à la sculpture publique.',count:'Points de vue',scale:'Taille de la sculpture',viewsText:['Depuis la rue','Depuis la place']},
 frink:{title:'Une conversation dans la cour',intro:'Place deux gardiens dans des emplacements différents, puis tourne-les face à face. Observe leurs ombres et l’espace entre eux.',hint:'Choisis deux places et tourne les deux gardiens l’un vers l’autre.',lesson:'Elisabeth Frink donne de la présence aux figures grâce à leur pose, leur position et leur distance. Deux statues peuvent sembler communiquer sans se toucher.',count:'Gardiens orientés',turn:'Tourner le gardien',move:'Déplacer le gardien'},
 riopelle:{title:'Construis un assemblage',intro:'Choisis une base de bois et assemble trois objets trouvés différents. Décide quel élément stabilise ta sculpture.',hint:'Choisis une base, ajoute trois matières différentes, puis fixe la structure.',lesson:'L’assemblage offre une seconde vie aux matériaux abandonnés. Riopelle associait textures et objets pour créer une composition expressive.',count:'Matériaux trouvés',anchor:'Stabiliser la sculpture'},
@@ -28,7 +28,7 @@ common:{mica:'LA DÉCOUVERTE DE MICA',complete:'Enregistrer ma découverte ✦',
 es:{
 marrel:{title:'El jardín secreto de cobre',intro:'Una pintura floral esconde un pequeño mundo. Frota el brillo del cobre y descubre cinco criaturas y detalles entre los pétalos.',hint:'Desliza el dedo por el jardín y toca los detalles brillantes.',lesson:'Marrel pintó flores y pequeños visitantes sobre una lámina lisa de cobre. Los insectos y el lagarto recompensan una mirada atenta.',count:'Secretos descubiertos',sweep:'Cobre revelado'},
 witte:{title:'Una habitación detrás de otra',intro:'Arrastra el punto de fuga hacia la puerta del fondo y abre tres puertas sucesivas. Observa cómo el suelo y las paredes crean profundidad.',hint:'Arrastra el punto dorado hasta la puerta verde y toca las tres puertas numeradas.',lesson:'De Witte usó puertas, baldosas y un punto de fuga para crear profundidad en un lienzo plano. La mirada sigue la geometría.',count:'Puertas descubiertas',point:'Punto de fuga'},
-fortin:{title:'Pinta la tormenta que llega',intro:'Traza tres grandes pinceladas luminosas en el cielo y mueve el sol hacia el horizonte. Mantén los edificios oscuros.',hint:'Pinta tres trazos en las nubes y arrastra el sol hacia la derecha.',lesson:'Fortin acentuó el contraste entre los edificios oscuros de Montreal y un cielo tormentoso brillante. La luz vuelve dramático el paisaje.',count:'Pinceladas del cielo',light:'Luz del cielo'},
+fortin:{title:'Pinta la luz sobre Hochelaga',intro:'Arrastra el sol por el cielo. ¡Todo el cuadro cambia, del amanecer a la noche!',hint:'Encuentra los cuatro momentos: amanecer, mediodía, atardecer y noche. Arrastra el sol o toca un momento.',lesson:'Las casas no se movieron. Solo cambió la luz, ¡y con ella todos los colores! La luz baja de la mañana y de la tarde crea sombras largas y nubes doradas. De noche, brillan las ventanas. Marc-Aurèle Fortin pintaba primero el pueblo oscuro y al final el cielo luminoso, para que la luz pareciera salir del cuadro.',count:'Momentos encontrados',light:'Hora del día',names:{sunrise:'Amanecer',day:'Mediodía',sunset:'Atardecer',night:'Noche'},moments:{sunrise:'Amanecer: luz rosa y dorada. Sombras largas cruzan los campos.',day:'Mediodía: el sol está alto. Las sombras son cortas y los colores brillantes.',sunset:'Atardecer: una luz naranja brilla en las nubes. Las ventanas se encienden.',night:'Noche: salen las estrellas y la luna. Las casas se vuelven oscuras, con ventanas que brillan.'},between:'Sigue moviendo el sol… mira cómo cambian los colores.'},
 eye:{title:'Haz monumental un ojo',intro:'Arrastra el control para agrandar un ojo por encima de los edificios de Montreal. Compara su escala desde dos puntos de vista.',hint:'Mueve el control de tamaño hacia fuera y explora ambas vistas.',lesson:'Un ojo más grande que un edificio cambia de significado. La escala monumental transforma nuestra relación con la escultura pública.',count:'Puntos de vista',scale:'Escala de la escultura',viewsText:['Desde la calle','Desde la plaza']},
 frink:{title:'Una conversación en el patio',intro:'Coloca dos guardianes en lugares diferentes y gira ambos para que se miren. Observa sus sombras y el espacio entre ellos.',hint:'Elige dos sitios y gira los dos guardianes para que se miren.',lesson:'Elisabeth Frink dio presencia a sus figuras mediante la postura, la posición y la distancia. Dos estatuas pueden parecer comunicarse sin tocarse.',count:'Guardianes orientados',turn:'Girar guardián',move:'Mover guardián'},
 riopelle:{title:'Construye un ensamblaje',intro:'Elige una base de madera y une tres objetos encontrados distintos. Decide qué pieza estabiliza la escultura.',hint:'Elige una base, añade tres materiales diferentes y fija la estructura.',lesson:'El ensamblaje da nueva vida a materiales descartados. Riopelle unía texturas y objetos para crear una composición expresiva.',count:'Materiales encontrados',anchor:'Anclar la escultura'},
@@ -43,14 +43,14 @@ const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
 const button=(name,cmd,value='',klass='')=>'<button class="mf-btn '+klass+'" type="button" data-mf="'+cmd+'" data-v="'+safe(value)+'">'+safe(name)+'</button>';
 const P=['wheel','wire','scrap','fabric','bark'],PI=['◉','〰','◆','▧','⌁'];
 function data(C,id){
- if(!C.extra||C.extra.id!==id)C.extra={id,sweep:0,rubs:[],found:[],point:{x:79,y:74},doors:[],strokes:[],sun:.1,eye:.15,view:-1,views:[],guardians:[-1,-1],facing:[false,false],selectedGuardian:0,base:'',pieces:[],selectedPiece:'wheel',anchor:false,pose:0,joints:null,moves:[],angle:-40,faces:[]};
+ if(!C.extra||C.extra.id!==id)C.extra={id,sweep:0,rubs:[],found:[],point:{x:79,y:74},doors:[],strokes:[],sun:.1,time:.12,moments:[],eye:.15,view:-1,views:[],guardians:[-1,-1],facing:[false,false],selectedGuardian:0,base:'',pieces:[],selectedPiece:'wheel',anchor:false,pose:0,joints:null,moves:[],angle:-40,faces:[]};
  return C.extra;
 }
 function complete(id,s){
  switch(id){
  case 'marrel':return s.sweep>=90&&s.found.length>=5;
  case 'witte':return s.doors.length===3&&Math.abs(s.point.x-50)<11&&Math.abs(s.point.y-45)<15;
- case 'fortin':return s.strokes.length>=3&&s.sun>=.7;
+ case 'fortin':return (s.moments||[]).length>=4;
  case 'eye':return s.eye>=.8&&s.views.length===2;
  case 'frink':return s.guardians.every(v=>v>=0)&&s.guardians[0]!==s.guardians[1]&&s.facing.every(Boolean);
  case 'riopelle':return !!s.base&&new Set(s.pieces).size>=3&&s.anchor;
@@ -83,13 +83,107 @@ function witte(s,t){
  [0,1,2].map((v,i)=>'<button class="mf-door-button '+(s.doors.includes(i)?'open':'')+'" data-mf="door" data-v="'+i+'" type="button" style="left:'+(15+i*29)+'%;top:'+(17+i*9)+'%" aria-label="'+safe(t.count)+' '+(i+1)+'">'+(s.doors.includes(i)?'✓':i+1)+'</button>').join('')+'</div>'+
  '<div class="mf-meter">'+safe(t.count)+' <b>'+s.doors.length+'/3</b></div><div class="mf-controls">'+button('←','move-point','left')+button('↑','move-point','up')+button('↓','move-point','down')+button('→','move-point','right')+'</div>';
 }
+/* ---- Fortin: "Paint the light over Hochelaga" ------------------------------
+   One continuous time-of-day value (0 = midnight, .25 sunrise, .5 noon,
+   .75 sunset, 1 = midnight) drives the WHOLE painting: sky gradient, sun and
+   moon arcs, cloud rims, stars, shadows, river reflections, birds and lit
+   windows. Dragging updates attributes live (no re-render) so it feels like
+   repainting a canvas rather than swapping backgrounds. */
+const FX_SKY=[
+ [0,'#0a1230','#18234d','#2c3563'],[.14,'#141f4a','#3a3a6e','#7a5a86'],[.22,'#33508f','#d98b86','#ffc98a'],
+ [.3,'#4f8ccc','#a9c9e3','#ffe2b0'],[.5,'#2f78c6','#7db6e6','#d8ecf6'],[.68,'#4a7fbf','#b3c4dc','#f6d5a0'],
+ [.76,'#2c3a6e','#d0685a','#ffae55'],[.84,'#18214e','#5a3f73','#c56a66'],[1,'#0a1230','#18234d','#2c3563']];
+const FX_MOMENTS=[['sunrise',.25,'🌅'],['day',.5,'☀️'],['sunset',.75,'🌇'],['night',.97,'🌙']];
+const hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const mix=(a,b,k)=>{const A=hex(a),B=hex(b);return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*k).toString(16).padStart(2,'0')).join('')};
+function fxMoment(t){if(t<.08||t>.92)return 'night';if(t>=.19&&t<=.31)return 'sunrise';if(t>=.42&&t<=.58)return 'day';if(t>=.69&&t<=.81)return 'sunset';return ''}
+function fxModel(t){
+ t=clamp(t,0,1);
+ let i=0;while(i<FX_SKY.length-2&&t>FX_SKY[i+1][0])i++;
+ const [t0,...c0]=FX_SKY[i],[t1,...c1]=FX_SKY[i+1],k=(t-t0)/Math.max(.0001,t1-t0);
+ const sky=c0.map((c,j)=>mix(c,c1[j],k));
+ const arc=p=>({x:18+p*324,y:178-Math.sin(Math.PI*p)*146,up:p>=0&&p<=1,alt:Math.max(0,Math.sin(Math.PI*p))});
+ const sun=arc((t-.2)/.6),moonT=(t+.5)%1,moon=arc((moonT-.2)/.6);
+ const light=sun.up?clamp(sun.alt*1.5,0,1):0;
+ const warm=Math.exp(-(((t-.25)/.06)**2))+Math.exp(-(((t-.75)/.06)**2));
+ const glow=clamp(1-light*2.1,0,1);
+ const shadowLen=sun.up&&sun.alt>.04?Math.min(70,9/sun.alt):0;
+ const shadowDx=sun.up?-(sun.x-180)/180*shadowLen:0;
+ return {t,sky,sun,moon,light,warm:clamp(warm,0,1),glow,stars:clamp(1-light*3.2,0,1)*(sun.up&&sun.alt>.12?0:1),
+  shadowDx,shadowOp:sun.up?.34*clamp(sun.alt*3,0,1):0,
+  land:mix('#141c2c',mix('#2e4a37','#a35b3a',clamp(warm*.45,0,1)),clamp(light*1.1+warm*.25,0,1)),
+  houses:mix('#10151f',mix('#3b3a3a','#5a3a30',clamp(warm*.5,0,1)),clamp(light*.9+warm*.2,0,1)),
+  cloud:mix(mix('#20263d','#7d879e',light),'#b8607a',clamp(warm*.5,0,1)),
+  rim:mix(mix('#4c5374','#ffffff',light),'#ffc27a',clamp(warm,0,1)),
+  birds:clamp((light-.25)*2,0,1)};
+}
+const FX_HUES=['#a2563f','#c9a35a','#6d7f8f','#8b4a3c','#b78a4e','#5d6f7d','#9c5a44','#c2955a','#6f6a80'];
+const fxHouse=(m,i)=>mix('#10151f',mix(FX_HUES[i%FX_HUES.length],'#e08a4a',m.warm*.3),clamp(m.light*.9+m.warm*.25,0,1));
+const FX_HOUSES=[[8,154,30,46],[40,162,26,38],[68,150,34,50],[104,160,24,40],[176,146,40,54],[220,158,28,42],[250,150,36,50],[288,160,30,40],[320,152,36,48]];
+function fxApply(root,m){
+ if(!root)return;
+ const set=(sel,attrs)=>root.querySelectorAll(sel).forEach(n=>{for(const k in attrs)n.setAttribute(k,attrs[k])});
+ set('[data-fx="s0"]',{'stop-color':m.sky[0]});set('[data-fx="s1"]',{'stop-color':m.sky[1]});set('[data-fx="s2"]',{'stop-color':m.sky[2]});
+ set('[data-fx="w0"]',{'stop-color':mix(m.sky[2],'#0b1a2a',.35)});set('[data-fx="w1"]',{'stop-color':mix(m.sky[0],'#06101c',.45)});
+ set('[data-fx="sun"]',{transform:'translate('+m.sun.x.toFixed(1)+' '+m.sun.y.toFixed(1)+')',opacity:m.sun.up?1:0});
+ set('[data-fx="moon"]',{transform:'translate('+m.moon.x.toFixed(1)+' '+m.moon.y.toFixed(1)+')',opacity:m.moon.up?clamp(1-m.light*1.4,0,1):0});
+ set('[data-fx="stars"]',{opacity:m.stars.toFixed(2)});
+ set('[data-fx="cloud"]',{fill:m.cloud});set('[data-fx="rim"]',{stroke:m.rim});
+ set('[data-fx="land"]',{fill:m.land});set('[data-fx="house"]',{fill:m.houses});
+ FX_HOUSES.forEach((_,i)=>set('[data-fx="h'+i+'"]',{fill:fxHouse(m,i)}));
+ set('[data-fx="church"]',{fill:mix('#10151f',mix('#9a8a76','#e08a4a',m.warm*.3),clamp(m.light*.9+m.warm*.25,0,1))});
+ set('[data-fx="c0"]',{'stop-color':m.rim});set('[data-fx="c1"]',{'stop-color':m.cloud});
+ set('[data-fx="win"]',{opacity:(m.glow*.95).toFixed(2)});set('[data-fx="lamp"]',{opacity:(m.glow).toFixed(2)});
+ set('[data-fx="birds"]',{opacity:m.birds.toFixed(2)});
+ set('[data-fx="glint"]',{cx:(m.sun.up?m.sun.x:m.moon.x).toFixed(1),opacity:(m.sun.up?.25+m.light*.5:m.moon.up?.35:0).toFixed(2),fill:m.sun.up?mix('#fff3c4','#ffb35c',m.warm):'#e9edf7'});
+ FX_HOUSES.forEach(([x,y,w,h],i)=>set('[data-fx="sh'+i+'"]',{points:x+',200 '+(x+w)+',200 '+(x+w+m.shadowDx).toFixed(1)+',212 '+(x+m.shadowDx).toFixed(1)+',212',opacity:m.shadowOp.toFixed(2)}));
+}
 function fortin(s,t){
- const sky='<svg class="mf-svg" viewBox="0 0 320 245" role="img" aria-label="'+safe(t.title)+'"><defs><linearGradient id="mf-storm" x2="0" y2="1"><stop stop-color="#253b59"/><stop offset=".52" stop-color="#6d83a0"/><stop offset="1" stop-color="#e6c18d"/></linearGradient></defs><rect width="320" height="245" fill="url(#mf-storm)"/><path d="M-10 39Q70 4 139 32T330 19M-10 72Q90 42 170 62T330 51M-10 111Q90 80 151 99T330 92" stroke="#e5d5c3" stroke-width="22" fill="none" opacity=".43"/>'+
- s.strokes.map((p,i)=>'<path d="M'+p.x+' '+p.y+'q32 -25 90 3" stroke="'+(i%2?'#fff0d5':'#f6c785')+'" stroke-width="16" fill="none" opacity=".7" stroke-linecap="round" class="mf-storm-stroke"/>').join('')+
- '<path d="M0 192h33v-40h11v-22h10v22h12v40h38v-25h27v25h23v-60l14-11 14 11v60h23v-35h28v35h25v-26h40v26h22v53H0Z" fill="#233c36"/><path d="M143 131v-45l13-24 13 24v45" fill="#2a423a"/>'+
- Array.from({length:10},(_,i)=>'<rect x="'+(10+i*29)+'" y="195" width="9" height="13" fill="#e0b47a" opacity=".7"/>').join('')+'</svg>';
- return '<div class="mf-board mf-storm" data-mf-drag="sky">'+sky+'<button type="button" class="mf-sun-handle" data-mf-drag="sun" style="left:'+(10+s.sun*80)+'%" aria-label="'+safe(t.light)+'">☀</button><div class="mf-light-wash" style="opacity:'+s.sun*.7+'"></div></div>'+
- '<div class="mf-meter">'+safe(t.count)+' <b>'+s.strokes.length+'/3</b> · '+safe(t.light)+' <b>'+Math.round(s.sun*100)+'%</b></div>';
+ const m=fxModel(s.time??.12),seen=s.moments||[];
+ const star=(x,y,r)=>'<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="#fff8e4"/>';
+ const stars=[[24,22,1.2],[58,40,.9],[92,16,1.4],[130,34,.8],[166,12,1.1],[204,30,1.3],[238,18,.9],[272,38,1.2],[306,14,1],[338,32,1.4],[44,70,.8],[112,62,1],[188,56,.8],[262,66,1.1],[324,58,.9],[150,84,.7],[80,96,.9],[300,92,.8]].map(a=>star(...a)).join('');
+ const house=([x,y,w,h],i)=>'<g><rect data-fx="h'+i+'" x="'+x+'" y="'+y+'" width="'+w+'" height="'+(200-y)+'" fill="'+fxHouse(m,i)+'"/><path data-fx="house" d="M'+(x-2)+' '+y+'L'+(x+w/2)+' '+(y-12)+'L'+(x+w+2)+' '+y+'Z" fill="'+m.houses+'"/>'+
+  [0,1].map(r=>[0,1].map(c=>'<rect data-fx="win" x="'+(x+5+c*(w-15))+'" y="'+(y+8+r*15)+'" width="6" height="8" rx="1" fill="#ffcf73" opacity="'+(m.glow*.95).toFixed(2)+'"/>').join('')).join('')+'</g>';
+ const stone=mix('#10151f',mix('#9a8a76','#e08a4a',m.warm*.3),clamp(m.light*.9+m.warm*.25,0,1));
+ const church='<g><rect data-fx="church" x="140" y="118" width="26" height="82" fill="'+stone+'"/><path data-fx="house" d="M136 120L153 44L170 120Z" fill="'+m.houses+'"/><path d="M153 30v18M147 37h12" stroke="'+m.houses+'" data-fx="rim" stroke-width="2.5"/>'+
+  '<circle data-fx="win" cx="153" cy="140" r="6" fill="#ffcf73" opacity="'+(m.glow*.95).toFixed(2)+'"/><rect data-fx="win" x="148" y="168" width="10" height="16" rx="5" fill="#ffcf73" opacity="'+(m.glow*.95).toFixed(2)+'"/></g>';
+ const town=FX_HOUSES.map(house).join('')+church+[60,132,236,300].map(x=>'<g><path d="M'+x+' 200v-22" stroke="#20242c" stroke-width="2"/><circle data-fx="lamp" cx="'+x+'" cy="176" r="6" fill="#ffd98a" opacity="'+m.glow.toFixed(2)+'" filter="url(#fx-blur)"/></g>').join('');
+ const shadows=FX_HOUSES.map(([x,y,w],i)=>'<polygon data-fx="sh'+i+'" points="'+x+',200 '+(x+w)+',200 '+(x+w+m.shadowDx).toFixed(1)+',212 '+(x+m.shadowDx).toFixed(1)+',212" fill="#0c0f16" opacity="'+m.shadowOp.toFixed(2)+'"/>').join('');
+ const cloud=(d)=>'<path d="'+d+'" fill="url(#fx-cloud)"/>';
+ const svg='<svg class="mf-svg fx-svg" viewBox="0 0 360 260" role="img" aria-label="'+safe(t.title)+'"><defs>'+
+  '<linearGradient id="fx-sky" x2="0" y2="1"><stop data-fx="s0" offset="0" stop-color="'+m.sky[0]+'"/><stop data-fx="s1" offset=".6" stop-color="'+m.sky[1]+'"/><stop data-fx="s2" offset="1" stop-color="'+m.sky[2]+'"/></linearGradient>'+
+  '<linearGradient id="fx-water" x2="0" y2="1"><stop data-fx="w0" offset="0" stop-color="'+mix(m.sky[2],'#0b1a2a',.35)+'"/><stop data-fx="w1" offset="1" stop-color="'+mix(m.sky[0],'#06101c',.45)+'"/></linearGradient>'+
+  '<radialGradient id="fx-sunglow"><stop offset="0" stop-color="#fff6d8"/><stop offset=".35" stop-color="#ffd27a" stop-opacity=".85"/><stop offset="1" stop-color="#ffb35c" stop-opacity="0"/></radialGradient>'+
+  '<linearGradient id="fx-cloud" x2="0" y2="1"><stop data-fx="c0" offset="0" stop-color="'+m.rim+'"/><stop data-fx="c1" offset=".7" stop-color="'+m.cloud+'"/></linearGradient>'+
+  '<filter id="fx-blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>'+
+  '<filter id="fx-paint"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="9"/></filter>'+
+  '<clipPath id="fx-river"><rect x="0" y="212" width="360" height="48"/></clipPath><g id="fx-town">'+town+'</g></defs>'+
+  '<rect width="360" height="260" fill="url(#fx-sky)"/>'+
+  '<g data-fx="stars" opacity="'+m.stars.toFixed(2)+'">'+stars+'</g>'+
+  '<g data-fx="moon" transform="translate('+m.moon.x.toFixed(1)+' '+m.moon.y.toFixed(1)+')" opacity="'+(m.moon.up?clamp(1-m.light*1.4,0,1):0)+'"><circle r="22" fill="#e9edf7" opacity=".18"/><circle r="12" fill="#f4f1de"/><circle cx="-4" cy="-3" r="2.4" fill="#d7d2bb"/><circle cx="4" cy="4" r="1.6" fill="#d7d2bb"/></g>'+
+  '<g data-fx="sun" transform="translate('+m.sun.x.toFixed(1)+' '+m.sun.y.toFixed(1)+')" opacity="'+(m.sun.up?1:0)+'"><circle r="44" fill="url(#fx-sunglow)"/><circle r="14" fill="#fff1c2"/></g>'+
+  '<g filter="url(#fx-paint)">'+cloud('M-10 70Q20 40 58 52Q78 22 116 40Q150 26 168 54Q196 50 200 74Q160 92 100 84Q40 96 -10 86Z')+cloud('M170 40Q196 14 232 30Q262 10 292 34Q330 28 370 52L370 78Q320 88 280 76Q240 92 200 78Q176 70 170 40Z')+cloud('M80 118Q104 100 132 110Q160 96 190 112Q214 106 230 122Q196 134 150 128Q110 136 80 118Z')+'</g>'+
+  '<g data-fx="birds" class="fx-birds" opacity="'+m.birds.toFixed(2)+'" stroke="#1d2433" stroke-width="1.6" fill="none" stroke-linecap="round"><path d="M40 104q5-5 10 0q5-5 10 0"/><path d="M66 94q4-4 8 0q4-4 8 0"/><path d="M84 110q4-4 8 0q4-4 8 0"/></g>'+
+  '<path data-fx="land" d="M0 150Q50 140 100 148T200 146T300 142T360 146V214H0Z" fill="'+m.land+'"/>'+
+  '<rect y="196" width="360" height="18" data-fx="land" fill="'+m.land+'"/>'+shadows+'<use href="#fx-town"/>'+
+  '<rect y="212" width="360" height="48" fill="url(#fx-water)"/>'+
+  '<g clip-path="url(#fx-river)" opacity=".28"><use href="#fx-town" transform="translate(0 424) scale(1 -1)"/></g>'+
+  '<ellipse data-fx="glint" cx="'+(m.sun.up?m.sun.x:m.moon.x).toFixed(1)+'" cy="236" rx="16" ry="20" fill="#fff3c4" opacity=".4" filter="url(#fx-blur)"/>'+
+  '<path d="M0 222h360M0 234h360M0 248h360" stroke="#ffffff" stroke-opacity=".08" stroke-width="1"/>'+
+  '</svg>';
+ const now=fxMoment(m.t);
+ return '<div class="mf-board mf-storm fx-board" data-mf-drag="time" tabindex="0" aria-label="'+safe(t.light)+'">'+svg+
+  '<div class="fx-caption" aria-live="polite">'+safe(now?t.moments[now]:t.between)+'</div></div>'+
+  '<div class="fx-track" data-mf-drag="time"><div class="fx-track-line"></div><button type="button" class="mf-sun-handle fx-knob" data-mf-drag="time" style="left:'+(m.t*100).toFixed(1)+'%" aria-label="'+safe(t.light)+'">'+(m.sun.up?'☀':'☾')+'</button></div>'+
+  '<div class="mf-controls fx-moments">'+FX_MOMENTS.map(([k,v,icon])=>'<button class="mf-btn'+(seen.includes(k)?' active':'')+'" type="button" data-mf="moment" data-v="'+k+'"><span aria-hidden="true">'+icon+'</span> '+safe(t.names[k])+(seen.includes(k)?' ✓':'')+'</button>').join('')+'</div>'+
+  '<div class="mf-meter">'+safe(t.count)+' <b>'+seen.length+'/4</b></div>';
+}
+function fxLive(s){
+ const root=document.querySelector('.fx-svg');fxApply(root,fxModel(s.time));
+ const knob=document.querySelector('.fx-knob');if(knob){knob.style.left=(s.time*100).toFixed(1)+'%';knob.textContent=fxModel(s.time).sun.up?'☀':'☾'}
+ const now=fxMoment(s.time),cap=document.querySelector('.fx-caption'),t=tr().fortin;
+ if(cap)cap.textContent=now?t.moments[now]:t.between;
+ if(now&&!s.moments.includes(now)){s.moments.push(now);document.querySelector('.fx-moments [data-v="'+now+'"]')?.classList.add('active')}
 }
 function eye(s,t){
   const scale=.28+s.eye*1.63,view=s.view??-1;
@@ -190,7 +284,7 @@ const s=c.s,act=b.dataset.mf,v=b.dataset.v;
 switch(c.id){
 case 'marrel':if(act==='find')push(s.found,Number(v));if(act==='sweep')s.sweep=Math.min(150,s.sweep+20);break;
 case 'witte':if(act==='door')push(s.doors,Number(v));if(act==='move-point'){s.point.x=clamp(s.point.x+(v==='left'?-12:v==='right'?12:0),2,98);s.point.y=clamp(s.point.y+(v==='up'?-10:v==='down'?10:0),2,98)}break;
-case 'fortin':if(act==='add-stroke')s.strokes.push({x:70+s.strokes.length*39,y:45+s.strokes.length*22});if(act==='light')s.sun=clamp(s.sun+.2,0,1);break;
+case 'fortin':if(act==='moment'){const m=FX_MOMENTS.find(x=>x[0]===v);if(m){s.time=m[1];push(s.moments,m[0])}}break;
 case 'eye':if(act==='view'){s.view=Number(v);push(s.views,s.view)}if(act==='eye')s.eye=clamp(s.eye+.2,0,1);break;
 case 'frink':if(act==='select-guardian')s.selectedGuardian=Number(v);if(act==='guardian'){const n=Number(v),occupant=s.guardians.indexOf(n);if(occupant>=0)s.selectedGuardian=occupant;else{let idx=s.guardians.indexOf(-1);if(idx<0)idx=s.selectedGuardian??0;s.guardians[idx]=n;s.selectedGuardian=idx===0?1:0;s.facing=[false,false]}}if(act==='face'){const i=Number(v);if(s.guardians.every(x=>x>=0))s.facing[i]=!s.facing[i]}break;
 case 'riopelle':if(act==='base'){s.base=v;s.anchor=false}if(act==='piece'){push(s.pieces,v);s.anchor=false}if(act==='anchor'&&s.base&&new Set(s.pieces).size>=3)s.anchor=true;break;
@@ -206,11 +300,12 @@ document.addEventListener('pointerdown',ev=>{
  const kind=node.dataset.mfDrag;
  // Placing and revealing a symbol is a click, not a painting drag.
  if(ev.target.closest('[data-mf]')&&['sweep','rotate'].includes(kind))return;
- const map={sweep:'marrel',point:'witte',sky:'fortin',sun:'fortin',eye:'eye',rotate:'cragg',guardian:'frink',joint:'rodin'};
+ const map={sweep:'marrel',point:'witte',sky:'fortin',sun:'fortin',time:'fortin',eye:'eye',rotate:'cragg',guardian:'frink',joint:'rodin'};
  if(map[kind]!==c.id)return;
- const r=node.closest('.mf-board')?.getBoundingClientRect();if(!r)return;
+ const r=(kind==='time'?(node.closest('.fx-track')||node.closest('.mf-board')):node.closest('.mf-board'))?.getBoundingClientRect();if(!r)return;
  drag={c,kind,node,rect:r,startX:ev.clientX,startY:ev.clientY,lastX:ev.clientX,lastY:ev.clientY,distance:0,guardian:Number(node.dataset.v),joint:node.dataset.joint};
  if(kind==='sweep'){c.s.rubs??=[];c.s.rubs.push([]);drag.rubIndex=c.s.rubs.length-1;const mask=document.getElementById('mf-brush-mask');if(mask){const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('id','mf-rub-'+drag.rubIndex);path.setAttribute('fill','none');path.setAttribute('stroke','#000');path.setAttribute('stroke-width','48');path.setAttribute('stroke-linecap','round');path.setAttribute('stroke-linejoin','round');mask.appendChild(path)}}
+ if(kind==='time'){c.s.time=clamp((ev.clientX-r.left)/r.width,0,1);fxLive(c.s)}
  try{node.setPointerCapture(ev.pointerId)}catch(_){}
  ev.preventDefault();
 },true);
@@ -223,6 +318,7 @@ document.addEventListener('pointermove',ev=>{
  if(d.kind==='eye'){s.eye=clamp((ev.clientX-r.left)/r.width,0,1);d.node.style.left=(20+s.eye*65)+'%';const eye=document.querySelector('.mf-big-eye');if(eye){const v=s.view??-1;eye.setAttribute('transform','translate('+(160+(v===0?34:v===1?-38:0))+' '+(123+(v===0?-11:v===1?20:0))+') rotate('+(v===0?-13:v===1?24:0)+') scale('+((.28+s.eye*1.63)*(v===0?1.1:v===1?.69:1))+')')}}
  if(d.kind==='rotate'){s.angle=clamp(s.angle+dx*.65,-45,45);const sculpture=document.querySelector('.mf-turntable');if(sculpture)sculpture.style.setProperty('--turn',(s.angle*1.72)+'deg')}
  if(d.kind==='sweep'){s.sweep=clamp(s.sweep+Math.hypot(dx,dy)*.34,0,150);const p=[Math.round(clamp((ev.clientX-r.left)/r.width*320,0,320)),Math.round(clamp((ev.clientY-r.top)/r.height*245,0,245))];const rub=s.rubs[d.rubIndex];if(rub&&rub.length<350){rub.push(p);const path=document.getElementById('mf-rub-'+d.rubIndex);if(path)path.setAttribute('d',rub.map((xy,i)=>(i?'L':'M')+xy[0]+' '+xy[1]).join(' '))}}
+ if(d.kind==='time'){s.time=clamp((ev.clientX-r.left)/r.width,0,1);fxLive(s)}
  if(d.kind==='sky'){const x=clamp((ev.clientX-r.left)/r.width*320,10,205),y=clamp((ev.clientY-r.top)/r.height*245,10,130);d.x=x;d.y=y}
  if(d.kind==='guardian'&&d.distance>7)d.node.style.left=clamp((ev.clientX-r.left)/r.width*100,12,88)+'%';
  if(d.kind==='joint'){s.joints??=rodinGeometry(s);const p=s.joints[d.joint];if(p){p[0]=Math.round(clamp((ev.clientX-r.left)/r.width*320,65,255));p[1]=Math.round(clamp((ev.clientY-r.top)/r.height*240,19,217));updateRodinLive(s)}}
@@ -244,6 +340,7 @@ document.addEventListener('keydown',ev=>{
  if(k==='sweep')s.sweep=Math.min(150,s.sweep+38);
  if(k==='point'){s.point.x=clamp(s.point.x+(ev.key==='ArrowLeft'?-10:ev.key==='ArrowRight'?10:0),0,100);s.point.y=clamp(s.point.y+(ev.key==='ArrowUp'?-10:ev.key==='ArrowDown'?10:0),0,100)}
  if(k==='sun')s.sun=clamp(s.sun+.25,0,1);
+ if(k==='time'){s.time=clamp(s.time+(ev.key==='ArrowLeft'?-.04:ev.key==='ArrowRight'?.04:ev.key==='Enter'||ev.key===' '?.25:0),0,1);if(s.time>=1&&ev.key!=='ArrowRight')s.time=0;fxLive(s)}
  if(k==='sky')s.strokes.push({x:35+(s.strokes.length%3)*35,y:30+s.strokes.length*14});
  if(k==='eye')s.eye=clamp(s.eye+.22,0,1);
  if(k==='guardian')s.selectedGuardian=Number(node.dataset.v);

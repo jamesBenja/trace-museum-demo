@@ -117,3 +117,18 @@
 @media(prefers-reduced-motion:reduce){
  .mf-assembly-sculpture.assembled .mf-junk,.mf-turntable,.mf-eye-city,.mf-big-eye,.mf-guardian{animation:none!important;transition:none!important}
 }
+/* Fortin v3: "Paint the light over Hochelaga" — a framed painting whose light is repainted live. */
+.fx-board{position:relative;padding:10px;border-radius:10px;background:linear-gradient(135deg,#d8b45f,#9b7531 45%,#e7cd85 70%,#8d6a2b);box-shadow:inset 0 0 0 2px #6f521f,0 14px 26px -16px #3d2c0e;touch-action:none;cursor:ew-resize;outline-offset:4px}
+.fx-board .fx-svg{display:block;width:100%;height:auto;border-radius:3px;box-shadow:inset 0 0 0 1px #0004,0 0 0 2px #5c4417}
+.fx-caption{margin:10px 2px 0;min-height:42px;padding:8px 12px;border-radius:12px;background:#fffbefd9;color:#2a2416;font:700 15px/1.35 "DM Sans",sans-serif;text-align:center}
+.fx-track{position:relative;height:64px;margin:14px 34px 6px;touch-action:none;cursor:ew-resize}
+.fx-track-line{position:absolute;left:0;right:0;top:50%;height:14px;transform:translateY(-50%);border-radius:999px;
+ background:linear-gradient(90deg,#0a1230 0%,#3a3a6e 14%,#ffc98a 25%,#7db6e6 40%,#7db6e6 60%,#ffae55 75%,#5a3f73 86%,#0a1230 100%);box-shadow:inset 0 2px 4px #0005}
+.fx-knob.mf-sun-handle{position:absolute;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;border:4px solid #fff;
+ background:radial-gradient(circle at 35% 30%,#fff6d6,#f2b544);font-size:26px;display:grid;place-items:center;color:#5b3d06;box-shadow:0 6px 14px -6px #0008;cursor:grab;touch-action:none}
+.fx-moments{display:grid!important;grid-template-columns:repeat(2,1fr);gap:8px}
+.fx-moments .mf-btn{min-height:56px;font-size:15px}
+.fx-moments .mf-btn.active{background:#e6f2ea;border-color:#5aa585;color:#1d5248}
+.fx-birds{animation:fx-fly 14s linear infinite}
+@keyframes fx-fly{from{transform:translateX(-40px)}to{transform:translateX(330px)}}
+@media (prefers-reduced-motion:reduce){.fx-birds{animation:none}}
