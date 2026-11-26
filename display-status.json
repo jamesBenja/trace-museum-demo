@@ -1451,7 +1451,7 @@
     ]
   },
   "mode": "independent-pitch-demo",
-  "updatedAt": "2026-11-04T17:02:00-05:00",
+  "updatedAt": "2026-11-26T12:30:00-05:00",
   "description": "Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.",
   "works": {
     "mmfa-marrel": {
@@ -1505,10 +1505,10 @@
     "mmfa-rodin": {
       "active": true,
       "onViewVerified": true,
-      "room": "mmfa-peace-floor-unconfirmed",
+      "room": "mmfa-peace-1",
       "startDate": "",
       "endDate": "",
-      "note": "MMFA Archives, Audrey Marcoux, email 2026-11-03: The Thinker on display in Hornstein Pavilion for Peace; exact floor/room was NOT specified. Do not infer a floor or verified indoor route."
+      "note": "MMFA Archives, 2026-11-03: on display in Hornstein Pavilion for Peace. On-site visitor confirmation, 2026-11-26: first floor, first room on the left."
     },
     "mmfa-cragg": {
       "active": false,
