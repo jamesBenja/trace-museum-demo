@@ -14,7 +14,7 @@ const esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replac
 let stored={};
 try{stored=JSON.parse(localStorage.getItem(STORE)||'{}')||{}}catch(e){}
 function display(){return window.TRACE_DISPLAY}
-function catalog(){return A.filter(a=>display()?.isActive(a.id)??true)}
+function catalog(){return display()?.activeWorks(state.venue)||A}
 function room(id){return display()?.rooms(state.venue).find(x=>x.id===id)||null}
 function artworkRoom(a){return room(display()?.rec(a.id)?.room)}
 function found(a){return state.found.includes(a.id)}
@@ -89,6 +89,8 @@ function plannedOrder(){
  const start=S.start||MAPS[state.venue].startRoom;
  const allApproved=mapped.every(a=>!!route(start,artworkRoom(a).id));
  const allPreview=!allApproved&&mapped.every(a=>!!route(start,artworkRoom(a).id,true));
+ // The entrance-based MMFA visit follows the gallery sequence, not a greedy nearest-neighbour detour outdoors.
+ if(state.venue==='mmfa'&&start===MAPS.mmfa.startRoom&&S.mode!=='custom')return {ordered:[...mapped,...unmapped],optimised:false,provisional:allPreview};
  if(allApproved||allPreview){
   const remaining=mapped.slice(),ordered=[];let current=start;
   while(remaining.length){

@@ -118,7 +118,7 @@ function clue(){
   '<div class="t1-detail-expanded" id="t1-detail-panel" tabindex="-1"><div class="t1-detail-mica" aria-hidden="true"><div class="t1-detail-mica-body"><span class="t1-detail-mica-face">•ᴗ•</span></div><span class="t1-detail-wand">✦</span></div><div class="t1-detail-stars" aria-hidden="true"><span>✧</span><span>✦</span><span>✧</span><span>✧</span></div><div class="t1-detail-frame"><img src="'+esc(img(a))+'" style="object-position:'+esc(focus)+';transform-origin:'+esc(focus)+'" alt="Zoomed-in detail only. The full artwork is not shown." loading="eager"><div class="t1-detail-shutter" aria-hidden="true"></div><div class="t1-detail-frame-label">'+esc(t.close)+'</div></div><div class="t1-detail-annotation"><span>'+esc(t.mica)+'</span><p>'+description+'</p><small>'+esc(t.after)+'</small></div></div>'+
   '<button class="t1-detail-hide" type="button" data-t1-detail-hide aria-expanded="true" aria-controls="t1-detail-panel">'+esc(t.hide)+'</button>':
   '<button class="t1-detail-trigger" type="button" data-t1-detail-reveal aria-expanded="false" aria-controls="t1-detail-panel"><span class="t1-detail-trigger-icon" aria-hidden="true"><span class="t1-detail-preview-spark">✧</span><span class="t1-detail-mini-mica">✦</span></span><span class="t1-detail-trigger-copy"><strong>'+esc(t.reveal)+'</strong><small>'+esc(t.explain)+'</small></span><span aria-hidden="true" class="t1-detail-chevron">›</span></button>';
- return '<div class="t1-screen"><div class="t1-overline">MYSTERY '+(state.current+1)+' OF '+A.length+' · '+esc(node.subtitle)+'</div><h2 class="t1-h1">'+esc(node.name)+'</h2>'+paintProgress()+
+ return '<div class="t1-screen"><div class="t1-overline">MYSTERY '+(activeArts().findIndex(x=>x.id===a.id)+1)+' OF '+activeArts().length+' · '+esc(node.subtitle)+'</div><h2 class="t1-h1">'+esc(node.name)+'</h2>'+paintProgress()+
  mascot(node.friend,a.id)+
  '<div class="t1-team t1-word-clue"><div class="t1-overline">'+esc(t.first)+'</div><h3>'+esc(a.chapter)+'</h3><p class="t1-small">'+description+'</p></div>'+
  '<p class="t1-small">'+esc(txt)+'</p>'+
@@ -201,7 +201,7 @@ function renderGame(v){
 function openWork(i){
  const art=A[i],active=activeArts(),position=active.findIndex(a=>a.id===art?.id),n=t1Found().length;
  if(!art||position<0||!(position<=n+1||state.found.includes(art.id)))return;
- stopCamera();state.current=i;state.quizError=false;state.reviewId=null;state.scanImage=null;state.result=null;C.id=null;C.lastPuzzleId=null;C.done=false;C.progress=0;C.points=[];C.xy={x:78,y:77};stage(state.found.includes(A[i].id)?'clue':'clue');
+ stopCamera();state.current=i;state.mapFocusId=art.id;state.quizError=false;state.reviewId=null;state.scanImage=null;state.result=null;C.id=null;C.lastPuzzleId=null;C.done=false;C.progress=0;C.points=[];C.xy={x:78,y:77};stage(state.found.includes(A[i].id)?'clue':'clue');
 }
 function finishPuzzle(assisted){
  if(state.stage!=='puzzle'||!activeArts().some(a=>a.id===A[state.current]?.id))return;

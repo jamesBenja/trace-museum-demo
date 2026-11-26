@@ -13,12 +13,20 @@ with sync_playwright() as p:
     response=page.goto(URL,wait_until="domcontentloaded",timeout=45000)
     assert response and response.status==200
     page.wait_for_function("window.TRACE_WAYFINDER && window.TRACE_ROUTING && window.TRACE_DISPLAY && !TRACE_DISPLAY.loading",timeout=45000)
-    assert page.evaluate("TRACE_DISPLAY.count('mmfa')")==7
+    assert page.evaluate("TRACE_DISPLAY.count('mmfa')")==6
     assert not page.evaluate("TRACE_DISPLAY.isActive('mmfa-cragg')")
+    assert not page.evaluate("TRACE_DISPLAY.isActive('mmfa-riopelle')")
+    expected=['mmfa-rodin','mmfa-marrel','mmfa-witte','mmfa-fortin','mmfa-eye','mmfa-frink']
+    assert page.evaluate("TRACE_DISPLAY.activeWorks('mmfa').map(a=>a.id)")==expected
+    page.evaluate("state.stage='hub';render()")
+    assert page.locator('[data-t1-open]').evaluate_all("(nodes)=>nodes.map(n=>A[Number(n.dataset.t1Open)].id)")==expected
+    page.locator('[data-t1-open]').first.click()
+    assert page.evaluate("A[state.current].id")=='mmfa-rodin'
+    assert "MYSTERY 1 OF 6" in page.locator('#view').inner_text()
     page.locator('[data-tab="map"]').click()
     assert page.locator(".wf-site-map").count()==1
     assert page.locator(".wf-building").count()==5
-    assert page.locator('[data-wf-to] option').count()==7
+    assert page.locator('[data-wf-to] option').count()==6
     assert "Mystery Work 1" in page.locator('[data-wf-to] option').first.inner_text()
     assert page.locator('.wf-route-card').count()==1
     assert "Suggested route" in page.locator('.wf-kicker').inner_text()
@@ -30,7 +38,7 @@ with sync_playwright() as p:
     assert "Level 1 passage" in page.locator('.wf-directions').inner_text()
     assert "elevator to Floor 3" in page.locator('.wf-directions').inner_text()
     assert "Golden Age" in page.locator('.wf-directions').inner_text()
-    assert "Mystery Work 1" in page.locator('.wf-route-card').inner_text()
+    assert "Mystery Work 2" in page.locator('.wf-route-card').inner_text()
     assert page.locator('.wf-route-overlay').count()==1
     assert page.locator('.wf-route-overlay .wf-route-stroke').count()==1
 
@@ -62,21 +70,21 @@ with sync_playwright() as p:
     assert "mmfa-avenue-du-musee" in page.evaluate("TRACE_WAYFINDER.routePlan(TRACE_WAYFINDER.context()).path.rooms")
     assert page.locator('.wf-sculptures.selected').count()==1
 
-    # The Thinker's pavilion is known but floor isn't. Do not assert a specific floor.
+    # Rodin was confirmed in person on level 1.
     page.locator('[data-wf-to]').select_option('mmfa-rodin')
-    assert page.evaluate("TRACE_WAYFINDER.routePlan(TRACE_WAYFINDER.context()).partial")
+    assert not page.evaluate("TRACE_WAYFINDER.routePlan(TRACE_WAYFINDER.context()).partial")
     assert "Level 1 passage" in page.locator('.wf-directions').inner_text()
-    assert "Ask museum staff for the floor" in page.locator('.wf-directions').inner_text()
-    assert "Floor unknown" in page.locator('.wf-route-card').inner_text()
+    assert page.evaluate("TRACE_WAYFINDER.context().dst.id")=="mmfa-peace-1"
+    assert "Floor unknown" not in page.locator('.wf-route-card').inner_text()
 
     # Same-room destination and preservation of discovered titles.
     page.locator('[data-wf-from]').select_option('mmfa-peace-3')
     page.locator('[data-wf-to]').select_option('mmfa-witte')
     assert "Same gallery" in page.locator('.wf-route-card').inner_text()
     page.evaluate("""()=>{if(!state.found.includes('mmfa-witte')){state.found.push('mmfa-witte');save();}render()}""")
-    assert not "Mystery Work 2" in page.locator('.wf-route-card').inner_text()
+    assert not "Mystery Work 3" in page.locator('.wf-route-card').inner_text()
     assert page.evaluate("TRACE_DISPLAY.isActive('mmfa-witte')")
-    assert page.locator('[data-wf-to] option').count()==7
+    assert page.locator('[data-wf-to] option').count()==6
 
     # Optional one-shot GPS remains local and never determines an indoor room.
     page.locator('[data-wf-locate]').click()
@@ -86,9 +94,9 @@ with sync_playwright() as p:
     # Visit planning remains optional and functional.
     page.locator('.wf-visit summary').click()
     page.locator('[data-tn-mode="all"]').click()
-    assert page.evaluate("TRACE_ROUTING.routeWorks().length")==7
+    assert page.evaluate("TRACE_ROUTING.routeWorks().length")==6
     page.locator('[data-tn-mode="custom"]').click()
-    assert page.locator('.wf-custom input').count()==7
+    assert page.locator('.wf-custom input').count()==6
 
     # Across other museums, use mapped directions without inventing approvals.
     page.locator("#venueSwitcher").click()

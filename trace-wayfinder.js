@@ -98,7 +98,7 @@ function workLabel(a,ctx){
 }
 function context(){
  R().touch();
- const museum=state.venue,rooms=D()?.rooms(museum)||[],works=A.filter(a=>D()?.isActive(a.id)),s=R().state;
+ const museum=state.venue,rooms=D()?.rooms(museum)||[],works=D()?.activeWorks(museum)||[],s=R().state;
  const requested=works.find(a=>a.id===state.mapFocusId);
  if(requested&&requested.id!==s.focus){s.focus=requested.id;R().saveRoute()}
  const chosen=works.find(a=>a.id===s.focus)||works.find(a=>!state.found.includes(a.id))||works[0]||null;

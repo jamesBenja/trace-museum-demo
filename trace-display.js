@@ -84,7 +84,14 @@ function isActive(id){
  const r=rec(id),venue=id.split('-')[0],date=today(venue);
  return !!(r.active&&(!r.startDate||date>=r.startDate)&&(!r.endDate||date<=r.endDate));
 }
-function activeWorks(venue){return (MUSEUMS[venue]||[]).filter(a=>isActive(a.id))}
+// Keep catalogue indices stable for saved visits and artwork-specific games.
+const MMFA_VISIT_ORDER=['mmfa-rodin','mmfa-marrel','mmfa-witte','mmfa-fortin','mmfa-eye','mmfa-frink','mmfa-riopelle','mmfa-cragg'];
+function activeWorks(venue){
+ const works=(MUSEUMS[venue]||[]).filter(a=>isActive(a.id));
+ if(venue!=='mmfa')return works;
+ const rank=id=>{const i=MMFA_VISIT_ORDER.indexOf(id);return i<0?MMFA_VISIT_ORDER.length:i};
+ return works.sort((a,b)=>rank(a.id)-rank(b.id));
+}
 function isVerified(id){return rec(id).onViewVerified===true}
 function referenceViews(id){return rec(id).referenceViews||[]}
 function room(id){return rec(id).room||''}
