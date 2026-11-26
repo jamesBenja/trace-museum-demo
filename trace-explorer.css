@@ -213,3 +213,5 @@ body.ex-tier-little .ex-success .t1-complete>.t1-small,body.ex-tier-little .ex-s
 .ex-mode{min-height:56px;border-radius:999px;border:1.5px solid var(--ex-line);background:var(--ex-card);font:800 15px "DM Sans",sans-serif;color:var(--ex-ink);display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
 .ex-mode span{font-size:20px}
 .ex-mode.selected{border-color:var(--ex-forest);background:#e6f2ea}
+.ex-screen details>summary{min-height:44px;display:flex;align-items:center;cursor:pointer}
+.ex-venues button,.ex-grownups .t1-choose button{min-height:48px}

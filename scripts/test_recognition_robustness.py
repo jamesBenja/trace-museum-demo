@@ -78,7 +78,11 @@ async () => {
  for (const id of active) {
   const views = sourcesFor(id);
   if (!views.length) continue;
-  const other = active.find(o => o !== id && kind(o) === kind(id)) || active.find(o => o !== id);
+  // Rotate the wrong-work check through EVERY other active work: a lighting
+  // tweak once made a copper Marrel photo match Fortin, a pair a fixed
+  // 'same category' choice would never have tried.
+  const others = active.filter(o => o !== id);
+  let rot = 0;
   // Official image plus up to two on-site views per work keeps CI time bounded.
   const pick = [...views.filter(v => v.view < 100).slice(0, 1), ...views.filter(v => v.view >= 100).slice(0, 2)];
   for (const ref of pick) {
@@ -86,6 +90,7 @@ async () => {
     const canvas = draw(ref.canvas, v);
     state.current = A.findIndex(a => a.id === id);
     const yes = await recognize(canvas);
+    const other = others[rot++ % others.length];
     state.current = A.findIndex(a => a.id === other);
     const no = await recognize(canvas);
     out.push({id, kind: kind(id), view: ref.view, variant: v.name, yes: !!(yes.recognized && yes.id === id), wrong: !!no.recognized, other});

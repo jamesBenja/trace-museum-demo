@@ -51,7 +51,10 @@ function route(from,to,preview=false){
   if(edge.closed||(!preview&&edge.status==='research')||(S.stepFree&&edge.type==='stairs'))continue;
   if(!known.has(edge.from)||!known.has(edge.to))continue;
   const raw=Math.max(.25,Number(edge.cost)||1);
-  const cost=raw+(edge.type==='elevator'?2:0)+(edge.type==='stairs'?1:0);
+  // Prefer connections the museum map supports strongly: a provisional,
+  // low-confidence shortcut should not beat a well-evidenced route.
+  const doubt=edge.status==='approved'?0:edge.confidence==='low'?2:edge.confidence==='moderate'?.5:0;
+  const cost=raw+(edge.type==='elevator'?2:0)+(edge.type==='stairs'?1:0)+doubt;
   graph.get(edge.from).push({to:edge.to,edge,cost});
   graph.get(edge.to).push({to:edge.from,edge,cost});
  }

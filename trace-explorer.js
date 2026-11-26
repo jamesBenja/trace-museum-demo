@@ -141,7 +141,7 @@ function legSteps(fromRoom,toRoom){
  for(let i=0;i<path.edges.length;i++){
   const e=path.edges[i],src=roomRec(path.rooms[i]),dst=roomRec(path.rooms[i+1]);if(!dst||!src)continue;
   if(e.type==='elevator'||e.type==='stairs'){add({kind:'floor',icon:e.type==='elevator'?'🛗':'🪜',text:floorText(dst)});continue}
-  if(dst.floor==='Outdoor'&&src.floor!=='Outdoor'){add({kind:'out',icon:'🌳',text:u('outside')});continue}
+  if(dst.floor==='Outdoor'&&src.floor!=='Outdoor'){if(src.id==='mmfa-entrance')add({kind:'walk',icon:'🚪',text:kidRoom('mmfa-entrance').name});add({kind:'out',icon:'🌳',text:u('outside')});continue}
   if(dst.floor==='Outdoor')continue;
   if(dst.id==='mmfa-passage'){add({kind:'passage',icon:'🚇',text:pick(PASSAGE)});continue}
   if(src.id==='mmfa-passage')continue; // arriving from the passage: the goal chip names the pavilion
