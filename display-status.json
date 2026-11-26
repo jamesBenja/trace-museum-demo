@@ -1451,7 +1451,7 @@
     ]
   },
   "mode": "independent-pitch-demo",
-  "updatedAt": "2026-11-26T12:30:00-05:00",
+  "updatedAt": "2026-11-26T17:43:44.383Z",
   "description": "Active means included in the demo route; onViewVerified must be confirmed by museum staff. Each activation requires rights, safety and installation checks.",
   "works": {
     "mmfa-marrel": {
@@ -1495,12 +1495,12 @@
       "note": "MMFA Archives, Audrey Marcoux, email 2026-11-03: In memoriam I and II on display along Avenue du Musée."
     },
     "mmfa-riopelle": {
-      "active": true,
-      "onViewVerified": true,
+      "active": false,
+      "onViewVerified": false,
       "room": "mmfa-bourgie-s2",
       "startDate": "",
       "endDate": "",
-      "note": "MMFA Archives, Audrey Marcoux, email 2026-11-03: on display, Bourgie Pavilion, 2nd basement (S2)."
+      "note": "MMFA Archives, 2026-11-03: previously reported on display in Bourgie Pavilion, S2. On-site visitor check, 2026-11-26: work could not be located; temporarily removed from playable route pending reconfirmation."
     },
     "mmfa-rodin": {
       "active": true,
